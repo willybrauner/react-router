@@ -3,7 +3,7 @@ import { TimerUtils } from "../utils/timer-utils";
 
 /**
  * @copyright Original TouchDispatcher by Alexis Bouhet - https://zouloux.com
- * @copyright Hook useTouchDispatcher write by Willy Brauner - https://willybrauner.com
+ * @copyright Hook useTouchDispatcher by Willy Brauner - https://willybrauner.com
  */
 
 const name = "useTouchDispatcher";
