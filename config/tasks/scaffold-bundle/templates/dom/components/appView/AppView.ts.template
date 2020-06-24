@@ -1,13 +1,13 @@
-import "./AppView.less";
+import "./App.less";
 import { DOMView } from "@common/lib/core/DOMView";
 
-const componentName = "AppView";
+const componentName = "App";
 const debug = require("debug")(`front:${componentName}`);
 
 /**
  * @name DOMView
  */
-class AppView extends DOMView {
+class App extends DOMView {
   /**
    * Prepare dependencies with DependencyManager
    */
@@ -44,4 +44,4 @@ class AppView extends DOMView {
   protected afterInit() {}
 }
 
-export default AppView;
+export default App;

@@ -1,9 +1,9 @@
 import "./%%BundleName%%.less";
 import ReactDOM from "react-dom";
 import * as React from "react";
-import GlobalConfig from "@common/data/GlobalConfig";
+import Store from "@common/data/Store";
 import { IRoute, Router } from "@common/lib/router/Router";
-import AppView from "./components/appView";
+import App from "./components/appView";
 import { EnvUtils } from "@common/lib/utils/EnvUtils";
 import { App } from "@common/lib/core/App";
 import { ENodeEnv } from "@common/types";
@@ -29,7 +29,7 @@ export default class %%BundleName%% extends App {
    */
   protected initConfig(): void {
     // Inject params into config
-    GlobalConfig.inject({
+    Store.inject({
       version: require("../../package.json").version,
       baseUrl: process.env.APP_BASE,
       routerBaseUrl: process.env.APP_BASE,
@@ -38,7 +38,7 @@ export default class %%BundleName%% extends App {
     });
 
     // debug all global config
-    GlobalConfig.log();
+    Store.log();
   }
 
   // --------------------------------------------------------------------------- ENV
@@ -99,7 +99,7 @@ export default class %%BundleName%% extends App {
      *  NOTE: Use import to load asynchronously
      *  importer: () => import("./pages/homePage")
      */
-    Router.init(GlobalConfig.routerBaseUrl, routes);
+    Router.init(Store.routerBaseUrl, routes);
     debug("Router.routes", Router.routes);
   }
 
@@ -107,6 +107,6 @@ export default class %%BundleName%% extends App {
 
   protected ready(): void {
     // React render
-    ReactDOM.render(<AppView />, document.getElementById("AppContainer"));
+    ReactDOM.render(<App />, document.getElementById("AppContainer"));
   }
 }

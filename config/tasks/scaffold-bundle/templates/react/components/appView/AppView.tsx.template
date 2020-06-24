@@ -1,4 +1,4 @@
-import css from "./AppView.module.less";
+import css from "./App.module.less";
 import React, { Component } from "react";
 import { IRouteMatch, Router } from "@common/lib/router/Router";
 import { EEnv } from "@common/types";
@@ -8,7 +8,7 @@ import { GridLayout } from "@wbe/libraries";
 import { ETransitionType, ViewStack } from "@common/lib/router/ViewStack";
 import { TPageRegisterObject } from "@common/lib/router/usePageRegister";
 
-const componentName = "AppView";
+const componentName = "App";
 const debug = require("debug")(`front:${componentName}`);
 
 // ----------------------------------------------------------------------------- STRUCT
@@ -20,10 +20,10 @@ export interface IStates {
 }
 
 /**
- * @name AppView
+ * @name App
  * @description First App Component entry point
  */
-class AppView extends Component<IProps, IStates> {
+class App extends Component<IProps, IStates> {
   // React view stack, showing pages when route changes
   protected _viewStack: ViewStack;
 
@@ -158,7 +158,7 @@ class AppView extends Component<IProps, IStates> {
           />
         )}
 
-        {/* AppView Wrapper */}
+        {/* App Wrapper */}
         <div className={css.wrapper}>
           {/* Menu example */}
           <nav className={css.nav}>
@@ -194,4 +194,4 @@ class AppView extends Component<IProps, IStates> {
   }
 }
 
-export default AppView;
+export default App;
