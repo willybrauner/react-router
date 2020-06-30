@@ -5,8 +5,6 @@ const { clean } = require("../clean");
 const { prebuild } = require("../prebuild");
 const { sprites } = require("../sprites");
 
-// ----------------------------------------------------------------------------- PRIVATE
-
 /**
  * Start webpack dev server
  * @returns {Promise<void>}
@@ -27,8 +25,6 @@ const _startDevServer = async () => {
     3
   );
 };
-
-// ----------------------------------------------------------------------------- PUBLIC
 
 /**
  * Init Start

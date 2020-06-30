@@ -6,8 +6,6 @@ const { prebuild } = require("../prebuild");
 const { sprites } = require("../sprites");
 const debug = require("debug")("config:build");
 
-// ----------------------------------------------------------------------------- PRIVATE
-
 /**
  * Start webpack build
  * @returns {Promise<void>}
@@ -36,8 +34,6 @@ const _build = async () => {
 
   logs.done();
 };
-
-// ----------------------------------------------------------------------------- PUBLIC
 
 /**
  * Init Start
