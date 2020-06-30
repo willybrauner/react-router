@@ -1,8 +1,6 @@
 const appRoot = require("app-root-path");
 
 module.exports = {
-  // ROOT
-
   // root folder
   root: appRoot.resolve(""),
   // readme file
@@ -22,27 +20,23 @@ module.exports = {
   // install.sh
   installScript: appRoot.resolve("install.sh"),
 
-  // SRC
-
   // src folder
   src: appRoot.resolve("src"),
   // Path to fonts folder from src
   fontsPath: appRoot.resolve("src/fonts"),
 
-  // SPRITES
-
   // Templates path
-  spritesTemplatesPath: appRoot.resolve("config/tasks/sprites/templates"),
+  spritesTemplatesPath: appRoot.resolve(
+    "config/tasks/prebuild-sprites/templates"
+  ),
   // Sprite path
-  spritesOutputPath: appRoot.resolve("src/sprites"),
-
-  // ATOMS
+  spritesOutputPath: appRoot.resolve("src/prebuild-sprites"),
 
   /**
    * These are used by custom less-to-js-webpack-plugin
    */
   // atoms path
-  atomsPath: appRoot.resolve("src/common/atoms"),
+  atomsPath: appRoot.resolve("src/atoms"),
   // atoms partial path
   atomsPartialsPath: appRoot.resolve("src/atoms/partials"),
   // atoms files to watch: can be glob
@@ -50,14 +44,10 @@ module.exports = {
   // auto generated atoms file name
   atomsGeneratedFilename: "atoms.ts",
 
-  // DIST
-
   // dist folder
   dist: appRoot.resolve("dist"),
   // static folder
   static: appRoot.resolve("dist/static"),
-
-  // CONFIG
 
   // config folder
   config: appRoot.resolve("config"),

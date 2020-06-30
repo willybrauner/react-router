@@ -122,7 +122,7 @@ module.exports = {
 
   /**
    * Optimize every images inside src folder and create .min versions with imagemin.
-   * Sprites images will not be optimized because node fuse sprites handles it.
+   * Sprites images will not be optimized because node fuse prebuild-sprites handles it.
    * @return {Promise<any[]>}
    */
   run: () => {

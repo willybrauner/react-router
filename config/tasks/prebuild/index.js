@@ -1,5 +1,6 @@
 const { prebuildHtaccess } = require("../prebuild-htaccess");
 const { prebuildDotenv } = require("../prebuild-dotenv");
+const { sprites } = require("../prebuild-sprites");
 const debug = require("debug")("config:prebuild");
 const config = require("../../global.config");
 const paths = require("../../global.paths");
@@ -17,6 +18,9 @@ const prebuild = (pEnv = null) => {
 
     // prebuild .env file
     if (config.prebuildDotEnv) await prebuildDotenv(pEnv);
+
+    // compile prebuild-sprites
+    await sprites();
 
     /**
      * Custom tasks

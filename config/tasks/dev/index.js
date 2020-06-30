@@ -3,7 +3,6 @@ const { logs } = require("../../helpers/logs-helper");
 const { execSync } = require("@solid-js/cli");
 const { clean } = require("../clean");
 const { prebuild } = require("../prebuild");
-const { sprites } = require("../sprites");
 
 /**
  * Start webpack dev server
@@ -36,8 +35,6 @@ const dev = () =>
     await clean();
     // start prebuid
     await prebuild();
-    // compile sprites
-    await sprites();
     // start dev server
     await _startDevServer();
     // end

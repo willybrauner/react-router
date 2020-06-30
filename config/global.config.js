@@ -1,8 +1,6 @@
 const paths = require("./global.paths");
 
 module.exports = {
-  // WEBPACK
-
   /**
    * Output Path
    * Where assets and bundle are build in production
@@ -36,8 +34,6 @@ module.exports = {
    */
   buildManifestFile: false,
 
-  // TASKS
-
   /**
    * Prebuild
    */
@@ -55,8 +51,6 @@ module.exports = {
 
   // Scaffold bundle type
   bundleType: ["react", "dom"],
-
-  // CLI CONFIG
 
   /**
    * SECURITY

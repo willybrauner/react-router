@@ -3,7 +3,7 @@ const { logs } = require("../../helpers/logs-helper");
 const { execSync } = require("@solid-js/cli");
 const { clean } = require("../clean");
 const { prebuild } = require("../prebuild");
-const { sprites } = require("../sprites");
+const { sprites } = require("../prebuild-sprites");
 const debug = require("debug")("config:build");
 
 /**
@@ -52,7 +52,7 @@ const build = (pVar) => {
     await clean();
     // start prebuid
     await prebuild(envName);
-    // compile sprites
+    // compile prebuild-sprites
     await sprites();
 
     /**

@@ -10,7 +10,7 @@ dist
 # Auto generated atoms
 src/atoms/atoms.ts
 
-# Auto generated sprites
+# Auto generated prebuild-sprites
 src/sprites/*.less
 src/sprites/*.png
 src/sprites/*.ts

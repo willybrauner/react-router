@@ -17,7 +17,7 @@ const help = () => {
   ${"npm run scaffold".brightBlue}
   > create a new component.
       
-  ${"npm run sprites".brightBlue}
+  ${"npm run prebuild-sprites".brightBlue}
   > generate sprites from src/sprites/ folder.
   
   ${"npm run setup".brightBlue}

@@ -9,7 +9,7 @@ const nsg = require("@zouloux/node-sprite-generator");
 const Handlebars = require("handlebars");
 const { optimizeFiles } = require("./imagemin");
 const { logs } = require("../../helpers/logs-helper");
-const debug = require("debug")("config:sprites");
+const debug = require("debug")("config:prebuild-sprites");
 
 // ----------------------------------------------------------------------------- PATH / CONFIG
 
@@ -81,7 +81,7 @@ const sprites = (
     /**
      * Prepare
      */
-    logs.start("Build sprites");
+    logs.start("Prebuild sprites");
 
     // Get skeletons
     let skeletons = [
@@ -176,7 +176,7 @@ const sprites = (
 
     // Browse bundles
     Files.getFolders(`${spritesOutputPath}/*/`).all((folder) => {
-      // Browser sprites folders
+      // Browser prebuild-sprites folders
 
       ++totalSprites;
 
@@ -320,7 +320,7 @@ const sprites = (
       nsg(nsgOptions, completeHandler);
     });
 
-    // If we do not have any sprites, we are done
+    // If we do not have any prebuild-sprites, we are done
     if (totalSprites === 0) {
       resolve();
       return;

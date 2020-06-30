@@ -1,6 +1,6 @@
 const { commands } = require("@solid-js/cli");
 const { clean } = require("./clean");
-const { sprites } = require("./sprites");
+const { sprites } = require("./prebuild-sprites");
 const { dev } = require("./dev");
 const { build } = require("./build");
 const { reset } = require("./reset");

@@ -2,7 +2,6 @@ require("colors");
 const Inquirer = require("inquirer");
 const debug = require("debug")("config:scaffold");
 const { scaffoldComponent } = require("../scaffold-component");
-const { scaffoldBundle } = require("../scaffold-bundle");
 
 /**
  * Ask bundle Type to

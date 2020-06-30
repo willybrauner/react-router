@@ -1,6 +1,5 @@
-const { execSync, task, newLine } = require("@solid-js/cli");
+const { task } = require("@solid-js/cli");
 const { setupReadme } = require("./modules/setup-readme");
-const { setupBundle } = require("./modules/setup-bundle");
 const { checkConfigFile } = require("./modules/check-config-file");
 const { setupPackageJson } = require("./modules/setup-package-json");
 const { cleanFrameworkFiles } = require("./modules/clean-framework-files");
@@ -48,7 +47,6 @@ const setup = () => {
     await showHelp();
     // end
     logs.done("Webpack-base is ready!");
-    newLine();
     resolve();
   });
 };

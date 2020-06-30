@@ -5,7 +5,7 @@
 module.exports = {
   /**
    * Default PNG optimizer config.
-   * Used by sprites and imagemin tasks.
+   * Used by prebuild-sprites and imagemin tasks.
    */
   defaultPNGSettings: {
     // Output quality
