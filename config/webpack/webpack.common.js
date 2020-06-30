@@ -138,8 +138,8 @@ commonConfig = {
         loader: "file-loader",
         options: {
           name: "[path][name].[ext]",
-          // prevent display of "src/common/" in filename
-          context: "src/common",
+          // prevent display of "src/" in filename
+          context: "src",
           publicPath: url.resolve(
             process.env.APP_BASE,
             process.env.ASSETS_PATH
@@ -157,8 +157,8 @@ commonConfig = {
         options: {
           limit: 8192,
           name: "[path][name].[ext]",
-          // prevent display of "src/common/" in filename
-          context: "src/common",
+          // prevent display of "src/" in filename
+          context: "src",
           publicPath: url.resolve(
             process.env.APP_BASE,
             process.env.ASSETS_PATH

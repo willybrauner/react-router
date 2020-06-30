@@ -101,32 +101,6 @@ const _domComponentBuilder = ({ componentPath, upperComponentName }) => {
  */
 const scaffoldComponent = (pComponentType) => {
   return new Promise(async (resolve) => {
-    // prepare
-
-    const bundleFolderList = Files.getFolders(`${paths.src}/*`).files;
-    debug("bundleFolderList", bundleFolderList);
-
-    // remove common from bundle list
-    const filterBundleFolderList =
-      // in bundle list folder
-      bundleFolderList
-        // do not keep common folder
-        .filter((el) => el !== `${paths.src}/common`)
-        // keep only end of path
-        .map((el) => path.basename(el));
-
-    debug("filterBundleFolderList", filterBundleFolderList);
-
-    /**
-     * Ask questions
-     */
-    let bundleFolder = "";
-    // Get bundle folder
-    await _askWhichBundleFolder(filterBundleFolderList).then((answer) => {
-      bundleFolder = answer.bundleFolder;
-    });
-    debug("bundleFolder", bundleFolder);
-
     let subFolder = "";
     // Get sub-folder
     await _askWhichComponentFolder().then((answer) => {
@@ -148,7 +122,7 @@ const scaffoldComponent = (pComponentType) => {
     debug("upperComponentName", upperComponentName);
 
     // Base path of the component (no extension at the end here)
-    let componentPath = `${paths.src}/${bundleFolder}/${subFolder}/${lowerComponentName}`;
+    let componentPath = `${paths.src}/${subFolder}/${lowerComponentName}`;
     debug("component will be created here: componentPath", componentPath);
 
     /**
