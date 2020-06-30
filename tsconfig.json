@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "esnext",
     "target": "es5",
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "paths": {
       "@common/*": ["common/*"]
     },
