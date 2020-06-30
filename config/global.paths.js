@@ -1,7 +1,7 @@
 const appRoot = require("app-root-path");
 
 module.exports = {
-  // --------------------------------------------------------------------------- ROOT
+  // ROOT
 
   // root folder
   root: appRoot.resolve(""),
@@ -22,23 +22,21 @@ module.exports = {
   // install.sh
   installScript: appRoot.resolve("install.sh"),
 
-  // --------------------------------------------------------------------------- SRC
+  // SRC
 
   // src folder
   src: appRoot.resolve("src"),
-  // common folder
-  common: appRoot.resolve("src/common"),
   // Path to fonts folder from src
-  fontsPath: appRoot.resolve("src/common/fonts"),
+  fontsPath: appRoot.resolve("src/fonts"),
 
-  // --------------------------------------------------------------------------- SPRITES
+  // SPRITES
 
   // Templates path
   spritesTemplatesPath: appRoot.resolve("config/tasks/sprites/templates"),
   // Sprite path
-  spritesOutputPath: appRoot.resolve("src/common/sprites"),
+  spritesOutputPath: appRoot.resolve("src/sprites"),
 
-  // --------------------------------------------------------------------------- ATOMS
+  // ATOMS
 
   /**
    * These are used by custom less-to-js-webpack-plugin
@@ -46,20 +44,20 @@ module.exports = {
   // atoms path
   atomsPath: appRoot.resolve("src/common/atoms"),
   // atoms partial path
-  atomsPartialsPath: appRoot.resolve("src/common/atoms/partials"),
+  atomsPartialsPath: appRoot.resolve("src/atoms/partials"),
   // atoms files to watch: can be glob
-  atomsFilesToWatch: appRoot.resolve("src/common/atoms/partials/*.less"),
+  atomsFilesToWatch: appRoot.resolve("src/atoms/partials/*.less"),
   // auto generated atoms file name
   atomsGeneratedFilename: "atoms.ts",
 
-  // --------------------------------------------------------------------------- DIST
+  // DIST
 
   // dist folder
   dist: appRoot.resolve("dist"),
   // static folder
   static: appRoot.resolve("dist/static"),
 
-  // --------------------------------------------------------------------------- CONFIG
+  // CONFIG
 
   // config folder
   config: appRoot.resolve("config"),

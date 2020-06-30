@@ -1,7 +1,6 @@
 # ------------------------------------------------------------------------------ AUTO-COMMENTED
 # values auto-commented during first setup
 config/install.config.js
-src/main
 
 # ------------------------------------------------------------------------------ GENERATED
 
@@ -12,10 +11,10 @@ dist
 src/atoms/atoms.ts
 
 # Auto generated sprites
-src/common/sprites/*.less
-src/common/sprites/*.png
-src/common/sprites/*.ts
-src/common/sprites/*.cache
+src/sprites/*.less
+src/sprites/*.png
+src/sprites/*.ts
+src/sprites/*.cache
 
 # Auto generate bundles list
 src/bundles.ts

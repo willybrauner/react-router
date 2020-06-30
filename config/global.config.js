@@ -1,7 +1,7 @@
 const paths = require("./global.paths");
 
 module.exports = {
-  // --------------------------------------------------------------------------- WEBPACK
+  // WEBPACK
 
   /**
    * Output Path
@@ -36,7 +36,7 @@ module.exports = {
    */
   buildManifestFile: false,
 
-  // --------------------------------------------------------------------------- TASKS
+  // TASKS
 
   /**
    * Prebuild
@@ -56,7 +56,7 @@ module.exports = {
   // Scaffold bundle type
   bundleType: ["react", "dom"],
 
-  // --------------------------------------------------------------------------- CLI CONFIG
+  // CLI CONFIG
 
   /**
    * SECURITY
