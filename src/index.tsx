@@ -15,9 +15,9 @@ export function initApp() {
    */
   config.register = {
     version: require("../package.json").version,
-    baseUrl: process.env.APP_BASE,
-    routerBaseUrl: process.env.APP_BASE,
     env: process.env.ENV,
+    baseURL: process.env.APP_BASE,
+    routerBaseURL: process.env.APP_BASE,
   };
 
   // ...

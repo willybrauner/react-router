@@ -3,8 +3,8 @@ const debug = require("debug")("front:Store");
 export type TConfig = {
   version: string;
   env: string;
-  baseUrl: string;
-  routerBaseUrl: string;
+  baseURL: string;
+  routerBaseURL: string;
   root: HTMLElement;
   locale: string;
 };
