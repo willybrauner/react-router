@@ -1,3 +1,7 @@
+/**
+ * @copyright Alexis Bouhet - https://zouloux.com
+ */
+
 // Create our regex
 let templateRegex;
 
