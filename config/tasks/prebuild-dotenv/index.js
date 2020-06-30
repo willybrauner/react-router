@@ -1,16 +1,9 @@
 const { Files } = require("@zouloux/files");
 const debug = require("debug")("config:prebuild-dotenv");
-
-// ----------------------------------------------------------------------------- PATHS / CONFIG
-
-// logs
 const { logs } = require("../../helpers/logs-helper");
-// config
-const config = require("../../global.config");
-// paths
-const paths = require("../../global.paths");
 
-// ----------------------------------------------------------------------------- MODULE
+const config = require("../../global.config");
+const paths = require("../../global.paths");
 
 /**
  * Prebuild .env file

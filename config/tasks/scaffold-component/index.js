@@ -7,8 +7,6 @@ const { logs } = require("../../helpers/logs-helper");
 const { Files } = require("@zouloux/files");
 const debug = require("debug")("config:scaffold-component");
 
-// ----------------------–----------------------–----------------------–-------- CONF
-
 // remove Files lib logs
 Files.setVerbose(false);
 
@@ -16,8 +14,6 @@ Files.setVerbose(false);
 const paths = require("../../global.paths");
 // get local task config
 const config = require("../../global.config");
-
-// ----------------------–----------------------–----------------------–-------- PRIVATE
 
 const _askWhichBundleFolder = (bundleFolderList) => {
   return Inquirer.prompt({
@@ -69,13 +65,6 @@ const _reactComponentBuilder = ({
     replaceExpressions: { upperComponentName },
   });
 
-  // scaffold index
-  createFile({
-    templateFilePath: `${paths.componentsTemplatesPath}/react/index.ts.template`,
-    destinationFilePath: `${componentPath}/index.ts`,
-    replaceExpressions: { upperComponentName },
-  });
-
   // scaffold less module
   createFile({
     templateFilePath: `${paths.componentsTemplatesPath}/react/component.less.template`,
@@ -104,8 +93,6 @@ const _domComponentBuilder = ({ componentPath, upperComponentName }) => {
     replaceExpressions: { upperComponentName },
   });
 };
-
-// ----------------------–----------------------–----------------------–-------- PUBLIC
 
 /**
  * @name index

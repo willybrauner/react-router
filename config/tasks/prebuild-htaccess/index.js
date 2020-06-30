@@ -2,14 +2,8 @@ const { Files } = require("@zouloux/files");
 const { logs } = require("../../helpers/logs-helper");
 const debug = require("debug")("config:prebuild-htaccess");
 
-// ----------------------------------------------------------------------------- PATHS / CONFIG
-
-// config
-const globalConfig = require("../../global.config");
-// paths
+const config = require("../../global.config");
 const paths = require("../../global.paths");
-
-// ----------------------------------------------------------------------------- MODULE
 
 /**
  * Prebuild .htaccess file
@@ -19,8 +13,6 @@ const prebuildHtaccess = (_) => {
   //
   let currentEnv = process.env.ENV || null;
   debug("process env ENV", currentEnv);
-
-  // --------------------------------------------------------------------------- PRIVATE
 
   /**
    * Header
@@ -145,7 +137,7 @@ const prebuildHtaccess = (_) => {
    * @param pConfigPath
    * @private
    */
-  const _createHtacessFile = (
+  const _createHtaccessFile = (
     pOutputPath = paths.dist,
     pConfigPath = paths.config
   ) => {
@@ -172,7 +164,7 @@ const prebuildHtaccess = (_) => {
   logs.start("Prebuild htaccess.");
 
   // create htaccess file and get newHtaccessFilePath
-  const { newHtaccessFilePath } = _createHtacessFile();
+  const { newHtaccessFilePath } = _createHtaccessFile();
   // add header
   _headerMessage(currentEnv);
 
