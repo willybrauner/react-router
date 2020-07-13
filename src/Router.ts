@@ -60,6 +60,8 @@ export default class Router {
       });
     }
 
+    // start listening
+    window.addEventListener("popstate", this.handlePopState.bind(this));
     this.updateRoute();
   }
 
@@ -141,7 +143,9 @@ export default class Router {
     }
   }
 
-  protected listenLinks() {}
+  protected handlePopState() {
+    this.updateRoute();
+  }
 }
 
 // ----------------------------------------------------------------------------
