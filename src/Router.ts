@@ -58,8 +58,9 @@ export default class Router {
       routes.forEach((el) => {
         this.add(el.path, el.component, el.props);
       });
-      this.updateRoute();
     }
+
+    this.updateRoute();
   }
 
   /**
@@ -85,23 +86,25 @@ export default class Router {
   /**
    * When we need to update route
    */
-  public updateRoute(): void {
+  public updateRoute(url: string = window.location.pathname): void {
     // get matching route depending of current URL
-
-    const matchingRoute = this.getRouteFromUrl(window.location.pathname);
+    const matchingRoute = this.getRouteFromUrl(url);
     debug("handleUrlChange > this route match", matchingRoute);
 
     if (!matchingRoute) {
       console.warn("Error, there is no matching route.");
       // TODO : emit route not found
+      return;
     }
 
-    // TODO previous route ne fonctionne pas si c'est la premiere de la navigation
+    // TODO previous route ne fonctionne pas si c'est la premiere route de la navigation
     this.previousRoute = this.currentRoute;
     this.currentRoute = matchingRoute;
 
+    // push url in history
+    window.history.pushState(null, null, url);
     // emit
-    this.events.emit(ERouterEvent.ROUTE_CHANGE, this.currentRoute);
+    this.events.emit(ERouterEvent.ROUTE_CHANGE, matchingRoute);
   }
 
   /**
@@ -126,7 +129,7 @@ export default class Router {
 
       if (match) {
         return {
-          path: current?.path,
+          path: url,
           component: current?.component,
           parser: current?.parser,
           props: {
@@ -137,6 +140,8 @@ export default class Router {
       }
     }
   }
+
+  protected listenLinks() {}
 }
 
 // ----------------------------------------------------------------------------

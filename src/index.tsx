@@ -13,15 +13,20 @@ export const routes: IRoute[] = [
   {
     path: "/",
     component: HomePage,
+    props: { name: "home" },
   },
   {
     path: "/about",
     component: AboutPage,
+    props: { name: "about" },
   },
   {
     path: "/blog/:id",
     component: ArticlePage,
-    props: { color: "red" },
+    props: {
+      name: "article",
+      color: "red",
+    },
   },
 ];
 

@@ -21,10 +21,7 @@ function Link(props: IProps) {
    * @param e
    */
   const handleClick = (e) => {
-    window.history.pushState(null, null, props.href);
-
-    props.router?.updateRoute();
-
+    props.router?.updateRoute(props.href);
     e.preventDefault();
   };
 
@@ -33,9 +30,8 @@ function Link(props: IProps) {
       className={[componentName, props.className].filter((e) => e).join(" ")}
       onClick={handleClick}
       href={props.href}
-    >
-      {props.children}
-    </a>
+      children={props.children}
+    />
   );
 }
 
