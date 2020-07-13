@@ -1,5 +1,19 @@
 import { Path } from "path-parser";
 const debug = require("debug")("front:Router");
+import { ReactNode } from "react";
+import { EventEmitter } from "events";
+
+export interface IRoute {
+  path: string;
+  component: ReactNode;
+  props?: { [x: string]: any };
+  parser?: Path;
+}
+
+export enum ERouterEvent {
+  ROUTE_CHANGE = "route-change",
+  ROUTE_NOT_FOUND = "route-not-found",
+}
 
 /**
  *  - lecture de route (parser une URL)
@@ -12,27 +26,23 @@ const debug = require("debug")("front:Router");
  *      const { match, params, currentRoute, previousRoute } = useRoute();
  *
  */
-import { ReactNode } from "react";
-
-export interface IRouteData {
-  path: string;
-  component: ReactNode;
-  props?: { [x: string]: any };
-  parser: Path;
-}
-
-export interface IRoute {
-  path: string;
-  component: ReactNode;
-  props?: { [x: string]: any[] };
-}
-
 export default class Router {
   // base url
   public base: string;
   // routes list
   protected _routes: IRoute[] = [];
+  // create event emitter
+  public events: EventEmitter = new EventEmitter();
+  // current route object
+  protected currentRoute: IRoute;
+  // previous route object
+  protected previousRoute: IRoute;
 
+  /**
+   * Init constructor
+   * @param base
+   * @param routes
+   */
   constructor({
     base = "/",
     routes = null,
@@ -44,73 +54,88 @@ export default class Router {
 
     // if route exist
     if (routes !== null) {
-      debug("routes", routes);
+      debug("constructor > routes", routes);
       routes.forEach((el) => {
         this.add(el.path, el.component, el.props);
       });
+      this.updateRoute();
     }
-
-    this.handleUrlChange();
   }
 
   /**
-   * Add new route to routes array
-   */
-  public add(path: string, component, props) {
-    const routeParams: IRouteData = {
-      path,
-      component,
-      props,
-      parser: new Path(path),
-    };
-
-    // keep routes in local array
-    this._routes.push(routeParams);
-  }
-
-  /**
+   * TODO
    * Use middleWare
    */
   public use() {}
 
   /**
-   * Get current route from URL
-   *  https://www.npmjs.com/package/path-parser
+   * Add new route object to routes array
    */
-  protected getRouteFromUrl(url: string) {
-    debug("> url from param", url);
-
-    for (let i = 0; i < this._routes.length; i++) {
-      debug("url from route to before test", this._routes[i]?.path);
-      const pathParser = new Path(this._routes[i]?.path);
-      debug("> pathParser", pathParser);
-
-      const match = pathParser.test(url);
-      debug("> match", match);
-
-      if (match) {
-        return {
-          route: this._routes[i],
-          params: match,
-        };
-      }
-    }
+  public add(path: string, component, props): void {
+    const routeParams: IRoute = {
+      path,
+      component,
+      props,
+      parser: new Path(path),
+    };
+    // keep routes in local array
+    this._routes.push(routeParams);
   }
 
   /**
-   * Check when URL change
+   * When we need to update route
    */
-  protected handleUrlChange() {
-    const currentUrl = window.location.pathname;
-    const route = this.getRouteFromUrl(currentUrl);
+  public updateRoute(): void {
+    // get matching route depending of current URL
 
-    if (!route) {
-      console.warn("Error, there is no route.");
-      return;
+    const matchingRoute = this.getRouteFromUrl(window.location.pathname);
+    debug("handleUrlChange > this route match", matchingRoute);
+
+    if (!matchingRoute) {
+      console.warn("Error, there is no matching route.");
+      // TODO : emit route not found
     }
 
-    // TODO return le composant
-    const component = "";
+    // TODO previous route ne fonctionne pas si c'est la premiere de la navigation
+    this.previousRoute = this.currentRoute;
+    this.currentRoute = matchingRoute;
+
+    // emit
+    this.events.emit(ERouterEvent.ROUTE_CHANGE, this.currentRoute);
+  }
+
+  /**
+   * Get current route from URL
+   *  https://www.npmjs.com/package/path-parser
+   */
+  protected getRouteFromUrl(url: string): IRoute {
+    // check before start
+    if (this._routes?.length === 0 || !this._routes) return;
+
+    for (let i = 0; i < this._routes.length; i++) {
+      // store current route
+      let current = this._routes[i];
+      debug("getRouteFromUrl > url from route to before test", current);
+
+      const pathParser = new Path(current?.path);
+      debug("getRouteFromUrl > pathParser", pathParser);
+
+      // use path-parser
+      const match = pathParser.test(url);
+      debug("getRouteFromUrl > match", match);
+
+      if (match) {
+        return {
+          path: current?.path,
+          component: current?.component,
+          parser: current?.parser,
+          props: {
+            params: match,
+            ...(current?.props || {}),
+          },
+        };
+      }
+    }
   }
 }
 

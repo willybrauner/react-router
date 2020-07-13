@@ -1,38 +1,6 @@
 @import (reference) "../../references.less";
-
 @COMPONENT: AppView;
-
-/**
- * BEM block
- * is always "root"
- */
-.root {
-}
-
-/**
- * BEM element (.camelCase)
- */
-.wrapper {
-  position: relative;
-  /**
-   * BEM modifier (&_camelCase)
-   * sep with "_" allow to target it like this: "css.wrapper_myModifier"
-   */
-  &_myModifier {
-    // ...
-  }
-}
-
-.nav {
-  font-size: 2rem;
-}
 
 .link {
   display: block;
-}
-
-/**
- * Define style for global .class
- */
-:global (.ViewStack) {
 }
