@@ -16,7 +16,6 @@ const debug = require("debug")(`front:${componentName}`);
  */
 function Link(props: IProps) {
   /**
-   * TODO Cette methode doit passer dans le router directement
    * après lecture des liens
    * @param e
    */

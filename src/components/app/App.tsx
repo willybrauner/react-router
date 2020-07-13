@@ -26,15 +26,16 @@ export function App() {
         {routes.map((el, i) => {
           return (
             <Link
-              // FIXME, on ne devrait pas passer "router" comme props
+              // TODO, on ne devrait pas passer "router" comme props
+              // besoin que le lien reconnaisse dans quel router il se trouve
               router={router.current}
-              key={i}
-              className={css.link}
-              // TODO est ce qu'on ne devrait pas pouvoir définir une
-              //  valeur param id quand au moment de déclarer les routes ?
+              // TODO est ce qu'on ne devrait pas pouvoir définir une valeur param id
+              // dans une route au moment de sa déclaration dans le tableau ?
               href={
                 el.component === ArticlePage ? "/blog/test-article" : el.path
               }
+              key={i}
+              className={css.link}
               children={el.props?.name}
             />
           );
