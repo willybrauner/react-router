@@ -1,11 +1,10 @@
-import "./index.less";
 import ReactDOM from "react-dom";
 import * as React from "react";
-import App from "./components/app/App";
-import { IRoute } from "./Router";
-import HomePage from "./pages/homePage/HomePage";
-import AboutPage from "./pages/aboutPage/AboutPage";
-import ArticlePage from "./pages/articlePage/ArticlePage";
+import HomePage from "./pages/HomePage";
+import Router, { IRoute } from "./router/Router";
+import AboutPage from "./pages/AboutPage";
+import ArticlePage from "./pages/ArticlePage";
+import App from "./components/App";
 
 const debug = require("debug")(`front:index`);
 
@@ -29,6 +28,10 @@ export const routes: IRoute[] = [
     },
   },
 ];
+
+// create new router instance
+// router instance need to be pass as props to routerStack
+export const routerInstance = new Router({ base: "/", routes });
 
 /**
  * Init Application

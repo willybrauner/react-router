@@ -2,7 +2,6 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const Dotenv = require("dotenv-webpack");
-const lessToJsPlugin = require("./plugins/less-to-js-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const url = require("url");
 
@@ -99,17 +98,6 @@ commonConfig = {
       "process.env.DEBUG": JSON.stringify(process.env.DEBUG),
       "process.env.APP_BASE": JSON.stringify(process.env.APP_BASE),
       "process.env.APP_URL": JSON.stringify(process.env.APP_URL),
-    }),
-
-    /**
-     * @name Less to Js Plugin
-     * @description Custom plugin allow to generate parsed less variables,
-     * and expose it in generated javascript file.
-     */
-    new lessToJsPlugin({
-      watcher: paths.atomsFilesToWatch,
-      outputPath: paths.atomsPath,
-      outputFilename: paths.atomsGeneratedFilename,
     }),
   ],
 

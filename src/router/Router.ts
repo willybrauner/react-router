@@ -30,13 +30,13 @@ export default class Router {
   // base url
   public base: string;
   // routes list
-  protected _routes: IRoute[] = [];
+  protected routes: IRoute[] = [];
   // create event emitter
   public events: EventEmitter = new EventEmitter();
   // current route object
-  protected currentRoute: IRoute;
+  public currentRoute: IRoute;
   // previous route object
-  protected previousRoute: IRoute;
+  public previousRoute: IRoute;
 
   /**
    * Init constructor
@@ -52,7 +52,6 @@ export default class Router {
   }) {
     this.base = base;
 
-    // if route exist
     if (routes !== null) {
       debug("constructor > routes", routes);
       routes.forEach((el) => {
@@ -60,16 +59,9 @@ export default class Router {
       });
     }
 
-    // start listening
+    this.handlePopState();
     window.addEventListener("popstate", this.handlePopState.bind(this));
-    this.updateRoute();
   }
-
-  /**
-   * TODO
-   * Use middleWare
-   */
-  public use() {}
 
   /**
    * Add new route object to routes array
@@ -82,11 +74,14 @@ export default class Router {
       parser: new Path(path),
     };
     // keep routes in local array
-    this._routes.push(routeParams);
+    this.routes.push(routeParams);
   }
 
   /**
-   * When we need to update route
+   * Update route
+   * - get route object matching with current URL
+   * - push URL in history
+   * - emit selected route object on route-change event (listen by RouterStack)
    */
   public updateRoute(url: string = window.location.pathname): void {
     // get matching route depending of current URL
@@ -110,27 +105,24 @@ export default class Router {
   }
 
   /**
-   * Get current route from URL
-   *  https://www.npmjs.com/package/path-parser
+   * Get current route from URL using path-parser
+   * @doc https://www.npmjs.com/package/path-parser
    */
-  protected getRouteFromUrl(url: string): IRoute {
-    // check before start
-    if (this._routes?.length === 0 || !this._routes) return;
+  private getRouteFromUrl(url: string): IRoute {
+    if (this.routes?.length === 0 || !this.routes) return;
 
-    for (let i = 0; i < this._routes.length; i++) {
-      // store current route
-      let current = this._routes[i];
+    for (let i = 0; i < this.routes.length; i++) {
+      let current = this.routes[i];
       debug("getRouteFromUrl > url from route to before test", current);
 
       const pathParser = new Path(current?.path);
       debug("getRouteFromUrl > pathParser", pathParser);
 
-      // use path-parser
       const match = pathParser.test(url);
-      debug("getRouteFromUrl > match", match);
+      debug("getRouteFromUrl > use path-parser > match", match);
 
       if (match) {
-        return {
+        const routeObject: IRoute = {
           path: url,
           component: current?.component,
           parser: current?.parser,
@@ -139,13 +131,24 @@ export default class Router {
             ...(current?.props || {}),
           },
         };
+        debug("getRouteFromUrl > routeObject returned", routeObject);
+        return routeObject;
       }
     }
   }
 
+  /**
+   * Handle popState event
+   */
   protected handlePopState() {
     this.updateRoute();
   }
+
+  /**
+   * TODO
+   * Use middleWare
+   */
+  public use() {}
 }
 
 // ----------------------------------------------------------------------------

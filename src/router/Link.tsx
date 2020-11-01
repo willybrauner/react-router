@@ -1,9 +1,8 @@
 import React, { ReactNode } from "react";
-import Router from "./Router";
+import { routerInstance } from "../index";
 
 interface IProps {
   className?: string;
-  router: Router;
   children: ReactNode;
   href: string;
 }
@@ -20,7 +19,8 @@ function Link(props: IProps) {
    * @param e
    */
   const handleClick = (e) => {
-    props.router?.updateRoute(props.href);
+    // TODO cette instance devrait etre dynamique
+    routerInstance?.updateRoute(props.href);
     e.preventDefault();
   };
 

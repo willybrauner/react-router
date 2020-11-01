@@ -31,13 +31,8 @@ const _startDevServer = async () => {
  */
 const dev = () =>
   new Promise(async (resolve) => {
-    // clean folder
     await clean();
-    // start prebuid
-    await prebuild();
-    // start dev server
     await _startDevServer();
-    // end
     resolve();
   });
 
