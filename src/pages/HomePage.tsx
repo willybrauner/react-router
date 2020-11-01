@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { usePageTransition } from "../router/usePageTransition";
 import { transitionsHelper } from "../helper/transitionsHelper";
 

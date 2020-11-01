@@ -1,8 +1,7 @@
 import React, { useRef } from "react";
 import Link from "../router/Link";
-import RouterStack from "../router/RouterStack";
+import RouterStack, { TManageTransitions } from "../router/RouterStack";
 import { routerInstance } from "../index";
-import { TPageTransitionObject } from "../router/usePageTransition";
 
 const componentName = "App";
 const debug = require("debug")(`front:${componentName}`);
@@ -13,24 +12,34 @@ const debug = require("debug")(`front:${componentName}`);
 export function App() {
   const rootRef = useRef<HTMLDivElement>(null);
 
-  const manageTransitions = (
-    pOldPage: TPageTransitionObject,
-    pNewPage: TPageTransitionObject
-  ): Promise<any> => {
+  /**
+   * Manage Router Stack Transitions
+   * @param previousPage
+   * @param currentPage
+   * @param destroyPreviousPageComponent
+   */
+  const manageTransitions = ({
+    previousPage,
+    currentPage,
+    destroyPreviousPageComponent: destroyPreviousPageComponent,
+  }: TManageTransitions): Promise<any> => {
     return new Promise(async (resolve) => {
-      debug({ pOldPage, pNewPage });
-      const oldPageRef = pOldPage?.rootRef?.current;
-      const newPageRef = pNewPage?.rootRef?.current;
+      const previousPageRef = previousPage?.rootRef.current;
+      const currentPageRef = currentPage?.rootRef.current;
+      debug("ref", {
+        oldPageRef: previousPageRef,
+        newPageRef: currentPageRef,
+      });
 
-      // hide new page by default
-      //if (newPageRef !== null) newPageRef.style.visibility = "hidden";
-      // playOut old page
-      pOldPage && (await pOldPage?.playOut?.());
+      if (currentPageRef !== null) currentPageRef.style.visibility = "hidden";
+      await previousPage?.playOut?.();
+      // destroy previous page component
+      destroyPreviousPageComponent();
 
-      //if (newPageRef !== null) newPageRef.style.visibility = "visible";
-      // playIn new page
-      pNewPage && (await pNewPage?.playIn?.());
-      // All done
+      if (currentPageRef !== null) currentPageRef.style.visibility = "visible";
+      await currentPage?.playIn?.();
+
+      // ended end
       resolve();
     });
   };

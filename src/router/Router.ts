@@ -13,6 +13,7 @@ export interface IRoute {
 export enum ERouterEvent {
   ROUTE_CHANGE = "route-change",
   ROUTE_NOT_FOUND = "route-not-found",
+  ROUTER_STACK_IS_ANIMATING = "router-stack-is-animating",
 }
 
 /**
@@ -37,6 +38,10 @@ export default class Router {
   public currentRoute: IRoute;
   // previous route object
   public previousRoute: IRoute;
+
+  protected pageCount: number = 0;
+
+  public isFirsPage: boolean = true;
 
   /**
    * Init constructor
@@ -85,12 +90,17 @@ export default class Router {
    */
   public updateRoute(url: string = window.location.pathname): void {
     // get matching route depending of current URL
-    const matchingRoute = this.getRouteFromUrl(url);
-    debug("handleUrlChange > this route match", matchingRoute);
+    const matchingRoute: IRoute = this.getRouteFromUrl(url);
+    debug("updateRoute > this route match", matchingRoute);
 
     if (!matchingRoute) {
-      console.warn("Error, there is no matching route.");
+      console.warn("updateRoute > Error, there is no matching route.");
       // TODO : emit route not found
+      return;
+    }
+
+    if (this.currentRoute?.path === matchingRoute.path) {
+      debug("updateRoute > This is the same URL, do not continue.");
       return;
     }
 
@@ -99,9 +109,13 @@ export default class Router {
     this.currentRoute = matchingRoute;
 
     // push url in history
+    debug("updateRoute > gonna pushState...");
     window.history.pushState(null, null, url);
-    // emit
-    this.events.emit(ERouterEvent.ROUTE_CHANGE, matchingRoute);
+
+    this.events.emit(ERouterEvent.ROUTE_CHANGE, {
+      previousRoute: this.previousRoute,
+      currentRoute: this.currentRoute,
+    });
   }
 
   /**

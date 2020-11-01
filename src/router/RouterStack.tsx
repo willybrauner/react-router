@@ -1,17 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import Router, { ERouterEvent, IRoute } from "./Router";
 import { pageTransition, TPageTransitionObject } from "./usePageTransition";
-import { routerInstance } from "../index";
 
-// prettier-ignore
 export type TManageTransitions = {
-  (pOldPage: TPageTransitionObject, pNewPage: TPageTransitionObject): Promise<any>;
-}
+  previousPage: TPageTransitionObject;
+  currentPage: TPageTransitionObject;
+  destroyPreviousPageComponent: () => void;
+};
 
 interface IProps {
   className?: string;
   routerInstance: Router;
-  manageTransitions: TManageTransitions;
+  manageTransitions: (T: TManageTransitions) => Promise<any>;
 }
 
 const componentName = "RouterStack";
@@ -21,9 +21,7 @@ const debug = require("debug")(`front:${componentName}`);
  * @name RouterStack
  */
 function RouterStack(props: IProps) {
-  // page transition object
-  const oldPageTransition = useRef<TPageTransitionObject>(null);
-  const currentPageTransition = useRef<TPageTransitionObject>(null);
+  const [pageIndex, setPageIndex] = useState<number>(0);
 
   // route object
   const [previousRoute, setPreviousRoute] = useState<IRoute>(null);
@@ -31,33 +29,19 @@ function RouterStack(props: IProps) {
     props.routerInstance.currentRoute
   );
 
+  // 1. listen route change
   useEffect(() => {
-    const handleRouteChange = async (route: IRoute) => {
-      debug("get emitted route object from route-change event ", route);
-      setPreviousRoute(currentRoute);
-      setCurrentRoute(route);
+    // executed when route-change event is call
+    const handleRouteChange = (routes: {
+      previousRoute: IRoute;
+      currentRoute: IRoute;
+    }): void => {
+      // increment index for component page instance key
+      setPageIndex(pageIndex + 1);
 
-      // get page transition
-      oldPageTransition.current =
-        pageTransition.list?.[routerInstance.previousRoute.path];
-      currentPageTransition.current =
-        pageTransition.list?.[routerInstance.currentRoute.path];
-
-      debug(
-        "handleRouteChange > oldPageTransition.current",
-        oldPageTransition.current
-      );
-      debug(
-        "handleRouteChange > currentPageTransition.current",
-        currentPageTransition.current
-      );
-
-      await props.manageTransitions(
-        oldPageTransition.current,
-        currentPageTransition.current
-      );
-
-      setPreviousRoute(null);
+      debug("emitted route object from route-change event", routes);
+      setPreviousRoute(routes.previousRoute);
+      setCurrentRoute(routes.currentRoute);
     };
     props.routerInstance.events.on(
       ERouterEvent.ROUTE_CHANGE,
@@ -69,18 +53,55 @@ function RouterStack(props: IProps) {
         handleRouteChange
       );
     };
+  }, [currentRoute, previousRoute, pageIndex]);
+
+  // 2. animated when route state changed
+  // need to be "layoutEffect" to execute transitions before render to avoid a "clip"
+  useLayoutEffect(() => {
+    // emit animating state
+    props.routerInstance.events.emit(
+      ERouterEvent.ROUTER_STACK_IS_ANIMATING,
+      true
+    );
+
+    // clear previous route state, will remove element from DOM
+    const destroyPreviousPageComponent = () => setPreviousRoute(null);
+
+    props
+      .manageTransitions({
+        previousPage: pageTransition.list?.[previousRoute?.path],
+        currentPage: pageTransition.list?.[currentRoute?.path],
+        destroyPreviousPageComponent,
+      })
+      .then(() => {
+        props.routerInstance.events.emit(
+          ERouterEvent.ROUTER_STACK_IS_ANIMATING,
+          false
+        );
+      });
   }, [currentRoute]);
 
-  const PreviousRouteComponent: any = previousRoute?.component;
-  const CurrentRouteComponent: any = currentRoute?.component;
+  // 3. prepare components
+  const PreviousRouteComponent: any = useMemo(() => previousRoute?.component, [
+    previousRoute,
+  ]);
+  const CurrentRouteComponent: any = useMemo(() => currentRoute?.component, [
+    currentRoute,
+  ]);
 
   return (
     <div className={componentName}>
       {PreviousRouteComponent && (
-        <PreviousRouteComponent {...(currentRoute?.props || {})} />
+        <PreviousRouteComponent
+          key={pageIndex - 1}
+          {...(previousRoute?.props || {})}
+        />
       )}
       {CurrentRouteComponent && (
-        <CurrentRouteComponent {...(currentRoute?.props || {})} />
+        <CurrentRouteComponent
+          key={pageIndex}
+          {...(currentRoute?.props || {})}
+        />
       )}
     </div>
   );

@@ -16,7 +16,7 @@ const debug = require("debug")(`front:${componentName}`);
  */
 function ArticlePage(props: IProps) {
   debug("params", props);
-  const rootRef = useRef();
+  const rootRef = useRef(null);
 
   /**
    * playIn page transition

@@ -4,7 +4,7 @@ import { usePageTransition } from "../router/usePageTransition";
 
 const componentName: string = "AboutPage";
 const AboutPage = () => {
-  const rootRef = useRef();
+  const rootRef = useRef(null);
 
   /**
    * playIn page transition
