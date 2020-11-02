@@ -1,5 +1,5 @@
 import RouterManager, { IRoute } from "./RouterManager";
-import React, { createContext, ReactElement, useEffect, useState } from "react";
+import React, { createContext, ReactElement, useState } from "react";
 
 interface IProps {
   base: string;
@@ -7,21 +7,25 @@ interface IProps {
   children: ReactElement;
 }
 
-export const RouterContext = createContext(null);
+// Router instance will be keep on this context
+// Big thing is you can access this context from the closest provider in the tree.
+// This allow to manage easily nested stack instances.
+export const RouterContext = createContext<RouterManager>(null);
 RouterContext.displayName = "RouterContext";
 
+/**
+ * Router
+ * Wrap Link and Stack component with this Router component
+ * @param {IProps} props
+ */
 export const Router = (props: IProps) => {
-  const [routerManager, setRouterManager] = useState<RouterManager>(
-    new RouterManager({
-      base: props.base,
-      routes: props.routes,
-    })
+  const [routerManager] = useState<RouterManager>(
+    () =>
+      new RouterManager({
+        base: props.base,
+        routes: props.routes,
+      })
   );
-  useEffect(() => {
-    if (routerManager != null) return;
-    //const instance = );
-    //setRouterManager(instance);
-  }, []);
 
   // // add routes to state
   // const [routes, setRoutes] = useState<IRoute[]>([]);

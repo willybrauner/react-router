@@ -1,13 +1,7 @@
-import React, {
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useState,
-} from "react";
-import { ERouterEvent, IRoute } from "./RouterManager";
+import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { ERouterEvent, IRoute } from "./core/RouterManager";
 import { pageTransition, TPageTransitionObject } from "./usePageTransition";
-import { RouterContext } from "./Router";
+import { useRouter } from "./useRouter";
 
 export type TManageTransitions = {
   previousPage: TPageTransitionObject;
@@ -24,19 +18,17 @@ const componentName = "RouterStack";
 const debug = require("debug")(`front:${componentName}`);
 
 /**
- * @name RouterStack
+ * @name Stack
  */
-function RouterStack(props: IProps) {
-  const [pageIndex, setPageIndex] = useState<number>(0);
+function Stack(props: IProps) {
+  const router = useRouter();
 
-  const routerContext = useContext(RouterContext);
-  debug("routerInstance", routerContext);
+  // set number index to component instance
+  const [pageIndex, setPageIndex] = useState<number>(0);
 
   // route object
   const [previousRoute, setPreviousRoute] = useState<IRoute>(null);
-  const [currentRoute, setCurrentRoute] = useState<IRoute>(
-    routerContext.currentRoute
-  );
+  const [currentRoute, setCurrentRoute] = useState<IRoute>(router.currentRoute);
 
   // 1. listen route change
   useEffect(() => {
@@ -52,9 +44,9 @@ function RouterStack(props: IProps) {
       setPreviousRoute(routes.previousRoute);
       setCurrentRoute(routes.currentRoute);
     };
-    routerContext.events.on(ERouterEvent.ROUTE_CHANGE, handleRouteChange);
+    router.events.on(ERouterEvent.ROUTE_CHANGE, handleRouteChange);
     return () => {
-      routerContext.events.off(ERouterEvent.ROUTE_CHANGE, handleRouteChange);
+      router.events.off(ERouterEvent.ROUTE_CHANGE, handleRouteChange);
     };
   }, [currentRoute, previousRoute, pageIndex]);
 
@@ -62,7 +54,7 @@ function RouterStack(props: IProps) {
   // need to be "layoutEffect" to execute transitions before render to avoid a "clip"
   useLayoutEffect(() => {
     // emit animating state
-    routerContext.events.emit(ERouterEvent.ROUTER_STACK_IS_ANIMATING, true);
+    router.events.emit(ERouterEvent.ROUTER_STACK_IS_ANIMATING, true);
 
     // clear previous route state, will remove element from DOM
     const destroyPreviousPageComponent = () => setPreviousRoute(null);
@@ -74,10 +66,7 @@ function RouterStack(props: IProps) {
         destroyPreviousPageComponent,
       })
       .then(() => {
-        routerContext.events.emit(
-          ERouterEvent.ROUTER_STACK_IS_ANIMATING,
-          false
-        );
+        router.events.emit(ERouterEvent.ROUTER_STACK_IS_ANIMATING, false);
       });
   }, [currentRoute]);
 
@@ -107,4 +96,4 @@ function RouterStack(props: IProps) {
   );
 }
 
-export default RouterStack;
+export default Stack;

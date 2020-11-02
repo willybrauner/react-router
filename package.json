@@ -34,6 +34,7 @@
     "gsap": "^3.3.4",
     "lodash": "^4.17.15",
     "path-parser": "^6.1.0",
+    "path-to-regexp": "^6.2.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },

@@ -58,7 +58,6 @@ export default class RouterManager {
     this.base = base;
 
     if (routes !== null) {
-      debug("constructor > routes", routes);
       routes.forEach((el) => {
         this.add(el.path, el.component, el.props);
       });
@@ -88,10 +87,9 @@ export default class RouterManager {
    * - push URL in history
    * - emit selected route object on route-change event (listen by RouterStack)
    */
-  public updateRoute(url: string = window.location.pathname): void {
+  public updateRoute(url: string = location.pathname): void {
     // get matching route depending of current URL
     const matchingRoute: IRoute = this.getRouteFromUrl(url);
-    debug("updateRoute > this route match", matchingRoute);
 
     if (!matchingRoute) {
       console.warn("updateRoute > Error, there is no matching route.");
@@ -109,7 +107,6 @@ export default class RouterManager {
     this.currentRoute = matchingRoute;
 
     // push url in history
-    debug("updateRoute > gonna pushState...");
     window.history.pushState(null, null, url);
 
     this.events.emit(ERouterEvent.ROUTE_CHANGE, {
@@ -119,24 +116,37 @@ export default class RouterManager {
   }
 
   /**
-   * Get current route from URL using path-parser
+   * Get current route from url using path-parser
    * @doc https://www.npmjs.com/package/path-parser
    */
   private getRouteFromUrl(url: string): IRoute {
     if (this.routes?.length === 0 || !this.routes) return;
 
     for (let i = 0; i < this.routes.length; i++) {
+      // get current route object
       let current = this.routes[i];
-      debug("getRouteFromUrl > url from route to before test", current);
 
-      const pathParser = new Path(current?.path);
-      debug("getRouteFromUrl > pathParser", pathParser);
+      const pathParser = new Path(this.formatUrl(this.base, current.path));
+      const formatUrl = this.formatUrl(this.base, url);
 
-      const match = pathParser.test(url);
-      debug("getRouteFromUrl > use path-parser > match", match);
+      // TODO partial test pose des problème car
+      // TODO about/foo match aussi avec about
+      // TODO l'idée serait pour les nested route, de virer la base avant le match
+      // TODO Router 1 : /about -> sans base "/"
+      // TODO Router 2 (nested) : /about/foo -> sans base "foo"
+      const match = pathParser.partialTest(formatUrl);
+
+      debug("get route from path >", {
+        currentRouteObject: current,
+        base: this.base,
+        url,
+        formatUrl,
+        pathParser,
+        routeObjMatchWithUrl: match,
+      });
 
       if (match) {
-        const routeObject: IRoute = {
+        return {
           path: url,
           component: current?.component,
           parser: current?.parser,
@@ -145,10 +155,18 @@ export default class RouterManager {
             ...(current?.props || {}),
           },
         };
-        debug("getRouteFromUrl > routeObject returned", routeObject);
-        return routeObject;
       }
     }
+  }
+
+  /**
+   * Format URL
+   * TODO - Virer la base du path si il exist (voir TODO plus haut)
+   * @param base
+   * @param path
+   */
+  protected formatUrl(base: string, path: string = location.pathname): string {
+    return path !== "/" ? path.slice(1) : path;
   }
 
   /**
@@ -164,46 +182,3 @@ export default class RouterManager {
    */
   public use() {}
 }
-
-// ----------------------------------------------------------------------------
-
-/*
-const prepareRoutes = [
-    {
-        path: "",
-        component: "",
-        props: {
-        }
-    },
-    {
-        path: "",
-        component: "",
-        props: {
-
-        }
-    }
-]
-
-const router = new Router({ base: "/", routes: [] });
-
-// config par rapport aux locales (récupérée depuis le back)
-LanguageService.locales(...);
-
-// middlewares
-// patcher toutes les routes avec la locale courante
-// afficher la locale par default ou pas
-// ex: si une route est définie sans langue, il faut pouvoir la retourner avec langue
-const languageMiddleWare = new LanguageMiddleWare({...})
-router.use(languageMiddleWare);
-
-
-// déclaration des routes
-router.add("/", Home, );
-router.add("/blog", Blog);
-router.add("/blog/:id", Article);
-
-
-// fallback
-router.add("*", () => <Error />);
-
-*/

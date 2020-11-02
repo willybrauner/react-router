@@ -22,12 +22,10 @@ export type TPageTransitionObject = {
   // playOut page transition promise handler
   // if not set, new promise is set by default
   playOut?: () => Promise<any>;
-  // stack name
-  stackName?: string;
-  // page is ready state allow to now if page is ready (data fetched or whatever...)
+  // page is ready state allow to now if page is ready (data fetching or whatever...)
   isReady?: boolean;
-  // wait bool isReady pass to true via promise
-  waitIsReadyPromise?: () => Promise<any>;
+  // wait bool isReady pass to true from promise
+  isReadyPromise?: () => Promise<any>;
 };
 
 // ----------------------------------------------------------------------------- ACCESSOR
@@ -58,7 +56,6 @@ export function usePageTransition(
     playIn = () => Promise.resolve(),
     playOut = () => Promise.resolve(),
     rootRef,
-    stackName,
     isReady = true,
   }: TPageTransitionObject,
   pDependencies?: any[]
@@ -68,7 +65,6 @@ export function usePageTransition(
    * Create a promise and get resolve anywhere
    */
   const readyDeferred = useMemo(() => {
-    debug("creating deffered");
     const deffered: any = {};
     deffered.promise = new Promise((resolve) => {
       deffered.resolve = resolve;
@@ -94,9 +90,8 @@ export function usePageTransition(
         playIn,
         playOut,
         rootRef,
-        stackName,
         isReady,
-        waitIsReadyPromise: () => readyDeferred.promise,
+        isReadyPromise: () => readyDeferred.promise,
       },
     };
 
@@ -106,7 +101,6 @@ export function usePageTransition(
       ...newPageTransition,
     };
 
-    // log the page register list
     debug(`pages register list`, pageTransition.list);
   }, [...(pDependencies || [])]);
 }

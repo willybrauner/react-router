@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "../router/Link";
-import RouterStack, { TManageTransitions } from "../router/RouterStack";
-import { Router } from "../router/Router";
+import Stack, { TManageTransitions } from "../router/Stack";
+import { Router } from "../router/core/Router";
 import { routesList } from "../index";
 
 const componentName = "App";
@@ -27,7 +27,7 @@ export function App() {
             </li>
           </ul>
         </nav>
-        <RouterStack manageTransitions={manageTransitions} />
+        <Stack manageTransitions={manageTransitions} />
       </div>
     </Router>
   );
@@ -41,7 +41,7 @@ export default App;
  * @param currentPage
  * @param destroyPreviousPageComponent
  */
-export const manageTransitions = ({
+const manageTransitions = ({
   previousPage,
   currentPage,
   destroyPreviousPageComponent,
@@ -53,12 +53,12 @@ export const manageTransitions = ({
       oldPageRef: previousPageRef,
       newPageRef: currentPageRef,
     });
-    if (currentPageRef !== null) currentPageRef.style.visibility = "hidden";
+    if (currentPageRef != null) currentPageRef.style.visibility = "hidden";
     await previousPage?.playOut?.();
 
     destroyPreviousPageComponent();
 
-    if (currentPageRef !== null) currentPageRef.style.visibility = "visible";
+    if (currentPageRef != null) currentPageRef.style.visibility = "visible";
     await currentPage?.playIn?.();
 
     resolve();

@@ -1,7 +1,7 @@
 import ReactDOM from "react-dom";
 import * as React from "react";
 import HomePage from "./pages/HomePage";
-import { IRoute } from "./router/RouterManager";
+import { IRoute } from "./router/core/RouterManager";
 import AboutPage from "./pages/AboutPage";
 import ArticlePage from "./pages/ArticlePage";
 import App from "./components/App";

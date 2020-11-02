@@ -1,17 +1,17 @@
 import React, { useRef } from "react";
 import { transitionsHelper } from "../helper/transitionsHelper";
-import { usePageTransition } from "../router/usePageTransition";
-import { routesList } from "../index";
-import Link from "../router/Link";
-import RouterStack from "../router/RouterStack";
-import { Router } from "../router/Router";
-import { manageTransitions } from "../components/App";
-import { IRoute } from "../router/RouterManager";
-import HomePage from "./HomePage";
+
 import FooPage from "./FooPage";
 import BarPage from "./BarPage";
+import { usePageTransition } from "../router/usePageTransition";
+import { Router } from "../router/core/Router";
+import { IRoute } from "../router/core/RouterManager";
+import Link from "../router/Link";
+import Stack, { TManageTransitions } from "../router/Stack";
 
 const componentName: string = "AboutPage";
+const debug = require("debug")(`front:${componentName}`);
+
 const AboutPage = () => {
   const rootRef = useRef(null);
 
@@ -42,42 +42,69 @@ const AboutPage = () => {
   return (
     <div className={componentName} ref={rootRef}>
       {componentName}
-      {/*<Router*/}
-      {/*  routes={*/}
-      {/*    [*/}
-      {/*      {*/}
-      {/*        path: "/foo",*/}
-      {/*        component: FooPage,*/}
-      {/*        props: { name: "foo" },*/}
-      {/*      },*/}
-      {/*      {*/}
-      {/*        path: "/bar",*/}
-      {/*        component: BarPage,*/}
-      {/*        props: { name: "bar" },*/}
-      {/*      },*/}
-      {/*    ] as IRoute[]*/}
-      {/*  }*/}
-      {/*  base={"/about/"}*/}
-      {/*>*/}
-      {/*  <div className={componentName}>*/}
-      {/*    <nav>*/}
-      {/*      <ul>*/}
-      {/*        <li>*/}
-      {/*          <Link href={"/"}>Home</Link>{" "}*/}
-      {/*        </li>*/}
-      {/*        <li>*/}
-      {/*          <Link href={"/about"}>About</Link>{" "}*/}
-      {/*        </li>*/}
-      {/*        <li>*/}
-      {/*          <Link href={"/blog/article-2"}>blog article "article 2"</Link>*/}
-      {/*        </li>*/}
-      {/*      </ul>*/}
-      {/*    </nav>*/}
-      {/*    <RouterStack manageTransitions={manageTransitions} />*/}
-      {/*  </div>*/}
-      {/*</Router>*/}
+      <Router
+        routes={
+          [
+            {
+              path: "/about/foo",
+              component: FooPage,
+              props: { name: "foo" },
+            },
+            {
+              path: "/about/:section",
+              component: BarPage,
+              props: { name: "bar" },
+            },
+          ] as IRoute[]
+        }
+        // FIXME pas utilisé pour le moment dans RouterManager
+        base={"/about/"}
+      >
+        <div className={componentName}>
+          <nav>
+            <ul>
+              <li>
+                <Link href={"/about/foo"}>Foo</Link>{" "}
+              </li>
+              <li>
+                <Link href={"/about/section-1"}>Bar</Link>{" "}
+              </li>
+            </ul>
+          </nav>
+          <Stack manageTransitions={manageTransitions} />
+        </div>
+      </Router>
     </div>
   );
 };
 
 export default AboutPage;
+
+/**
+ * Manage Router Stack Transitions
+ * @param previousPage
+ * @param currentPage
+ * @param destroyPreviousPageComponent
+ */
+const manageTransitions = ({
+  previousPage,
+  currentPage,
+  destroyPreviousPageComponent,
+}: TManageTransitions): Promise<any> => {
+  return new Promise(async (resolve) => {
+    const previousPageRef = previousPage?.rootRef.current;
+    const currentPageRef = currentPage?.rootRef.current;
+
+    debug("refffffff", { previousPageRef, currentPageRef });
+
+    if (currentPageRef != null) currentPageRef.style.visibility = "hidden";
+    await previousPage?.playOut?.();
+
+    destroyPreviousPageComponent();
+
+    if (currentPageRef != null) currentPageRef.style.visibility = "visible";
+    await currentPage?.playIn?.();
+
+    resolve();
+  });
+};

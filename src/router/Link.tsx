@@ -1,5 +1,5 @@
-import React, { ReactNode, useContext } from "react";
-import { RouterContext } from "./Router";
+import React, { ReactNode, useMemo } from "react";
+import { useRouter } from "./useRouter";
 
 interface IProps {
   className?: string;
@@ -14,10 +14,14 @@ const debug = require("debug")(`front:${componentName}`);
  * @name Link
  */
 function Link(props: IProps) {
-  const routerContext = useContext(RouterContext);
+  const router = useRouter();
+
+  const url = useMemo(() => {
+    return props.href.replaceAll("//", "/");
+  }, [router, props.href]);
 
   const handleClick = (e) => {
-    routerContext.updateRoute(props.href);
+    router.updateRoute(url);
     e.preventDefault();
   };
 
@@ -25,7 +29,7 @@ function Link(props: IProps) {
     <a
       className={[componentName, props.className].filter((e) => e).join(" ")}
       onClick={handleClick}
-      href={props.href}
+      href={url}
       children={props.children}
     />
   );
