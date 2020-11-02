@@ -27,7 +27,7 @@ export enum ERouterEvent {
  *      const { match, params, currentRoute, previousRoute } = useRoute();
  *
  */
-export default class Router {
+export default class RouterManager {
   // base url
   public base: string;
   // routes list

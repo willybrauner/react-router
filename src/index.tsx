@@ -1,14 +1,14 @@
 import ReactDOM from "react-dom";
 import * as React from "react";
 import HomePage from "./pages/HomePage";
-import Router, { IRoute } from "./router/Router";
+import { IRoute } from "./router/RouterManager";
 import AboutPage from "./pages/AboutPage";
 import ArticlePage from "./pages/ArticlePage";
 import App from "./components/App";
 
 const debug = require("debug")(`front:index`);
 
-export const routes: IRoute[] = [
+export const routesList: IRoute[] = [
   {
     path: "/",
     component: HomePage,
@@ -28,10 +28,6 @@ export const routes: IRoute[] = [
     },
   },
 ];
-
-// create new router instance
-// router instance need to be pass as props to routerStack
-export const routerInstance = new Router({ base: "/", routes });
 
 /**
  * Init Application

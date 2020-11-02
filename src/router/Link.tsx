@@ -1,5 +1,5 @@
-import React, { ReactNode } from "react";
-import { routerInstance } from "../index";
+import React, { ReactNode, useContext } from "react";
+import { RouterContext } from "./Router";
 
 interface IProps {
   className?: string;
@@ -14,13 +14,10 @@ const debug = require("debug")(`front:${componentName}`);
  * @name Link
  */
 function Link(props: IProps) {
-  /**
-   * après lecture des liens
-   * @param e
-   */
+  const routerContext = useContext(RouterContext);
+
   const handleClick = (e) => {
-    // TODO cette instance devrait etre dynamique
-    routerInstance?.updateRoute(props.href);
+    routerContext.updateRoute(props.href);
     e.preventDefault();
   };
 

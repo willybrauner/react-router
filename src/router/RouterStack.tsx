@@ -1,6 +1,13 @@
-import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import Router, { ERouterEvent, IRoute } from "./Router";
+import React, {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from "react";
+import { ERouterEvent, IRoute } from "./RouterManager";
 import { pageTransition, TPageTransitionObject } from "./usePageTransition";
+import { RouterContext } from "./Router";
 
 export type TManageTransitions = {
   previousPage: TPageTransitionObject;
@@ -10,7 +17,6 @@ export type TManageTransitions = {
 
 interface IProps {
   className?: string;
-  routerInstance: Router;
   manageTransitions: (T: TManageTransitions) => Promise<any>;
 }
 
@@ -23,10 +29,13 @@ const debug = require("debug")(`front:${componentName}`);
 function RouterStack(props: IProps) {
   const [pageIndex, setPageIndex] = useState<number>(0);
 
+  const routerContext = useContext(RouterContext);
+  debug("routerInstance", routerContext);
+
   // route object
   const [previousRoute, setPreviousRoute] = useState<IRoute>(null);
   const [currentRoute, setCurrentRoute] = useState<IRoute>(
-    props.routerInstance.currentRoute
+    routerContext.currentRoute
   );
 
   // 1. listen route change
@@ -43,26 +52,17 @@ function RouterStack(props: IProps) {
       setPreviousRoute(routes.previousRoute);
       setCurrentRoute(routes.currentRoute);
     };
-    props.routerInstance.events.on(
-      ERouterEvent.ROUTE_CHANGE,
-      handleRouteChange
-    );
+    routerContext.events.on(ERouterEvent.ROUTE_CHANGE, handleRouteChange);
     return () => {
-      props.routerInstance.events.off(
-        ERouterEvent.ROUTE_CHANGE,
-        handleRouteChange
-      );
+      routerContext.events.off(ERouterEvent.ROUTE_CHANGE, handleRouteChange);
     };
   }, [currentRoute, previousRoute, pageIndex]);
 
-  // 2. animated when route state changed
+  // 2. animate when route state changed
   // need to be "layoutEffect" to execute transitions before render to avoid a "clip"
   useLayoutEffect(() => {
     // emit animating state
-    props.routerInstance.events.emit(
-      ERouterEvent.ROUTER_STACK_IS_ANIMATING,
-      true
-    );
+    routerContext.events.emit(ERouterEvent.ROUTER_STACK_IS_ANIMATING, true);
 
     // clear previous route state, will remove element from DOM
     const destroyPreviousPageComponent = () => setPreviousRoute(null);
@@ -74,7 +74,7 @@ function RouterStack(props: IProps) {
         destroyPreviousPageComponent,
       })
       .then(() => {
-        props.routerInstance.events.emit(
+        routerContext.events.emit(
           ERouterEvent.ROUTER_STACK_IS_ANIMATING,
           false
         );
