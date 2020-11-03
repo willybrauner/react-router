@@ -119,7 +119,7 @@ export default class RouterManager {
    * Get current route from url using path-parser
    * @doc https://www.npmjs.com/package/path-parser
    */
-  private getRouteFromUrl(url: string): IRoute {
+  public getRouteFromUrl(url: string): IRoute {
     if (this.routes?.length === 0 || !this.routes) return;
 
     for (let i = 0; i < this.routes.length; i++) {

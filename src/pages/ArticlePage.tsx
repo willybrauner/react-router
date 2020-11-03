@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import { transitionsHelper } from "../helper/transitionsHelper";
 import { usePageTransition } from "../router/usePageTransition";
+import { useLocation } from "../router/useLocation";
 
 interface IProps {
   params?: {
@@ -41,10 +42,13 @@ function ArticlePage(props: IProps) {
    * (remove playIn and playOut if not use)
    */
   usePageTransition({ componentName, rootRef, playIn, playOut });
+  const [location, setLocation] = useLocation();
 
   return (
     <div className={componentName} ref={rootRef}>
       {componentName} - id: {props?.params?.id}
+      <br />
+      <button onClick={() => setLocation("/")}>navigate to /</button>
     </div>
   );
 }
