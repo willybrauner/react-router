@@ -96,4 +96,4 @@ function Stack(props: IProps) {
   );
 }
 
-export default Stack;
+export default React.memo(Stack);

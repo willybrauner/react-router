@@ -7,6 +7,6 @@ import { IRoute } from "./core/RouterManager";
  */
 const useRoute = (url: string): [boolean, IRoute] => {
   const router = useRouter();
-  const marchingRoute = router.getRouteFromUrl(url);
-  return [marchingRoute != null, marchingRoute || null];
+  const matchingRoute = router.getRouteFromUrl(url);
+  return [matchingRoute != null, matchingRoute || null];
 };

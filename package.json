@@ -29,10 +29,8 @@
     "postinstall": "cp -n .env.example .env || true"
   },
   "dependencies": {
-    "@solid-js/css-flat": "^1.0.1",
     "@wbe/libraries": "^1.1.1-alpha.0",
     "gsap": "^3.3.4",
-    "lodash": "^4.17.15",
     "path-parser": "^6.1.0",
     "path-to-regexp": "^6.2.0",
     "react": "^16.13.1",

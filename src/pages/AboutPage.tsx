@@ -95,7 +95,7 @@ const manageTransitions = ({
     const previousPageRef = previousPage?.rootRef.current;
     const currentPageRef = currentPage?.rootRef.current;
 
-    debug("refffffff", { previousPageRef, currentPageRef });
+    debug("ref", { previousPageRef, currentPageRef });
 
     if (currentPageRef != null) currentPageRef.style.visibility = "hidden";
     await previousPage?.playOut?.();
