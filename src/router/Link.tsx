@@ -1,5 +1,5 @@
 import React, { ReactNode, useMemo } from "react";
-import { useRouter } from "./useRouter";
+import { useLocation } from "./useLocation";
 
 interface IProps {
   className?: string;
@@ -14,14 +14,10 @@ const debug = require("debug")(`front:${componentName}`);
  * @name Link
  */
 function Link(props: IProps) {
-  const router = useRouter();
-
-  const url = useMemo(() => {
-    return props.href.replaceAll("//", "/");
-  }, [router, props.href]);
+  const [, setLocation] = useLocation();
 
   const handleClick = (e) => {
-    router.updateRoute(url);
+    setLocation(props.href);
     e.preventDefault();
   };
 
@@ -29,7 +25,7 @@ function Link(props: IProps) {
     <a
       className={[componentName, props.className].filter((e) => e).join(" ")}
       onClick={handleClick}
-      href={url}
+      href={props.href}
       children={props.children}
     />
   );

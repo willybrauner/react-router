@@ -1,5 +1,6 @@
 import RouterManager, { IRoute } from "./RouterManager";
-import React, { createContext, ReactElement, useState } from "react";
+import React, { createContext, ReactElement, useEffect, useState } from "react";
+import { Path } from "path-parser";
 
 interface IProps {
   base: string;
@@ -27,38 +28,36 @@ export const Router = (props: IProps) => {
       })
   );
 
-  // // add routes to state
-  // const [routes, setRoutes] = useState<IRoute[]>([]);
-  //
-  // // listen popstate
-  // useEffect(() => {
-  //   const handlePopState = () => {
-  //     updateRoute();
-  //   };
-  //   window.addEventListener("popstate", handlePopState);
-  //   return () => {
-  //     window.removeEventListener("popstate", handlePopState);
-  //   };
-  // }, []);
-  //
-  // /**
-  //  * Add new route object to routes array
-  //  */
-  // const add = (path: string, component, props): void => {
-  //   const routeParams: IRoute = {
-  //     path,
-  //     component,
-  //     props,
-  //     parser: new Path(path),
-  //   };
-  //   setRoutes([...routes, routeParams]);
-  // };
-  //
-  // // update current route
-  // const updateRoute = (url: string = window.location.pathname) => {};
-  //
-  // // get route from URL
-  // const getRouteFromUrl = () => {};
+  // add routes to state
+  const [routes, setRoutes] = useState<IRoute[]>([]);
+
+  // listen popstate
+  useEffect(() => {
+    const handlePopState = () => {
+      updateRoute();
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  /**
+   * Add new route object to routes array
+   */
+  const add = (path: string, component, props): void => {
+    const routeParams: IRoute = {
+      path,
+      component,
+      props,
+      parser: new Path(path),
+    };
+    setRoutes([...routes, routeParams]);
+  };
+
+  // update current route
+  const updateRoute = (url: string = window.location.pathname) => {};
+
+  // get route from URL
+  const getRouteFromUrl = () => {};
 
   return (
     <RouterContext.Provider value={routerManager}>
