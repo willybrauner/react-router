@@ -14,22 +14,18 @@ export const routesList: IRoute[] = [
   {
     path: "/",
     component: HomePage,
-    props: { name: "home" },
   },
   {
     path: "/about",
     component: AboutPage,
-    props: { name: "about" },
     children: [
       {
         path: "/about/foo",
         component: FooPage,
-        props: { name: "foo" },
       },
       {
-        path: "/about/:section",
+        path: "/about/bar",
         component: BarPage,
-        props: { name: "bar" },
       },
     ],
   },

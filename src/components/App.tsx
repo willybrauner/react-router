@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "../router/Link";
 import Stack, { TManageTransitions } from "../router/Stack";
-import { Router } from "../router/core/Router";
+import Router from "../router/core/Router";
 import { routesList } from "../index";
 
 const componentName = "App";
@@ -27,7 +27,7 @@ export function App() {
             </li>
           </ul>
         </nav>
-        <Stack manageTransitions={manageTransitions} />
+        <Stack manageTransitions={manageTransitions} key={"stack-1"} />
       </div>
     </Router>
   );

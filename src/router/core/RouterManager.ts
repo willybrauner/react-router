@@ -28,6 +28,7 @@ export enum ERouterEvent {
  *      const { match, params, currentRoute, previousRoute } = useRoute();
  *
  */
+
 export default class RouterManager {
   // base url
   public base: string;
@@ -59,9 +60,7 @@ export default class RouterManager {
     this.base = base;
 
     if (routes !== null) {
-      routes.forEach((el) => {
-        this.add(el.path, el.component, el.props);
-      });
+      routes.forEach((el) => this.add(el));
     }
 
     this.handlePopState();
@@ -71,12 +70,10 @@ export default class RouterManager {
   /**
    * Add new route object to routes array
    */
-  public add(path: string, component, props): void {
+  public add(route: IRoute): void {
     const routeParams: IRoute = {
-      path,
-      component,
-      props,
-      parser: new Path(path),
+      ...route,
+      parser: new Path(route.path),
     };
     // keep routes in local array
     this.routes.push(routeParams);
@@ -93,13 +90,19 @@ export default class RouterManager {
     const matchingRoute: IRoute = this.getRouteFromUrl(url);
 
     if (!matchingRoute) {
-      console.warn("updateRoute > Error, there is no matching route.");
+      debug("updateRoute > NOT FOUND there is no matching route. return.", {
+        matchingRoute,
+        url,
+      });
       // TODO : emit route not found
       return;
     }
 
     if (this.currentRoute?.path === matchingRoute.path) {
-      debug("updateRoute > This is the same URL, do not continue.");
+      debug("updateRoute > This is the same URL, return.", {
+        currentRoutePath: this.currentRoute?.path,
+        matchingRoutePath: matchingRoute.path,
+      });
       return;
     }
 
@@ -120,43 +123,44 @@ export default class RouterManager {
    * Get current route from url using path-parser
    * @doc https://www.npmjs.com/package/path-parser
    */
-  public getRouteFromUrl(url: string): IRoute {
-    if (this.routes?.length === 0 || !this.routes) return;
 
-    for (let i = 0; i < this.routes.length; i++) {
-      // get current route object
-      let current = this.routes[i];
+  // prettier-ignore
+  public getRouteFromUrl(url: string, routes = this.routes): IRoute {
+    if (!routes || routes?.length === 0) return;
 
-      const pathParser = new Path(this.formatUrl(this.base, current.path));
-      const formatUrl = this.formatUrl(this.base, url);
+    for (let i = 0; i < routes.length; i++) {
+      let currentRoute = routes[i];
 
-      // TODO partial test pose des problème car
-      // TODO about/foo match aussi avec about
-      // TODO l'idée serait pour les nested route, de virer la base avant le match
-      // TODO Router 1 : /about -> sans base "/"
-      // TODO Router 2 (nested) : /about/foo -> sans base "foo"
-      const match = pathParser.partialTest(formatUrl);
+      // create parser & matcher
+      const pathParser: Path = new Path(currentRoute.path);
+      const match = pathParser.test(url);
+      debug('match?',!!match, match, currentRoute)
 
-      debug("get route from path >", {
-        currentRouteObject: current,
-        base: this.base,
-        url,
-        formatUrl,
-        pathParser,
-        routeObjMatchWithUrl: match,
-      });
+      const childrenMatch :boolean = currentRoute?.children?.some(el => {
+        const pathParser: Path = new Path(el.path);
+        return  pathParser.test(url);
+      })
 
-      if (match) {
+      // if current route path match with url
+      if (match || childrenMatch) {
+        debug("getRouteFromUrl > this currentRoute match:", { currentRoute, base: this.base, url, pathParser, routeObjMatchWithUrl: match });
+
         return {
           path: url,
-          component: current?.component,
-          parser: current?.parser,
+          component: currentRoute.component,
+          parser: currentRoute.parser,
           props: {
             params: match,
-            ...(current?.props || {}),
+            ...(currentRoute.props || {}),
           },
         };
       }
+
+      // // if no match, on regarde si il y a une propriété children
+      // else if (currentRoute?.children?.length > 0) {
+      //   debug('route as children ', currentRoute.children)
+      //   return this.getRouteFromUrl(url, currentRoute.children);
+      // }
     }
   }
 

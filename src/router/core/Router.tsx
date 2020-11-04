@@ -19,7 +19,7 @@ RouterContext.displayName = "RouterContext";
  * Wrap Link and Stack component with this Router component
  * @param {IProps} props
  */
-export const Router = (props: IProps) => {
+const Router = (props: IProps) => {
   const [routerManager] = useState<RouterManager>(
     () =>
       new RouterManager({
@@ -65,3 +65,5 @@ export const Router = (props: IProps) => {
     </RouterContext.Provider>
   );
 };
+
+export default React.memo(Router);

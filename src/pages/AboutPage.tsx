@@ -1,11 +1,7 @@
 import React, { useRef } from "react";
-import { transitionsHelper } from "../helper/transitionsHelper";
-
-import FooPage from "./FooPage";
-import BarPage from "./BarPage";
+import Router from "../router/core/Router";
 import { usePageTransition } from "../router/usePageTransition";
-import { Router } from "../router/core/Router";
-import { IRoute } from "../router/core/RouterManager";
+import { transitionsHelper } from "../helper/transitionsHelper";
 import Link from "../router/Link";
 import Stack, { TManageTransitions } from "../router/Stack";
 import { routesList } from "../index";
@@ -47,6 +43,7 @@ const AboutPage = () => {
         routes={routesList.find((el) => el.path == "/about").children}
         // FIXME pas utilisé pour le moment dans RouterManager
         base={"/about"}
+        key={"/about"}
       >
         <div className={componentName}>
           <nav>
@@ -55,11 +52,11 @@ const AboutPage = () => {
                 <Link href={"/about/foo"}>Foo</Link>{" "}
               </li>
               <li>
-                <Link href={"/about/section-1"}>Bar</Link>{" "}
+                <Link href={"/about/bar"}>Bar</Link>{" "}
               </li>
             </ul>
           </nav>
-          <Stack manageTransitions={manageTransitions} />
+          <Stack manageTransitions={manageTransitions} key={"stack-2"} />
         </div>
       </Router>
     </div>
