@@ -1,16 +1,10 @@
 import { MutableRefObject, useEffect, useLayoutEffect, useMemo } from "react";
 const debug = require("debug")("front:usePageTransition");
 
-/**
- *  Pages register type
- */
 export type TPageTransition = {
   [currentPath: string]: TPageTransitionObject;
 };
 
-/**
- * Single page transition object type
- */
 export type TPageTransitionObject = {
   // component name
   componentName: string;
@@ -28,10 +22,7 @@ export type TPageTransitionObject = {
   isReadyPromise?: () => Promise<any>;
 };
 
-// ----------------------------------------------------------------------------- ACCESSOR
-
 /**
- *
  * TODO pourrait être dans le Router
  * Pages register accessor
  * All pages properties were store in "pageTransition.list"
@@ -42,8 +33,6 @@ export const pageTransition = {
   },
   list: {} as TPageTransition,
 };
-
-// ----------------------------------------------------------------------------- HOOK
 
 /**
  * @name usePageTransition
@@ -60,30 +49,24 @@ export function usePageTransition(
   }: TPageTransitionObject,
   pDependencies?: any[]
 ) {
-  /**
-   * Page is ready deffered promise
-   * Create a promise and get resolve anywhere
-   */
+  // Page is ready deferred promise
+  // Create a promise and get resolve anywhere
   const readyDeferred = useMemo(() => {
-    const deffered: any = {};
-    deffered.promise = new Promise((resolve) => {
-      deffered.resolve = resolve;
+    const deferred: any = {};
+    deferred.promise = new Promise((resolve) => {
+      deferred.resolve = resolve;
     });
-    return deffered;
+    return deferred;
   }, []);
 
   // resolve deferred if isReady param is true
   useEffect(() => {
-    if (isReady) {
-      readyDeferred?.resolve("readyDeferred Promise is resolved!");
-    }
+    isReady && readyDeferred.resolve();
   }, [isReady]);
 
-  /**
-   * Register pages before render
-   */
+  // register pages before render
   useLayoutEffect(() => {
-    // Build a new page transition object
+    // build a new page transition object
     const newPageTransition = {
       [window.location.pathname]: {
         componentName,
