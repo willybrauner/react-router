@@ -84,6 +84,6 @@ export function usePageTransition(
       ...newPageTransition,
     };
 
-    debug(`pages register list`, pageTransition.list);
+    debug(`pageTransition list`, pageTransition.list);
   }, [...(pDependencies || [])]);
 }

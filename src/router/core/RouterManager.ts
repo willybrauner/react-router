@@ -13,7 +13,6 @@ export type TRoute = {
 
 export enum ERouterEvent {
   ROUTE_CHANGE = "route-change",
-  ROUTE_NOT_FOUND = "route-not-found",
   ROUTER_STACK_IS_ANIMATING = "router-stack-is-animating",
 }
 
