@@ -1,10 +1,12 @@
-import React, { ReactNode, useMemo } from "react";
+import React, { ReactNode, useEffect, useMemo } from "react";
 import { useLocation } from "./useLocation";
+import { useRouter } from "./useRouter";
 
 interface IProps {
-  className?: string;
   children: ReactNode;
   href: string;
+  onClick?: () => void;
+  className?: string;
 }
 
 const componentName = "Link";
@@ -14,16 +16,28 @@ const debug = require("debug")(`front:${componentName}`);
  * @name Link
  */
 function Link(props: IProps) {
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
 
   const handleClick = (e) => {
-    setLocation(props.href);
     e.preventDefault();
+    setLocation(props.href);
+    props.onClick?.();
   };
+
+  useEffect(() => {
+    debug("link", location, props.href);
+  }, [location]);
+
+  const isActive = useMemo(() => location === props.href, [
+    location,
+    props.href,
+  ]);
 
   return (
     <a
-      className={[componentName, props.className].filter((e) => e).join(" ")}
+      className={[componentName, props.className, isActive && "active"]
+        .filter((e) => e)
+        .join(" ")}
       onClick={handleClick}
       href={props.href}
       children={props.children}
