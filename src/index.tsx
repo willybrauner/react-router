@@ -5,6 +5,8 @@ import { IRoute } from "./router/core/RouterManager";
 import AboutPage from "./pages/AboutPage";
 import ArticlePage from "./pages/ArticlePage";
 import App from "./components/App";
+import FooPage from "./pages/FooPage";
+import BarPage from "./pages/BarPage";
 
 const debug = require("debug")(`front:index`);
 
@@ -18,6 +20,18 @@ export const routesList: IRoute[] = [
     path: "/about",
     component: AboutPage,
     props: { name: "about" },
+    children: [
+      {
+        path: "/about/foo",
+        component: FooPage,
+        props: { name: "foo" },
+      },
+      {
+        path: "/about/:section",
+        component: BarPage,
+        props: { name: "bar" },
+      },
+    ],
   },
   {
     path: "/blog/:id",

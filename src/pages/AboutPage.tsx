@@ -8,6 +8,7 @@ import { Router } from "../router/core/Router";
 import { IRoute } from "../router/core/RouterManager";
 import Link from "../router/Link";
 import Stack, { TManageTransitions } from "../router/Stack";
+import { routesList } from "../index";
 
 const componentName: string = "AboutPage";
 const debug = require("debug")(`front:${componentName}`);
@@ -43,22 +44,9 @@ const AboutPage = () => {
     <div className={componentName} ref={rootRef}>
       {componentName}
       <Router
-        routes={
-          [
-            {
-              path: "/about/foo",
-              component: FooPage,
-              props: { name: "foo" },
-            },
-            {
-              path: "/about/:section",
-              component: BarPage,
-              props: { name: "bar" },
-            },
-          ] as IRoute[]
-        }
+        routes={routesList.find((el) => el.path == "/about").children}
         // FIXME pas utilisé pour le moment dans RouterManager
-        base={"/about/"}
+        base={"/about"}
       >
         <div className={componentName}>
           <nav>

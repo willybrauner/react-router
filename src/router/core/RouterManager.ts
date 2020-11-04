@@ -7,6 +7,7 @@ export interface IRoute {
   path: string;
   component: ReactNode;
   props?: { [x: string]: any };
+  children?: IRoute[];
   parser?: Path;
 }
 
