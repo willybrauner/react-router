@@ -1,10 +1,9 @@
-import RouterManager, { IRoute } from "./RouterManager";
-import React, { createContext, ReactElement, useEffect, useState } from "react";
-import { Path } from "path-parser";
+import RouterManager, { TRoute } from "./RouterManager";
+import React, { createContext, ReactElement, useState } from "react";
 
 interface IProps {
   base: string;
-  routes: IRoute[];
+  routes: TRoute[];
   children: ReactElement;
 }
 
@@ -16,48 +15,12 @@ RouterContext.displayName = "RouterContext";
 
 /**
  * Router
- * Wrap Link and Stack component with this Router component
- * @param {IProps} props
+ * will wrap Link and Stack components
  */
 const Router = (props: IProps) => {
   const [routerManager] = useState<RouterManager>(
-    () =>
-      new RouterManager({
-        base: props.base,
-        routes: props.routes,
-      })
+    () => new RouterManager(props.base, props.routes)
   );
-
-  // add routes to state
-  const [routes, setRoutes] = useState<IRoute[]>([]);
-
-  // listen popstate
-  useEffect(() => {
-    const handlePopState = () => {
-      updateRoute();
-    };
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
-  }, []);
-
-  /**
-   * Add new route object to routes array
-   */
-  const add = (path: string, component, props): void => {
-    const routeParams: IRoute = {
-      path,
-      component,
-      props,
-      parser: new Path(path),
-    };
-    setRoutes([...routes, routeParams]);
-  };
-
-  // update current route
-  const updateRoute = (url: string = window.location.pathname) => {};
-
-  // get route from URL
-  const getRouteFromUrl = () => {};
 
   return (
     <RouterContext.Provider value={routerManager}>

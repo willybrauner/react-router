@@ -39,26 +39,26 @@ const AboutPage = () => {
   return (
     <div className={componentName} ref={rootRef}>
       {componentName}
-      <Router
-        routes={routesList.find((el) => el.path == "/about").children}
-        // FIXME pas utilisé pour le moment dans RouterManager
-        base={"/about"}
-        key={"/about"}
-      >
-        <div className={componentName}>
-          <nav>
-            <ul>
-              <li>
-                <Link href={"/about/foo"}>Foo</Link>{" "}
-              </li>
-              <li>
-                <Link href={"/about/bar"}>Bar</Link>{" "}
-              </li>
-            </ul>
-          </nav>
-          <Stack manageTransitions={manageTransitions} key={"stack-2"} />
-        </div>
-      </Router>
+      {/*<Router*/}
+      {/*  routes={routesList.find((el) => el.path == "/about").children}*/}
+      {/*  // FIXME pas utilisé pour le moment dans RouterManager*/}
+      {/*  base={"/about"}*/}
+      {/*  key={"/about"}*/}
+      {/*>*/}
+      {/*  <div className={componentName}>*/}
+      {/*    <nav>*/}
+      {/*      <ul>*/}
+      {/*        <li>*/}
+      {/*          <Link href={"/about/foo"}>Foo</Link>{" "}*/}
+      {/*        </li>*/}
+      {/*        <li>*/}
+      {/*          <Link href={"/about/bar"}>Bar</Link>{" "}*/}
+      {/*        </li>*/}
+      {/*      </ul>*/}
+      {/*    </nav>*/}
+      {/*    <Stack manageTransitions={manageTransitions} key={"stack-2"} />*/}
+      {/*  </div>*/}
+      {/*</Router>*/}
     </div>
   );
 };

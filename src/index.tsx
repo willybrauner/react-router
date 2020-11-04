@@ -1,16 +1,15 @@
 import ReactDOM from "react-dom";
 import * as React from "react";
 import HomePage from "./pages/HomePage";
-import { IRoute } from "./router/core/RouterManager";
+import { TRoute } from "./router/core/RouterManager";
 import AboutPage from "./pages/AboutPage";
 import ArticlePage from "./pages/ArticlePage";
 import App from "./components/App";
-import FooPage from "./pages/FooPage";
-import BarPage from "./pages/BarPage";
+import Router from "./router/core/Router";
 
 const debug = require("debug")(`front:index`);
 
-export const routesList: IRoute[] = [
+export const routesList: TRoute[] = [
   {
     path: "/",
     component: HomePage,
@@ -18,16 +17,16 @@ export const routesList: IRoute[] = [
   {
     path: "/about",
     component: AboutPage,
-    children: [
-      {
-        path: "/about/foo",
-        component: FooPage,
-      },
-      {
-        path: "/about/bar",
-        component: BarPage,
-      },
-    ],
+    // children: [
+    //   {
+    //     path: "/about/foo",
+    //     component: FooPage,
+    //   },
+    //   {
+    //     path: "/about/bar",
+    //     component: BarPage,
+    //   },
+    // ],
   },
   {
     path: "/blog/:id",
@@ -37,13 +36,22 @@ export const routesList: IRoute[] = [
       color: "red",
     },
   },
+  {
+    path: "/:rest",
+    component: () => <div className="NotFoundPage">Not Found</div>,
+  },
 ];
 
 /**
  * Init Application
  */
 export function initApp() {
-  ReactDOM.render(<App />, document.getElementById("Root"));
+  ReactDOM.render(
+    <Router routes={routesList} base={"/"}>
+      <App />
+    </Router>,
+    document.getElementById("Root")
+  );
 }
 
 initApp();

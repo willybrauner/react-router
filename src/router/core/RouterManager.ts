@@ -3,13 +3,13 @@ const debug = require("debug")("front:Router");
 import { ReactNode } from "react";
 import { EventEmitter } from "events";
 
-export interface IRoute {
+export type TRoute = {
   path: string;
   component: ReactNode;
-  props?: { [x: string]: any };
-  children?: IRoute[];
   parser?: Path;
-}
+  props?: { [x: string]: any };
+  children?: TRoute[];
+};
 
 export enum ERouterEvent {
   ROUTE_CHANGE = "route-change",
@@ -17,51 +17,25 @@ export enum ERouterEvent {
   ROUTER_STACK_IS_ANIMATING = "router-stack-is-animating",
 }
 
-/**
- *  - lecture de route (parser une URL)
- *  - instance de router
- *  - event emitter pour savoir quand une route change
- *  - connaitre l'ancienne page / la page courante
- *
- *  - hook useRouteTransition : passer les transitions playIn playOut de la page courante + promiseReady
- *  - hook useRoute
- *      const { match, params, currentRoute, previousRoute } = useRoute();
- *
- */
-
 export default class RouterManager {
   // base url
   public base: string;
   // routes list
-  protected routes: IRoute[] = [];
+  public routes: TRoute[] = [];
   // create event emitter
   public events: EventEmitter = new EventEmitter();
   // current route object
-  public currentRoute: IRoute;
+  public currentRoute: TRoute;
   // previous route object
-  public previousRoute: IRoute;
+  public previousRoute: TRoute;
+  // allow to check if is first page
+  public isFirstRoute: boolean = true;
+  // get number of pages
+  public routesCounter: number = 0;
 
-  protected pageCount: number = 0;
-
-  public isFirsPage: boolean = true;
-
-  /**
-   * Init constructor
-   * @param base
-   * @param routes
-   */
-  constructor({
-    base = "/",
-    routes = null,
-  }: {
-    base: string;
-    routes: IRoute[];
-  }) {
+  constructor(base: string = "/", routes: TRoute[] = null) {
     this.base = base;
-
-    if (routes !== null) {
-      routes.forEach((el) => this.add(el));
-    }
+    routes.forEach((el) => this.addRoute(el));
 
     this.handlePopState();
     window.addEventListener("popstate", this.handlePopState.bind(this));
@@ -70,8 +44,8 @@ export default class RouterManager {
   /**
    * Add new route object to routes array
    */
-  public add(route: IRoute): void {
-    const routeParams: IRoute = {
+  public addRoute(route: TRoute): void {
+    const routeParams: TRoute = {
       ...route,
       parser: new Path(route.path),
     };
@@ -85,17 +59,12 @@ export default class RouterManager {
    * - push URL in history
    * - emit selected route object on route-change event (listen by RouterStack)
    */
-  public updateRoute(url: string = location.pathname): void {
+  public updateRoute(url: string = window.location.pathname): void {
     // get matching route depending of current URL
-    const matchingRoute: IRoute = this.getRouteFromUrl(url);
+    const matchingRoute: TRoute = this.getRouteFromUrl(url);
 
     if (!matchingRoute) {
-      debug("updateRoute > NOT FOUND there is no matching route. return.", {
-        matchingRoute,
-        url,
-      });
-      // TODO : emit route not found
-      return;
+      debug("updateRoute > No matching route.", { matchingRoute, url });
     }
 
     if (this.currentRoute?.path === matchingRoute.path) {
@@ -106,7 +75,6 @@ export default class RouterManager {
       return;
     }
 
-    // TODO previous route ne fonctionne pas si c'est la premiere route de la navigation
     this.previousRoute = this.currentRoute;
     this.currentRoute = matchingRoute;
 
@@ -117,15 +85,18 @@ export default class RouterManager {
       previousRoute: this.previousRoute,
       currentRoute: this.currentRoute,
     });
+
+    // this can't works if multi stack...
+    this.routesCounter++;
+    this.isFirstRoute = this.routesCounter === 1;
   }
 
   /**
    * Get current route from url using path-parser
    * @doc https://www.npmjs.com/package/path-parser
    */
-
   // prettier-ignore
-  public getRouteFromUrl(url: string, routes = this.routes): IRoute {
+  public getRouteFromUrl(url: string, routes = this.routes): TRoute {
     if (!routes || routes?.length === 0) return;
 
     for (let i = 0; i < routes.length; i++) {
@@ -134,9 +105,9 @@ export default class RouterManager {
       // create parser & matcher
       const pathParser: Path = new Path(currentRoute.path);
       const match = pathParser.test(url);
-      debug('match?',!!match, match, currentRoute)
+      debug('match?', !!match, match, currentRoute)
 
-      const childrenMatch :boolean = currentRoute?.children?.some(el => {
+      const childrenMatch: boolean = currentRoute?.children?.some(el => {
         const pathParser: Path = new Path(el.path);
         return  pathParser.test(url);
       })
@@ -144,34 +115,17 @@ export default class RouterManager {
       // if current route path match with url
       if (match || childrenMatch) {
         debug("getRouteFromUrl > this currentRoute match:", { currentRoute, base: this.base, url, pathParser, routeObjMatchWithUrl: match });
-
         return {
           path: url,
           component: currentRoute.component,
-          parser: currentRoute.parser,
+          parser: pathParser,
           props: {
             params: match,
             ...(currentRoute.props || {}),
           },
         };
       }
-
-      // // if no match, on regarde si il y a une propriété children
-      // else if (currentRoute?.children?.length > 0) {
-      //   debug('route as children ', currentRoute.children)
-      //   return this.getRouteFromUrl(url, currentRoute.children);
-      // }
     }
-  }
-
-  /**
-   * Format URL
-   * TODO - Virer la base du path si il exist (voir TODO plus haut)
-   * @param base
-   * @param path
-   */
-  protected formatUrl(base: string, path: string = location.pathname): string {
-    return path !== "/" ? path.slice(1) : path;
   }
 
   /**
@@ -182,7 +136,6 @@ export default class RouterManager {
   }
 
   /**
-   * TODO
    * Use middleWare
    */
   public use() {}

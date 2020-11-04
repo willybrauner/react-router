@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { ERouterEvent, IRoute } from "./core/RouterManager";
+import { ERouterEvent, TRoute } from "./core/RouterManager";
 import { pageTransition, TPageTransitionObject } from "./usePageTransition";
 import { useRouter } from "./useRouter";
 
@@ -27,15 +27,15 @@ function Stack(props: IProps) {
   const [pageIndex, setPageIndex] = useState<number>(0);
 
   // route object
-  const [previousRoute, setPreviousRoute] = useState<IRoute>(null);
-  const [currentRoute, setCurrentRoute] = useState<IRoute>(router.currentRoute);
+  const [previousRoute, setPreviousRoute] = useState<TRoute>(null);
+  const [currentRoute, setCurrentRoute] = useState<TRoute>(router.currentRoute);
 
   // 1. listen route change
   useEffect(() => {
     // executed when route-change event is call
     const handleRouteChange = (routes: {
-      previousRoute: IRoute;
-      currentRoute: IRoute;
+      previousRoute: TRoute;
+      currentRoute: TRoute;
     }): void => {
       // increment index for component page instance key
       setPageIndex(pageIndex + 1);

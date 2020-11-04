@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "../router/Link";
 import Stack, { TManageTransitions } from "../router/Stack";
 import Router from "../router/core/Router";
 import { routesList } from "../index";
+import { useRouter } from "../router/useRouter";
 
 const componentName = "App";
 const debug = require("debug")(`front:${componentName}`);
@@ -12,24 +13,22 @@ const debug = require("debug")(`front:${componentName}`);
  */
 export function App() {
   return (
-    <Router routes={routesList} base={"/"}>
-      <div className={componentName}>
-        <nav>
-          <ul>
-            <li>
-              <Link href={"/"}>Home</Link>{" "}
-            </li>
-            <li>
-              <Link href={"/about"}>About</Link>{" "}
-            </li>
-            <li>
-              <Link href={"/blog/article-1"}>blog article "article 1"</Link>
-            </li>
-          </ul>
-        </nav>
-        <Stack manageTransitions={manageTransitions} key={"stack-1"} />
-      </div>
-    </Router>
+    <div className={componentName}>
+      <nav>
+        <ul>
+          <li>
+            <Link href={"/"}>Home</Link>{" "}
+          </li>
+          <li>
+            <Link href={"/about"}>About</Link>{" "}
+          </li>
+          <li>
+            <Link href={"/blog/article-1"}>blog article "article 1"</Link>
+          </li>
+        </ul>
+      </nav>
+      <Stack manageTransitions={manageTransitions} key={"stack-1"} />
+    </div>
   );
 }
 

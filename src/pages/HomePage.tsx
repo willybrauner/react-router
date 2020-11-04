@@ -1,9 +1,10 @@
 import React, { useRef } from "react";
 import { usePageTransition } from "../router/usePageTransition";
 import { transitionsHelper } from "../helper/transitionsHelper";
+const debug = require("debug")("front:HomePage");
 
 const componentName: string = "HomePage";
-const HomePage = () => {
+const HomePage = (props) => {
   const rootRef = useRef(null);
 
   /**
