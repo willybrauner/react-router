@@ -31,13 +31,19 @@ export default class RouterManager {
   public isFirstRoute: boolean = true;
   // get number of pages
   public routesCounter: number = 0;
+  // perform fake routing to not allow url changing between routes
+  protected _fakeRouting: boolean;
 
-  constructor(base: string = "/", routes: TRoute[] = null) {
+  constructor(base: string = "/", routes: TRoute[] = null, fakeRouting = false) {
     this.base = base;
+    this._fakeRouting = fakeRouting;
     routes.forEach((el) => this.addRoute(el));
 
-    this.handlePopState();
-    window.addEventListener("popstate", this.handlePopState.bind(this));
+    this.updateRoute();
+    window.addEventListener("popstate", (e) => {
+      debug("pass dans popstate", e);
+      this.updateRoute(location.pathname, false);
+    });
   }
 
   /**
@@ -58,7 +64,10 @@ export default class RouterManager {
    * - push URL in history
    * - emit selected route object on route-change event (listen by RouterStack)
    */
-  public updateRoute(url: string = window.location.pathname): void {
+  public updateRoute(
+    url: string = window.location.pathname,
+    addToHistory: boolean = true
+  ): void {
     // get matching route depending of current URL
     const matchingRoute: TRoute = this.getRouteFromUrl(url);
 
@@ -74,11 +83,15 @@ export default class RouterManager {
       return;
     }
 
+    if (addToHistory) {
+      this._fakeRouting
+        ? window.history.replaceState(null, null, url)
+        : window.history.pushState(null, null, url);
+      debug(`${this._fakeRouting ? "replaceState" : "pushState"}`, window.history);
+    }
+
     this.previousRoute = this.currentRoute;
     this.currentRoute = matchingRoute;
-
-    // push url in history
-    window.history.pushState(null, null, url);
 
     this.events.emit(ERouterEvent.ROUTE_CHANGE, {
       previousRoute: this.previousRoute,
@@ -113,7 +126,8 @@ export default class RouterManager {
 
       // if current route path match with url
       if (match || childrenMatch) {
-        debug("getRouteFromUrl > this currentRoute match:", { currentRoute, base: this.base, url, pathParser, routeObjMatchWithUrl: match });
+        debug("getRouteFromUrl > this currentRoute match:",
+            { currentRoute, base: this.base, url, pathParser, routeObjMatchWithUrl: match });
         return {
           path: url,
           component: currentRoute.component,
@@ -125,13 +139,6 @@ export default class RouterManager {
         };
       }
     }
-  }
-
-  /**
-   * Handle popState event
-   */
-  protected handlePopState() {
-    this.updateRoute();
   }
 
   /**

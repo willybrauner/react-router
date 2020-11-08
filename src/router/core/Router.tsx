@@ -4,6 +4,7 @@ import React, { createContext, ReactElement, useState } from "react";
 interface IProps {
   base: string;
   routes: TRoute[];
+  fakeRouting?: boolean;
   children: ReactElement;
 }
 
@@ -19,7 +20,7 @@ RouterContext.displayName = "RouterContext";
  */
 const Router = (props: IProps) => {
   const [routerManager] = useState<RouterManager>(
-    () => new RouterManager(props.base, props.routes)
+    () => new RouterManager(props.base, props.routes, props.fakeRouting || false)
   );
 
   return (
