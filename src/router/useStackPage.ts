@@ -54,23 +54,20 @@ export function useStackPage(
 
   // register pages before render
   useLayoutEffect(() => {
-    // build a new page transition object
-    const newPageTransition = {
-      [window.location.pathname]: {
-        componentName,
-        playIn,
-        playOut,
-        rootRef,
-        currentPageIsReady,
-        currentPageIsReadyPromise: () => readyDeferred.promise,
+    // set transitions in current router instance
+    (router.stackPageTransitions as TStackTransitions) = {
+      ...router.stackPageTransitions,
+      ...{
+        [window.location.pathname]: {
+          componentName,
+          playIn,
+          playOut,
+          rootRef,
+          currentPageIsReady,
+          currentPageIsReadyPromise: () => readyDeferred.promise,
+        },
       },
     };
-
-    // set transitions in current router instance
-    router.stackPageTransitions = {
-      ...router.stackPageTransitions,
-      ...newPageTransition,
-    } as TStackTransitions;
 
     debug(`pageTransition list`, router.stackPageTransitions);
   }, [...(pDependencies || [])]);

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 const componentName = "useRoutes";
 const debug = require("debug")(`front:${componentName}`);
 
-export type TRoutesHandles = {
+export type TRoutesHandle = {
   previousRoute: TRoute;
   currentRoute: TRoute;
 };
@@ -19,7 +19,7 @@ export const useRoutes = (cb?: () => void, dep?: any[]) => {
   const [currentRoute, setCurrentRoute] = useState<TRoute>(router.currentRoute);
 
   useEffect(() => {
-    const handleRouteChange = (routes: TRoutesHandles): void => {
+    const handleRouteChange = (routes: TRoutesHandle): void => {
       cb?.();
       setPreviousRoute(routes.previousRoute);
       setCurrentRoute(routes.currentRoute);

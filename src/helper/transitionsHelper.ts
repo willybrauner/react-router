@@ -13,7 +13,7 @@ export const transitionsHelper = (el, show: boolean): Promise<any> => {
       {
         duration: 0.4,
         autoAlpha: show ? 1 : 0,
-        //delay: 0.1,
+        delay: 0.1,
         onComplete: resolve,
       }
     );
