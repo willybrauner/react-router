@@ -30,9 +30,7 @@ function Stack(props: IProps) {
 
   // 1 get routes
   // prettier-ignore
-  const {previousRoute, currentRoute, setPreviousRoute, setCurrentRoute} = useRoutes(() => {
-    //setPageIndex(pageIndex + 1);
-  });
+  const {previousRoute, currentRoute, setPreviousRoute, setCurrentRoute} = useRoutes();
 
   // 2. animate when route state changed
   // need to be "layoutEffect" to execute transitions before render to avoid screen "clip"
