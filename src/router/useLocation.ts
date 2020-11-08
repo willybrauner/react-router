@@ -1,5 +1,5 @@
 import { useRouter } from "./useRouter";
-import { useRoutes } from "./useRoute";
+import { useRoutes } from "./useRoutes";
 
 /**
  * useLocation

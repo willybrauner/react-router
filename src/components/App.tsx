@@ -48,17 +48,19 @@ const manageTransitions = ({
   return new Promise(async (resolve) => {
     const previousPageRef = previousPage?.rootRef.current;
     const currentPageRef = currentPage?.rootRef.current;
+
     debug("ref", {
       oldPageRef: previousPageRef,
       newPageRef: currentPageRef,
     });
+
     if (currentPageRef != null) currentPageRef.style.visibility = "hidden";
-    await previousPage?.playOut?.();
+    await previousPage?.playOut();
 
     destroyPreviousPageComponent();
 
     if (currentPageRef != null) currentPageRef.style.visibility = "visible";
-    await currentPage?.playIn?.();
+    await currentPage?.playIn();
 
     resolve();
   });

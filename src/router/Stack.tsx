@@ -51,7 +51,7 @@ function Stack(props: IProps) {
   }, [currentRoute, previousRoute, pageIndex]);
 
   // 2. animate when route state changed
-  // need to be "layoutEffect" to execute transitions before render to avoid a "clip"
+  // need to be "layoutEffect" to execute transitions before render to avoid screen "clip"
   useLayoutEffect(() => {
     // emit animating state
     router.events.emit(ERouterEvent.ROUTER_STACK_IS_ANIMATING, true);
@@ -66,6 +66,8 @@ function Stack(props: IProps) {
         destroyPreviousPageComponent,
       })
       .then(() => {
+        // destroy previous page in case manageTransitions doesn't fired this function
+        destroyPreviousPageComponent();
         router.events.emit(ERouterEvent.ROUTER_STACK_IS_ANIMATING, false);
       });
   }, [currentRoute]);
