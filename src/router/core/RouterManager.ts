@@ -2,6 +2,7 @@ import { Path } from "path-parser";
 const debug = require("debug")("front:Router");
 import { ReactNode } from "react";
 import { EventEmitter } from "events";
+import { TStackTransitions } from "../useStackPage";
 
 export type TRoute = {
   path: string;
@@ -33,6 +34,16 @@ export default class RouterManager {
   public routesCounter: number = 0;
   // perform fake routing to not allow url changing between routes
   protected _fakeRouting: boolean;
+
+  // register
+  protected _stackPageTransitions: TStackTransitions;
+  set stackPageTransitions(transitions: TStackTransitions) {
+    this._stackPageTransitions = transitions;
+    debug("this._transitions", this._stackPageTransitions);
+  }
+  get stackPageTransitions(): TStackTransitions {
+    return this._stackPageTransitions;
+  }
 
   constructor(base: string = "/", routes: TRoute[] = null, fakeRouting = false) {
     this.base = base;

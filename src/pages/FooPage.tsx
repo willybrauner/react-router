@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { usePageTransition } from "../router/usePageTransition";
+import { useStackPage } from "../router/useStackPage";
 import { transitionsHelper } from "../helper/transitionsHelper";
 
 const componentName: string = "FooPage";
@@ -28,7 +28,7 @@ const FooPage = () => {
    * Minimal register should be: usePageRegister({ componentName, rootRef });
    * (remove playIn and playOut if not use)
    */
-  usePageTransition({ componentName, rootRef, playIn, playOut });
+  useStackPage({ componentName, rootRef, playIn, playOut });
 
   return (
     <div className={componentName} ref={rootRef}>

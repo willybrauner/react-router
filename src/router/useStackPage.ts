@@ -1,11 +1,12 @@
 import { MutableRefObject, useEffect, useLayoutEffect, useMemo } from "react";
-const debug = require("debug")("front:usePageTransition");
+import { useRouter } from "./useRouter";
+const debug = require("debug")("front:useStack");
 
-export type TPageTransition = {
-  [currentPath: string]: TPageTransitionObject;
+export type TStackTransitions = {
+  [currentPath: string]: TStackTransitionObject;
 };
 
-export type TPageTransitionObject = {
+export type TStackTransitionObject = {
   // component name
   componentName: string;
   // component ref
@@ -21,32 +22,21 @@ export type TPageTransitionObject = {
 };
 
 /**
- * FIXME pourrait être dans le Router
- * Pages register accessor
- * All pages properties were store in "pageTransition.list"
+ * @name useStackPage
+ * @description Allow set page properties in router
  */
-export const pageTransition = {
-  set register(pPage: TPageTransitionObject | Object) {
-    this.list = pPage;
-  },
-  list: {} as TPageTransition,
-};
-
-/**
- * @name usePageTransition
- * @description This Hook allow to register each page properties
- * This pages stack list can be call from everywhere
- */
-export function usePageTransition(
+export function useStackPage(
   {
     componentName,
     playIn = () => Promise.resolve(),
     playOut = () => Promise.resolve(),
     rootRef,
     currentPageIsReady = true,
-  }: TPageTransitionObject,
+  }: TStackTransitionObject,
   pDependencies?: any[]
 ) {
+  const router = useRouter();
+
   // Page is ready deferred promise
   // Create a promise and get resolve anywhere
   const readyDeferred = useMemo(() => {
@@ -76,12 +66,12 @@ export function usePageTransition(
       },
     };
 
-    // merge new object on page transition object
-    pageTransition.register = {
-      ...pageTransition.list,
+    // set transitions in current router instance
+    router.stackPageTransitions = {
+      ...router.stackPageTransitions,
       ...newPageTransition,
-    };
+    } as TStackTransitions;
 
-    debug(`pageTransition list`, pageTransition.list);
+    debug(`pageTransition list`, router.stackPageTransitions);
   }, [...(pDependencies || [])]);
 }

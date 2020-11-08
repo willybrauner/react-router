@@ -20,9 +20,9 @@ sortir du router les fonctions non essentielles au routing
 - [ ] sortir is first page (surtout si il y a multistack)
 - [ ] rendre la stack optionnelle en créant un composant `<Route path />` ?
 
-## usePageTransition
+## useStackPage
 
-- [ ] renommer le hook `useStack` ? car le hook est intrasecment lié à <Stack />
+- [ ] renommer le hook `useStackPage` ? car le hook est intrasecment lié à <Stack />
 - [ ] déplacer pageTransition.list dans l'instance router en cours
 - [ ] manageTransitions : comme la suppression de la previous page, permettre la creation de la current page.
 - [ ] rendre optionnel l'utilisation du hook ? (comment faire pour récupérer la ref de la page ?)
@@ -32,7 +32,7 @@ sortir du router les fonctions non essentielles au routing
 - `useRouter` : retourne l'instance du router courant
 - `useLocation` : retourne dynamiquement `[path courant + change location function]`
 - `useRoutes` : retourne dynamiquement `{ previousRoute, currentRoute }`
-- `useStack` : permet d'enregister un composant dans la page avec ses transitions
+- `useStackPage` : permet d'enregister un composant dans la page avec ses transitions
 
 ## Credits
 

@@ -24,14 +24,7 @@ function Link(props: IProps) {
     props.onClick?.();
   };
 
-  useEffect(() => {
-    debug("link", location, props.href);
-  }, [location]);
-
-  const isActive = useMemo(() => location === props.href, [
-    location,
-    props.href,
-  ]);
+  const isActive = useMemo(() => location === props.href, [location, props.href]);
 
   return (
     <a

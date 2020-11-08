@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { transitionsHelper } from "../helper/transitionsHelper";
-import { usePageTransition } from "../router/usePageTransition";
+import { useStackPage } from "../router/useStackPage";
 import { useLocation } from "../router/useLocation";
 
 interface IProps {
@@ -19,29 +19,14 @@ function ArticlePage(props: IProps) {
   debug("params", props);
   const rootRef = useRef(null);
 
-  /**
-   * playIn page transition
-   * (remove this example if not use)
-   */
-  const playIn = (): Promise<any> => {
-    return transitionsHelper(rootRef.current, true);
-  };
+  useStackPage({
+    componentName,
+    rootRef,
+    playIn: () => transitionsHelper(rootRef.current, true),
+    playOut: () => transitionsHelper(rootRef.current, false),
+  });
 
-  /**
-   * playOut page transition
-   * (remove this example if not use)
-   */
-  const playOut = (): Promise<any> => {
-    return transitionsHelper(rootRef.current, false);
-  };
-
-  /**
-   * Register page for ViewStack
-   * NOTE: each page of ViewStack need to be register to work.
-   * Minimal register should be: usePageRegister({ componentName, rootRef });
-   * (remove playIn and playOut if not use)
-   */
-  usePageTransition({ componentName, rootRef, playIn, playOut });
+  // test of redirection
   const [location, setLocation] = useLocation();
 
   return (

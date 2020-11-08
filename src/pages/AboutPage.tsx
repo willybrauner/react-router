@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import Router from "../router/core/Router";
-import { usePageTransition } from "../router/usePageTransition";
+import { useStackPage } from "../router/useStackPage";
 import { transitionsHelper } from "../helper/transitionsHelper";
 import Link from "../router/Link";
 import Stack, { TManageTransitions } from "../router/Stack";
@@ -12,33 +12,16 @@ const debug = require("debug")(`front:${componentName}`);
 const AboutPage = () => {
   const rootRef = useRef(null);
 
-  /**
-   * playIn page transition
-   * (remove this example if not use)
-   */
-  const playIn = (): Promise<any> => {
-    return transitionsHelper(rootRef.current, true);
-  };
-
-  /**
-   * playOut page transition
-   * (remove this example if not use)
-   */
-  const playOut = (): Promise<any> => {
-    return transitionsHelper(rootRef.current, false);
-  };
-
-  /**
-   * Register page for ViewStack
-   * NOTE: each page of ViewStack need to be register to work.
-   * Minimal register should be: usePageRegister({ componentName, rootRef });
-   * (remove playIn and playOut if not use)
-   */
-  usePageTransition({ componentName, rootRef, playIn, playOut });
+  useStackPage({
+    componentName,
+    rootRef,
+    playIn: () => transitionsHelper(rootRef.current, true),
+    playOut: () => transitionsHelper(rootRef.current, false),
+  });
 
   return (
     <div className={componentName} ref={rootRef}>
-      {componentName}
+      About
       {/*<Router*/}
       {/*  routes={routesList.find((el) => el.path == "/about").children}*/}
       {/*  // FIXME pas utilisé pour le moment dans RouterManager*/}
