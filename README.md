@@ -22,8 +22,8 @@ sortir du router les fonctions non essentielles au routing
 
 ## useStackPage
 
-- [ ] renommer le hook `useStackPage` ? car le hook est intrasecment lié à <Stack />
-- [ ] déplacer pageTransition.list dans l'instance router en cours
+- [x] renommer le hook `useStackPage` ? car le hook est intrasecment lié à <Stack />
+- [x] déplacer pageTransition.list dans l'instance router en cours
 - [ ] manageTransitions : comme la suppression de la previous page, permettre la creation de la current page.
 - [ ] rendre optionnel l'utilisation du hook ? (comment faire pour récupérer la ref de la page ?)
 

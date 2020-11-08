@@ -19,20 +19,17 @@ export const useRoutes = (cb?: () => void, dep?: any[]) => {
   const [currentRoute, setCurrentRoute] = useState<TRoute>(router.currentRoute);
 
   useEffect(() => {
-    const handleRouteChange = (routes: {
-      previousRoute: TRoute;
-      currentRoute: TRoute;
-    }): void => {
+    const handleRouteChange = (routes: TRoutesHandles): void => {
+      cb?.();
       setPreviousRoute(routes.previousRoute);
       setCurrentRoute(routes.currentRoute);
-      cb?.();
       debug("emitted route object from route-change event", routes);
     };
     router.events.on(ERouterEvent.ROUTE_CHANGE, handleRouteChange);
     return () => {
       router.events.off(ERouterEvent.ROUTE_CHANGE, handleRouteChange);
     };
-  }, [currentRoute, previousRoute, ...(dep || [])]);
+  }, [...(dep || [])]);
 
   return {
     previousRoute,

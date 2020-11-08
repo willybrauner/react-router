@@ -7,7 +7,7 @@ import { useRoutes } from "./useRoutes";
 export type TManageTransitions = {
   previousPage: TStackTransitionObject;
   currentPage: TStackTransitionObject;
-  destroyPreviousPageComponent: () => void;
+  unmountPreviousPage: () => void;
 };
 
 interface IProps {
@@ -74,20 +74,17 @@ function Stack(props: IProps) {
     router.events.emit(ERouterEvent.ROUTER_STACK_IS_ANIMATING, true);
 
     // clear previous route state, will remove element from DOM
-    const destroyPreviousPageComponent = () => setPreviousRoute(null);
-    debug(
-      "pageTransition.list?.[previousRoute?.path]",
-      router.stackPageTransitions?.[previousRoute?.path]
-    );
+    const unmountPreviousPage = () => setPreviousRoute(null);
+
     props
       .manageTransitions({
         previousPage: router.stackPageTransitions?.[previousRoute?.path],
         currentPage: router.stackPageTransitions?.[currentRoute?.path],
-        destroyPreviousPageComponent,
+        unmountPreviousPage,
       })
       .then(() => {
         // destroy previous page in case manageTransitions doesn't fired this function
-        destroyPreviousPageComponent();
+        unmountPreviousPage();
         router.events.emit(ERouterEvent.ROUTER_STACK_IS_ANIMATING, false);
       });
   }, [currentRoute]);

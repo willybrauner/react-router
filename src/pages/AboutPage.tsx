@@ -52,12 +52,12 @@ export default AboutPage;
  * Manage Router Stack Transitions
  * @param previousPage
  * @param currentPage
- * @param destroyPreviousPageComponent
+ * @param unmountPreviousPage
  */
 const manageTransitions = ({
   previousPage,
   currentPage,
-  destroyPreviousPageComponent,
+  unmountPreviousPage,
 }: TManageTransitions): Promise<any> => {
   return new Promise(async (resolve) => {
     const previousPageRef = previousPage?.rootRef.current;
@@ -68,7 +68,7 @@ const manageTransitions = ({
     if (currentPageRef != null) currentPageRef.style.visibility = "hidden";
     await previousPage?.playOut?.();
 
-    destroyPreviousPageComponent();
+    unmountPreviousPage();
 
     if (currentPageRef != null) currentPageRef.style.visibility = "visible";
     await currentPage?.playIn?.();
