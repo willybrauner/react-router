@@ -1,19 +1,20 @@
 import { Path } from "path-parser";
-const debug = require("debug")("front:Router");
-import { ReactNode } from "react";
+const debug = require("debug")("front:RouterManager");
+import React from "react";
 import { EventEmitter } from "events";
-import { TStackTransitions } from "../useStackPage";
+import { TStackTransitions } from "../useStack";
 
 export type TRoute = {
   path: string;
-  component: ReactNode;
+  component: React.ComponentType<any>;
   parser?: Path;
   props?: { [x: string]: any };
   children?: TRoute[];
 };
 
 export enum ERouterEvent {
-  ROUTE_CHANGE = "route-change",
+  PREVIOUS_ROUTE_CHANGE = "previous-route-change",
+  CURRENT_ROUTE_CHANGE = "current-route-change",
   ROUTER_STACK_IS_ANIMATING = "router-stack-is-animating",
 }
 
@@ -36,14 +37,8 @@ export default class RouterManager {
   protected _fakeRouting: boolean;
 
   // register
-  protected _stackPageTransitions: TStackTransitions;
-  set stackPageTransitions(transitions: TStackTransitions) {
-    this._stackPageTransitions = transitions;
-    debug("this._transitions", this._stackPageTransitions);
-  }
-  get stackPageTransitions(): TStackTransitions {
-    return this._stackPageTransitions;
-  }
+  //protected _stackPageTransitions;
+  public stackPageTransitions: TStackTransitions;
 
   constructor(base: string = "/", routes: TRoute[] = null, fakeRouting = false) {
     this.base = base;
@@ -94,20 +89,18 @@ export default class RouterManager {
       return;
     }
 
+    this.previousRoute = this.currentRoute;
+    this.currentRoute = matchingRoute;
+
     if (addToHistory) {
       this._fakeRouting
         ? window.history.replaceState(null, null, url)
         : window.history.pushState(null, null, url);
-      debug(`${this._fakeRouting ? "replaceState" : "pushState"}`, window.history);
     }
 
-    this.previousRoute = this.currentRoute;
-    this.currentRoute = matchingRoute;
+    this.events.emit(ERouterEvent.PREVIOUS_ROUTE_CHANGE, this.previousRoute);
+    this.events.emit(ERouterEvent.CURRENT_ROUTE_CHANGE, this.currentRoute);
 
-    this.events.emit(ERouterEvent.ROUTE_CHANGE, {
-      previousRoute: this.previousRoute,
-      currentRoute: this.currentRoute,
-    });
 
     // this can't works if multi stack...
     this.routesCounter++;
@@ -128,7 +121,7 @@ export default class RouterManager {
       // create parser & matcher
       const pathParser: Path = new Path(currentRoute.path);
       const match = pathParser.test(url);
-      debug('match?', !!match, match, currentRoute)
+      // debug('match?', !!match, match, currentRoute)
 
       const childrenMatch: boolean = currentRoute?.children?.some(el => {
         const pathParser: Path = new Path(el.path);

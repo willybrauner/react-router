@@ -1,13 +1,14 @@
-import React, { useLayoutEffect, useMemo, useState } from "react";
-import { ERouterEvent } from "./core/RouterManager";
-import { TStackTransitionObject } from "./useStackPage";
+import React, { useLayoutEffect, useRef, useState } from "react";
+import { TStackTransitionObject } from "./useStack";
 import { useRouter } from "./useRouter";
 import { useRoutes } from "./useRoutes";
+import { TRoute } from "./core/RouterManager";
 
 export type TManageTransitions = {
   previousPage: TStackTransitionObject;
   currentPage: TStackTransitionObject;
-  unmountPreviousPage: () => void;
+  unmountPrev: () => void;
+  mountCurrent: any;
 };
 
 interface IProps {
@@ -21,45 +22,62 @@ const debug = require("debug")(`front:${componentName}`);
 /**
  * @name Stack
  */
+// prettier-ignore
 function Stack(props: IProps) {
   // get current router instance
   const router = useRouter();
 
   // set number index to component instance
-  const [pageIndex, setPageIndex] = useState<number>(0);
+  const [index, setIndex] = useState<number>(0);
 
   // 1 get routes
-  // prettier-ignore
-  const {previousRoute, currentRoute, setPreviousRoute, setCurrentRoute} = useRoutes();
+   const { previousRoute, currentRoute } = useRoutes();
+  const [prev, setPrev] = useState<TRoute>(null);
+  const [curr, setCurr] = useState<TRoute>(currentRoute);
+
+   useLayoutEffect(()=> {
+     setPrev(previousRoute)
+     setCurr(currentRoute);
+     setIndex(index + 1);
+   }, [previousRoute, currentRoute])
+
 
   // 2. animate when route state changed
   // need to be "layoutEffect" to execute transitions before render to avoid screen "clip"
   useLayoutEffect(() => {
-    // emit animating state
-    router.events.emit(ERouterEvent.ROUTER_STACK_IS_ANIMATING, true);
+    debug("prev, curr", { prev, curr })
 
-    props
-      .manageTransitions({
-        previousPage: router.stackPageTransitions?.[previousRoute?.path],
-        currentPage: router.stackPageTransitions?.[currentRoute?.path],
-        unmountPreviousPage: () => setPreviousRoute(null),
-      })
-      .then(() => {
-        router.events.emit(ERouterEvent.ROUTER_STACK_IS_ANIMATING, false);
-        setPageIndex(pageIndex + 1);
-      });
-  }, [previousRoute, currentRoute]);
+    const pageTransitions = router.stackPageTransitions;
 
-  // 3. prepare components
-  const Previous: any = useMemo(() => previousRoute?.component, [previousRoute]);
-  const Current: any = useMemo(() => currentRoute?.component, [currentRoute]);
+    props.manageTransitions({
+      previousPage: pageTransitions?.[prev?.path],
+      currentPage: pageTransitions?.[curr?.path],
+      mountCurrent: () => {
+        //setCurr(currentRoute);
+      },
+      unmountPrev: () => setPrev(null),
+    }).then(() => {
+      debug('manageTransitions promise resolve');
+    })
+  }, [index]);
+
 
   return (
     <div className={componentName}>
-      {Previous && <Previous key={pageIndex - 1} {...(previousRoute?.props || {})} />}
-      {Current && <Current key={pageIndex} {...(currentRoute?.props || {})} />}
+      {prev?.component && (
+        <prev.component
+          key={index - 1}
+          {...(prev.props || {})}
+        />
+      )}
+      {curr?.component && (
+        <curr.component
+          key={index}
+          {...(curr.props || {})}
+        />
+      )}
     </div>
   );
 }
 
-export default React.memo(Stack);
+export default Stack;

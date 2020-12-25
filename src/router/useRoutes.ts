@@ -1,35 +1,34 @@
 import { ERouterEvent, TRoute } from "./core/RouterManager";
 import { useRouter } from "./useRouter";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 const componentName = "useRoutes";
 const debug = require("debug")(`front:${componentName}`);
 
-export type TRoutesHandle = {
-  previousRoute: TRoute;
-  currentRoute: TRoute;
-};
-
 /**
  * useRoutes
  */
-export const useRoutes = (cb?: () => void, dep?: any[]) => {
+export const useRoutes = (cb?: () => void, dep = []) => {
   const router = useRouter();
   const [previousRoute, setPreviousRoute] = useState<TRoute>(null);
   const [currentRoute, setCurrentRoute] = useState<TRoute>(router.currentRoute);
 
-  useEffect(() => {
-    const handleRouteChange = (routes: TRoutesHandle): void => {
-      cb?.();
-      setPreviousRoute(routes.previousRoute);
-      setCurrentRoute(routes.currentRoute);
-      debug("emitted route object from route-change event", routes);
-    };
-    router.events.on(ERouterEvent.ROUTE_CHANGE, handleRouteChange);
+  const handleCurrentRouteChange = (route: TRoute): void => {
+    cb?.();
+    setCurrentRoute(route);
+  };
+  const handlePreviousRouteChange = (route: TRoute): void => {
+    setPreviousRoute(route);
+  };
+
+  useLayoutEffect(() => {
+    router.events.on(ERouterEvent.CURRENT_ROUTE_CHANGE, handleCurrentRouteChange);
+    router.events.on(ERouterEvent.PREVIOUS_ROUTE_CHANGE, handlePreviousRouteChange);
     return () => {
-      router.events.off(ERouterEvent.ROUTE_CHANGE, handleRouteChange);
+      router.events.off(ERouterEvent.CURRENT_ROUTE_CHANGE, handleCurrentRouteChange);
+      router.events.off(ERouterEvent.PREVIOUS_ROUTE_CHANGE, handlePreviousRouteChange);
     };
-  }, [...(dep || [])]);
+  }, dep);
 
   return {
     previousRoute,

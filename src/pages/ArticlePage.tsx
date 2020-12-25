@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { transitionsHelper } from "../helper/transitionsHelper";
-import { useStackPage } from "../router/useStackPage";
+import { useStack } from "../router/useStack";
 import { useLocation } from "../router/useLocation";
 
 interface IProps {
@@ -19,7 +19,7 @@ function ArticlePage(props: IProps) {
   debug("params", props);
   const rootRef = useRef(null);
 
-  useStackPage({
+  useStack({
     componentName,
     rootRef,
     playIn: () => transitionsHelper(rootRef.current, true),

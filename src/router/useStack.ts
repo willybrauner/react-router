@@ -7,34 +7,26 @@ export type TStackTransitions = {
 };
 
 export type TStackTransitionObject = {
-  // component name
   componentName: string;
-  // component ref
   rootRef: MutableRefObject<any>;
-  // playIn page transition promise handler
   playIn?: () => Promise<any>;
-  // playOut page transition promise handler
   playOut?: () => Promise<any>;
-  // page is ready state allow to now if page is ready (data fetching or whatever...)
   currentPageIsReady?: boolean;
-  // wait bool isReady pass to true from promise
   currentPageIsReadyPromise?: () => Promise<any>;
 };
 
 /**
- * @name useStackPage
+ * @name useStack
  * @description Allow set page properties in router
  */
-export function useStackPage(
-  {
-    componentName,
-    playIn = () => Promise.resolve(),
-    playOut = () => Promise.resolve(),
-    rootRef,
-    currentPageIsReady = true,
-  }: TStackTransitionObject,
-  pDependencies?: any[]
-) {
+
+export function useStack({
+  componentName,
+  playIn = () => Promise.resolve(),
+  playOut = () => Promise.resolve(),
+  rootRef,
+  currentPageIsReady = true,
+}: TStackTransitionObject) {
   const router = useRouter();
 
   // Page is ready deferred promise
@@ -55,20 +47,28 @@ export function useStackPage(
   // register pages before render
   useLayoutEffect(() => {
     // set transitions in current router instance
-    (router.stackPageTransitions as TStackTransitions) = {
-      ...router.stackPageTransitions,
-      ...{
-        [window.location.pathname]: {
-          componentName,
-          playIn,
-          playOut,
-          rootRef,
-          currentPageIsReady,
-          currentPageIsReadyPromise: () => readyDeferred.promise,
-        },
+
+    const newPage = {
+      [router.currentRoute.path]: {
+        componentName,
+        playIn,
+        playOut,
+        rootRef,
+        currentPageIsReady,
+        currentPageIsReadyPromise: () => readyDeferred.promise,
       },
     };
+    debug("> newPage", newPage);
+    debug(">> current stackPageTransitions", router.stackPageTransitions);
 
-    debug(`pageTransition list`, router.stackPageTransitions);
-  }, [...(pDependencies || [])]);
+    router.stackPageTransitions = {
+      ...router.stackPageTransitions,
+      ...newPage,
+    };
+
+    debug(
+      `>>>>>> pageTransition list from ${componentName}`,
+      router.stackPageTransitions
+    );
+  }, []);
 }

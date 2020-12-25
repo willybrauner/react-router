@@ -1,9 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Link from "../router/Link";
 import Stack, { TManageTransitions } from "../router/Stack";
-import Router from "../router/core/Router";
-import { routesList } from "../index";
-import { useRouter } from "../router/useRouter";
 
 const componentName = "App";
 const debug = require("debug")(`front:${componentName}`);
@@ -39,28 +36,41 @@ export default App;
  * @param previousPage
  * @param currentPage
  * @param unmountPreviousPage
+ * @param mountCurrent
  */
 const manageTransitions = ({
   previousPage,
   currentPage,
-  unmountPreviousPage,
+  unmountPrev,
+  mountCurrent,
 }: TManageTransitions): Promise<any> => {
   return new Promise(async (resolve) => {
     const previousPageRef = previousPage?.rootRef.current;
     const currentPageRef = currentPage?.rootRef.current;
 
-    debug("ref", {
+    debug("> ref", {
       oldPageRef: previousPageRef,
       newPageRef: currentPageRef,
     });
 
-    if (currentPageRef != null) currentPageRef.style.visibility = "hidden";
-    await previousPage?.playOut();
+    //if (currentPageRef != null) currentPageRef.style.visibility = "hidden";
 
-    unmountPreviousPage();
+    if (previousPage) {
+      debug("> playOut prev...");
+      await previousPage.playOut();
+      debug("> playOut prev ended");
+      debug("unmount prev");
+      unmountPrev();
+    }
 
-    if (currentPageRef != null) currentPageRef.style.visibility = "visible";
-    await currentPage?.playIn();
+    //if (currentPageRef != null) currentPageRef.style.visibility = "visible";
+
+    debug("> mount current");
+    //await mountCurrent();
+
+    debug("> playIn curr...");
+    currentPage && (await currentPage.playIn());
+    debug("> playIn curr ended");
 
     resolve();
   });

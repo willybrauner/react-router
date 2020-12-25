@@ -1,5 +1,5 @@
-import React, { useRef } from "react";
-import { useStackPage } from "../router/useStackPage";
+import React, { useEffect, useLayoutEffect, useRef } from "react";
+import { useStack } from "../router/useStack";
 import { transitionsHelper } from "../helper/transitionsHelper";
 const debug = require("debug")("front:HomePage");
 
@@ -7,7 +7,11 @@ const componentName: string = "HomePage";
 const HomePage = (props) => {
   const rootRef = useRef(null);
 
-  useStackPage({
+  // useLayoutEffect(()=> {
+  //   debug('HOME MOUNT', rootRef.current);
+  // },[])
+
+  useStack({
     componentName,
     rootRef,
     playIn: () => transitionsHelper(rootRef.current, true),

@@ -1,6 +1,5 @@
-import React, { ReactNode, useEffect, useMemo } from "react";
+import React, { ReactNode, useMemo } from "react";
 import { useLocation } from "./useLocation";
-import { useRouter } from "./useRouter";
 
 interface IProps {
   children: ReactNode;
