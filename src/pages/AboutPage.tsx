@@ -6,6 +6,8 @@ import Link from "../router/Link";
 import Stack, { TManageTransitions } from "../router/Stack";
 import FooPage from "./FooPage";
 import BarPage from "./BarPage";
+import { useLocation } from "../router/useLocation";
+import { useRouter } from "../router/useRouter";
 
 const componentName: string = "AboutPage";
 const debug = require("debug")(`front:${componentName}`);
@@ -23,14 +25,7 @@ const AboutPage = () => {
   return (
     <div className={componentName} ref={rootRef}>
       About
-      <Router
-        routes={[
-          { path: "/about/foo", component: FooPage },
-          { path: "/about/bar", component: BarPage },
-        ]}
-        base={process.env.APP_BASE}
-        id={2}
-      >
+      <AboutPageNestedRouter base={"/about/"}>
         <div className={componentName}>
           <nav>
             <ul>
@@ -44,8 +39,35 @@ const AboutPage = () => {
           </nav>
           <Stack manageTransitions={manageTransitions} key={"stack-2"} />
         </div>
-      </Router>
+      </AboutPageNestedRouter>
     </div>
+  );
+};
+
+/**
+ * AboutPage nested router
+ * @param props
+ */
+const AboutPageNestedRouter = (props) => {
+  const router = useRouter();
+  const [parentLocation] = useLocation();
+
+  const nestedBase = `${router.base}${props.base}`.replace("//", "/");
+  debug("nestedBase", nestedBase);
+  //debug("parentLocation", parentLocation);
+
+  return (
+    <Router
+      base={nestedBase}
+      key={nestedBase}
+      routes={[
+        { path: "/foo", component: FooPage },
+        { path: "/bar", component: BarPage },
+      ]}
+      id={2}
+    >
+      {props.children}
+    </Router>
   );
 };
 

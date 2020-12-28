@@ -53,25 +53,7 @@ const BarPage = () => {
 
   return (
     <div className={componentName} ref={rootRef}>
-      About
-      <Router
-        routes={[
-          { path: "/about/bar/yolo", component: YoloPage },
-        ]}
-        base={process.env.APP_BASE}
-        id={3}
-      >
-        <div className={componentName}>
-          <nav>
-            <ul>
-              <li>
-                <Link href={"/about/bar/yolo"}>Yolo</Link>{" "}
-              </li>
-            </ul>
-          </nav>
-          <Stack manageTransitions={manageTransitions} key={"stack-3"} />
-        </div>
-      </Router>
+      Bar
     </div>
   );
 };
