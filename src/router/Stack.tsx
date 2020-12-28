@@ -56,7 +56,7 @@ function Stack(props: IProps) {
   // need to be "layoutEffect" to execute transitions before render to avoid screen "clip"
   useLayoutEffect(() => {
 
-    const pageTransitions = router.stackPageTransitions;
+    const pageTransitions  = router.stackPageTransitions;
 
     debug("oldPage Transition", pageTransitions?.[previousRoute?.path])
 
@@ -72,7 +72,8 @@ function Stack(props: IProps) {
       debug('manageTransitions promise resolve');
         setPreviousRoute(null);
     })
-  }, [index]);
+    
+  }, [currentRoute]);
 
 
   return (

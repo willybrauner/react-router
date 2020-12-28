@@ -46,7 +46,7 @@ const AboutPage = () => {
   );
 };
 
-export default AboutPage;
+export default React.memo(AboutPage);
 
 // /**
 //  * Manage Router Stack Transitions

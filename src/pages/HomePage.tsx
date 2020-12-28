@@ -7,9 +7,9 @@ const componentName: string = "HomePage";
 const HomePage = (props) => {
   const rootRef = useRef(null);
 
-  // useLayoutEffect(()=> {
-  //   debug('HOME MOUNT', rootRef.current);
-  // },[])
+  useLayoutEffect(()=> {
+    debug('HOME MOUNT', rootRef.current);
+  },[])
 
   useStack({
     componentName,
@@ -25,4 +25,4 @@ const HomePage = (props) => {
   );
 };
 
-export default HomePage;
+export default React.memo(HomePage);
