@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useRef, useState } from "react";
 import { TStackTransitionObject } from "./useStack";
 import { useRouter } from "./useRouter";
 import { useRoutes } from "./useRoutes";
-import { TRoute } from "./core/RouterManager";
+import { ERouterEvent, TRoute } from "./core/RouterManager";
 
 export type TManageTransitions = {
   previousPage: TStackTransitionObject;
@@ -31,49 +31,62 @@ function Stack(props: IProps) {
   const [index, setIndex] = useState<number>(0);
 
   // 1 get routes
-   const { previousRoute, currentRoute } = useRoutes();
-  const [prev, setPrev] = useState<TRoute>(null);
-  const [curr, setCurr] = useState<TRoute>(currentRoute);
+  const [previousRoute, setPreviousRoute] = useState<TRoute>(null);
+  const [currentRoute, setCurrentRoute] = useState<TRoute>(router.currentRoute);
 
-   useLayoutEffect(()=> {
-     setPrev(previousRoute)
-     setCurr(currentRoute);
-     setIndex(index + 1);
-   }, [previousRoute, currentRoute])
+  const handleCurrentRouteChange = (route: TRoute): void => {
+    setIndex(index+1)
+    setCurrentRoute(route);
+  };
+  const handlePreviousRouteChange = (route: TRoute): void => {
+    debug('pass la dedans');
+    setPreviousRoute(route);
+  };
 
+  useLayoutEffect(() => {
+    router.events.on(ERouterEvent.CURRENT_ROUTE_CHANGE, handleCurrentRouteChange);
+    router.events.on(ERouterEvent.PREVIOUS_ROUTE_CHANGE, handlePreviousRouteChange);
+    return () => {
+      router.events.off(ERouterEvent.CURRENT_ROUTE_CHANGE, handleCurrentRouteChange);
+      router.events.off(ERouterEvent.PREVIOUS_ROUTE_CHANGE, handlePreviousRouteChange);
+    };
+  }, [index]);
 
   // 2. animate when route state changed
   // need to be "layoutEffect" to execute transitions before render to avoid screen "clip"
   useLayoutEffect(() => {
-    debug("prev, curr", { prev, curr })
 
     const pageTransitions = router.stackPageTransitions;
 
+    debug("oldPage Transition", pageTransitions?.[previousRoute?.path])
+
     props.manageTransitions({
-      previousPage: pageTransitions?.[prev?.path],
-      currentPage: pageTransitions?.[curr?.path],
+      previousPage: pageTransitions?.[previousRoute?.path],
+      currentPage: pageTransitions?.[currentRoute?.path],
       mountCurrent: () => {
-        //setCurr(currentRoute);
+        //setCurrent(currentRoute);
       },
-      unmountPrev: () => setPrev(null),
+      unmountPrev: () => {
+      }
     }).then(() => {
       debug('manageTransitions promise resolve');
+        setPreviousRoute(null);
     })
   }, [index]);
 
 
   return (
     <div className={componentName}>
-      {prev?.component && (
-        <prev.component
+      {previousRoute?.component && (
+        <previousRoute.component
           key={index - 1}
-          {...(prev.props || {})}
+          {...(previousRoute.props || {})}
         />
       )}
-      {curr?.component && (
-        <curr.component
+      {currentRoute?.component && (
+        <currentRoute.component
           key={index}
-          {...(curr.props || {})}
+          {...(currentRoute.props || {})}
         />
       )}
     </div>

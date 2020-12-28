@@ -53,7 +53,7 @@ const manageTransitions = ({
       newPageRef: currentPageRef,
     });
 
-    //if (currentPageRef != null) currentPageRef.style.visibility = "hidden";
+    if (currentPageRef != null) currentPageRef.style.visibility = "hidden";
 
     if (previousPage) {
       debug("> playOut prev...");
@@ -63,10 +63,10 @@ const manageTransitions = ({
       unmountPrev();
     }
 
-    //if (currentPageRef != null) currentPageRef.style.visibility = "visible";
+    if (currentPageRef != null) currentPageRef.style.visibility = "visible";
 
-    debug("> mount current");
-    //await mountCurrent();
+    //debug("> mount current");
+    // mountCurrent();
 
     debug("> playIn curr...");
     currentPage && (await currentPage.playIn());

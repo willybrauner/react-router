@@ -58,8 +58,8 @@ export function useStack({
         currentPageIsReadyPromise: () => readyDeferred.promise,
       },
     };
-    debug("> newPage", newPage);
-    debug(">> current stackPageTransitions", router.stackPageTransitions);
+    //debug("> newPage", newPage);
+    //debug(">> current stackPageTransitions", router.stackPageTransitions);
 
     router.stackPageTransitions = {
       ...router.stackPageTransitions,
