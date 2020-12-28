@@ -35,11 +35,10 @@ function Stack(props: IProps) {
   const [currentRoute, setCurrentRoute] = useState<TRoute>(router.currentRoute);
 
   const handleCurrentRouteChange = (route: TRoute): void => {
-    setIndex(index+1)
+    setIndex(index + 1)
     setCurrentRoute(route);
   };
   const handlePreviousRouteChange = (route: TRoute): void => {
-    debug('pass la dedans');
     setPreviousRoute(route);
   };
 
@@ -64,13 +63,12 @@ function Stack(props: IProps) {
       previousPage: pageTransitions?.[previousRoute?.path],
       currentPage: pageTransitions?.[currentRoute?.path],
       mountCurrent: () => {
-        //setCurrent(currentRoute);
       },
       unmountPrev: () => {
+        setPreviousRoute(null);
       }
     }).then(() => {
       debug('manageTransitions promise resolve');
-        setPreviousRoute(null);
     })
     
   }, [currentRoute]);
