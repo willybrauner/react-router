@@ -47,7 +47,7 @@ const manageTransitions = ({
     const currentPageRef = currentPage?.rootRef.current;
     debug("> ref", { previousPageRef, currentPageRef });
 
-    currentPageRef.style.visibility = "hidden";
+    if (currentPageRef) currentPageRef.style.visibility = "hidden";
 
     if (previousPage) {
       await previousPage.playOut();
@@ -57,9 +57,9 @@ const manageTransitions = ({
       debug("previousPage unmount");
     }
 
-    currentPageRef.style.visibility = "visible";
+    if (currentPageRef) currentPageRef.style.visibility = "visible";
 
-    await currentPage.playIn();
+    await currentPage?.playIn();
     debug("> currentPage playIn ended");
 
     resolve();

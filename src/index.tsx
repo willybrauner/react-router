@@ -6,6 +6,8 @@ import AboutPage from "./pages/AboutPage";
 import ArticlePage from "./pages/ArticlePage";
 import App from "./components/App";
 import Router from "./router/core/Router";
+import FooPage from "./pages/FooPage";
+import BarPage from "./pages/BarPage";
 
 const debug = require("debug")(`front:index`);
 
@@ -26,7 +28,7 @@ export const routesList: TRoute[] = [
     //     path: "/about/bar",
     //     component: BarPage,
     //   },
-    // ],
+    //],
   },
   {
     path: "/blog/:id",

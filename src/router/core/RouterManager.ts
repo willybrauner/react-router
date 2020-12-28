@@ -18,6 +18,8 @@ export enum ERouterEvent {
   ROUTER_STACK_IS_ANIMATING = "router-stack-is-animating",
 }
 
+let ROUTER_INSTANCE_LENGTH = 0;
+
 export default class RouterManager {
   // base url
   public base: string;
@@ -41,6 +43,8 @@ export default class RouterManager {
   public stackPageTransitions: TStackTransitions;
 
   constructor(base: string = "/", routes: TRoute[] = null, fakeRouting = false) {
+    ROUTER_INSTANCE_LENGTH++;
+
     this.base = base;
     this._fakeRouting = fakeRouting;
     routes.forEach((el) => this.addRoute(el));
@@ -81,10 +85,10 @@ export default class RouterManager {
       debug("updateRoute > No matching route.", { matchingRoute, url });
     }
 
-    if (this.currentRoute?.path === matchingRoute.path) {
+    if (this.currentRoute?.path === matchingRoute?.path) {
       debug("updateRoute > This is the same URL, return.", {
         currentRoutePath: this.currentRoute?.path,
-        matchingRoutePath: matchingRoute.path,
+        matchingRoutePath: matchingRoute?.path,
       });
       return;
     }
@@ -100,7 +104,6 @@ export default class RouterManager {
 
     this.events.emit(ERouterEvent.PREVIOUS_ROUTE_CHANGE, this.previousRoute);
     this.events.emit(ERouterEvent.CURRENT_ROUTE_CHANGE, this.currentRoute);
-
 
     // this can't works if multi stack...
     this.routesCounter++;
@@ -120,16 +123,26 @@ export default class RouterManager {
 
       // create parser & matcher
       const pathParser: Path = new Path(currentRoute.path);
-      const match = pathParser.test(url);
-      // debug('match?', !!match, match, currentRoute)
 
-      const childrenMatch: boolean = currentRoute?.children?.some(el => {
-        const pathParser: Path = new Path(el.path);
-        return  pathParser.test(url);
-      })
+      const currentUrl = `${this.base}${url}`.replace('//', "/");
+      debug("this.base",this.base)
+      debug(`currentUrl ${currentUrl} match with ${currentRoute.path} ?`);
 
-      // if current route path match with url
-      if (match || childrenMatch) {
+      const specificPartOfUrl = `${this.base}${url.split('/')[ROUTER_INSTANCE_LENGTH]}`;
+      debug(`specificPartOfUrl ${specificPartOfUrl} match with ${currentRoute.path} ?`);
+
+      // if url match with current route path
+      // or if 1rst part of url match with  current route path
+      let match = pathParser.test(currentUrl) || pathParser.test(specificPartOfUrl);
+
+      // let urlToCheck:string;
+      // for (let i = 0; i < ROUTER_INSTANCE_LENGTH; i++) {
+      //
+      // }
+
+      debug('match?', !!match, match, currentRoute)
+      // if current route path match with one url
+      if (match) {
         debug("getRouteFromUrl > this currentRoute match:",
             { currentRoute, base: this.base, url, pathParser, routeObjMatchWithUrl: match });
         return {
