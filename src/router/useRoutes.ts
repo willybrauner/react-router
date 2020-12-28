@@ -10,7 +10,7 @@ const debug = require("debug")(`front:${componentName}`);
  */
 export const useRoutes = (cb?: () => void, dep = []) => {
   const router = useRouter();
-  const [previousRoute, setPreviousRoute] = useState<TRoute>(null);
+  const [previousRoute, setPreviousRoute] = useState<TRoute>(router.previousRoute);
   const [currentRoute, setCurrentRoute] = useState<TRoute>(router.currentRoute);
 
   const handleCurrentRouteChange = (route: TRoute): void => {
@@ -18,6 +18,7 @@ export const useRoutes = (cb?: () => void, dep = []) => {
     setCurrentRoute(route);
   };
   const handlePreviousRouteChange = (route: TRoute): void => {
+    debug('handle prev route ', route)
     setPreviousRoute(route);
   };
 

@@ -1,14 +1,12 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { TStackTransitionObject } from "./useStack";
 import { useRouter } from "./useRouter";
 import { useRoutes } from "./useRoutes";
-import { ERouterEvent, TRoute } from "./core/RouterManager";
 
 export type TManageTransitions = {
   previousPage: TStackTransitionObject;
   currentPage: TStackTransitionObject;
   unmountPrev: () => void;
-  mountCurrent: any;
 };
 
 interface IProps {
@@ -31,48 +29,25 @@ function Stack(props: IProps) {
   const [index, setIndex] = useState<number>(0);
 
   // 1 get routes
-  const [previousRoute, setPreviousRoute] = useState<TRoute>(null);
-  const [currentRoute, setCurrentRoute] = useState<TRoute>(router.currentRoute);
-
-  const handleCurrentRouteChange = (route: TRoute): void => {
+  const {previousRoute, setPreviousRoute, currentRoute} = useRoutes(()=> {
     setIndex(index + 1)
-    setCurrentRoute(route);
-  };
-  const handlePreviousRouteChange = (route: TRoute): void => {
-    setPreviousRoute(route);
-  };
-
-  useLayoutEffect(() => {
-    router.events.on(ERouterEvent.CURRENT_ROUTE_CHANGE, handleCurrentRouteChange);
-    router.events.on(ERouterEvent.PREVIOUS_ROUTE_CHANGE, handlePreviousRouteChange);
-    return () => {
-      router.events.off(ERouterEvent.CURRENT_ROUTE_CHANGE, handleCurrentRouteChange);
-      router.events.off(ERouterEvent.PREVIOUS_ROUTE_CHANGE, handlePreviousRouteChange);
-    };
-  }, [index]);
+  }, [index])
 
   // 2. animate when route state changed
   // need to be "layoutEffect" to execute transitions before render to avoid screen "clip"
   useLayoutEffect(() => {
-
-    const pageTransitions  = router.stackPageTransitions;
-
-    debug("oldPage Transition", pageTransitions?.[previousRoute?.path])
+    const pageTransitions = router.stackPageTransitions;
 
     props.manageTransitions({
       previousPage: pageTransitions?.[previousRoute?.path],
       currentPage: pageTransitions?.[currentRoute?.path],
-      mountCurrent: () => {
-      },
       unmountPrev: () => {
         setPreviousRoute(null);
       }
     }).then(() => {
       debug('manageTransitions promise resolve');
     })
-    
   }, [currentRoute]);
-
 
   return (
     <div className={componentName}>

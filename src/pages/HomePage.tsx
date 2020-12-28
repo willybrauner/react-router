@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { useStack } from "../router/useStack";
 import { transitionsHelper } from "../helper/transitionsHelper";
 const debug = require("debug")("front:HomePage");
@@ -6,10 +6,6 @@ const debug = require("debug")("front:HomePage");
 const componentName: string = "HomePage";
 const HomePage = (props) => {
   const rootRef = useRef(null);
-
-  useLayoutEffect(()=> {
-    debug('HOME MOUNT', rootRef.current);
-  },[])
 
   useStack({
     componentName,
@@ -25,4 +21,4 @@ const HomePage = (props) => {
   );
 };
 
-export default React.memo(HomePage);
+export default HomePage;

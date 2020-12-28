@@ -36,41 +36,31 @@ export default App;
  * @param previousPage
  * @param currentPage
  * @param unmountPreviousPage
- * @param mountCurrent
  */
 const manageTransitions = ({
   previousPage,
   currentPage,
   unmountPrev,
-  mountCurrent,
 }: TManageTransitions): Promise<any> => {
   return new Promise(async (resolve) => {
     const previousPageRef = previousPage?.rootRef.current;
     const currentPageRef = currentPage?.rootRef.current;
+    debug("> ref", { previousPageRef, currentPageRef });
 
-    debug("> ref", {
-      oldPageRef: previousPageRef,
-      newPageRef: currentPageRef,
-    });
-
-    if (currentPageRef != null) currentPageRef.style.visibility = "hidden";
+    currentPageRef.style.visibility = "hidden";
 
     if (previousPage) {
-      debug("> playOut prev...");
       await previousPage.playOut();
-      debug("> playOut prev ended");
-      debug("unmount prev");
+      debug("> previousPage playOut ended");
+
       unmountPrev();
+      debug("previousPage unmount");
     }
 
-    if (currentPageRef != null) currentPageRef.style.visibility = "visible";
+    currentPageRef.style.visibility = "visible";
 
-    //debug("> mount current");
-    // mountCurrent();
-
-    debug("> playIn curr...");
-    currentPage && (await currentPage.playIn());
-    debug("> playIn curr ended");
+    await currentPage.playIn();
+    debug("> currentPage playIn ended");
 
     resolve();
   });
