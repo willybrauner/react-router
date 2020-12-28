@@ -28,7 +28,8 @@ const AboutPage = () => {
           { path: "/about/foo", component: FooPage },
           { path: "/about/bar", component: BarPage },
         ]}
-        base={"/"}
+        base={process.env.APP_BASE}
+        id={2}
       >
         <div className={componentName}>
           <nav>

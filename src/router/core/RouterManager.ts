@@ -1,8 +1,8 @@
 import { Path } from "path-parser";
-const debug = require("debug")("front:RouterManager");
 import React from "react";
 import { EventEmitter } from "events";
 import { TStackTransitions } from "../useStack";
+const debug = require("debug")("front:RouterManager");
 
 export type TRoute = {
   path: string;
@@ -15,10 +15,17 @@ export type TRoute = {
 export enum ERouterEvent {
   PREVIOUS_ROUTE_CHANGE = "previous-route-change",
   CURRENT_ROUTE_CHANGE = "current-route-change",
+
+  // TODO add listener to stack and create hook useStackIsAnimating();
   ROUTER_STACK_IS_ANIMATING = "router-stack-is-animating",
 }
 
 let ROUTER_INSTANCE_LENGTH = 0;
+
+/**
+ * TODO
+ * On veut avoir un
+ */
 
 export default class RouterManager {
   // base url
@@ -37,21 +44,27 @@ export default class RouterManager {
   public routesCounter: number = 0;
   // perform fake routing to not allow url changing between routes
   protected _fakeRouting: boolean;
+  protected id: number | string;
 
-  // register
-  //protected _stackPageTransitions;
   public stackPageTransitions: TStackTransitions;
 
-  constructor(base: string = "/", routes: TRoute[] = null, fakeRouting = false) {
+  constructor(
+    base: string = "/",
+    routes: TRoute[] = null,
+    fakeRouting = false,
+    id: number | string = 1
+  ) {
     ROUTER_INSTANCE_LENGTH++;
 
     this.base = base;
     this._fakeRouting = fakeRouting;
+    this.id = id;
+
     routes.forEach((el) => this.addRoute(el));
 
     this.updateRoute();
     window.addEventListener("popstate", (e) => {
-      debug("pass dans popstate", e);
+      debug(this.id, "pass dans popstate", e);
       this.updateRoute(location.pathname, false);
     });
   }
@@ -82,11 +95,11 @@ export default class RouterManager {
     const matchingRoute: TRoute = this.getRouteFromUrl(url);
 
     if (!matchingRoute) {
-      debug("updateRoute > No matching route.", { matchingRoute, url });
+      debug(this.id, "updateRoute > No matching route.", { matchingRoute, url });
     }
 
     if (this.currentRoute?.path === matchingRoute?.path) {
-      debug("updateRoute > This is the same URL, return.", {
+      debug(this.id, "updateRoute > This is the same URL, return.", {
         currentRoutePath: this.currentRoute?.path,
         matchingRoutePath: matchingRoute?.path,
       });
@@ -125,25 +138,19 @@ export default class RouterManager {
       const pathParser: Path = new Path(currentRoute.path);
 
       const currentUrl = `${this.base}${url}`.replace('//', "/");
-      debug("this.base",this.base)
-      debug(`currentUrl ${currentUrl} match with ${currentRoute.path} ?`);
+      debug(this.id ,`currentUrl "${currentUrl}" match with "${currentRoute.path}" ?`, !!pathParser.test(currentUrl));
 
       const specificPartOfUrl = `${this.base}${url.split('/')[ROUTER_INSTANCE_LENGTH]}`;
-      debug(`specificPartOfUrl ${specificPartOfUrl} match with ${currentRoute.path} ?`);
+      debug(this.id ,`specificPartOfUrl "${specificPartOfUrl}" match with "${currentRoute.path}" ?`, !!pathParser.test(specificPartOfUrl));
 
       // if url match with current route path
       // or if 1rst part of url match with  current route path
       let match = pathParser.test(currentUrl) || pathParser.test(specificPartOfUrl);
+      debug(this.id, '>> MATCH?', !!match, match, currentRoute)
 
-      // let urlToCheck:string;
-      // for (let i = 0; i < ROUTER_INSTANCE_LENGTH; i++) {
-      //
-      // }
-
-      debug('match?', !!match, match, currentRoute)
       // if current route path match with one url
       if (match) {
-        debug("getRouteFromUrl > this currentRoute match:",
+        debug(this.id, "getRouteFromUrl > this currentRoute match:",
             { currentRoute, base: this.base, url, pathParser, routeObjMatchWithUrl: match });
         return {
           path: url,

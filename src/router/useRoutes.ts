@@ -18,7 +18,6 @@ export const useRoutes = (cb?: () => void, dep = []) => {
     setCurrentRoute(route);
   };
   const handlePreviousRouteChange = (route: TRoute): void => {
-    debug('handle prev route ', route)
     setPreviousRoute(route);
   };
 

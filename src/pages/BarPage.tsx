@@ -1,11 +1,19 @@
 import React, { useRef } from "react";
 import { useStack } from "../router/useStack";
 import { transitionsHelper } from "../helper/transitionsHelper";
+import Router from "../router/core/Router";
+import FooPage from "./FooPage";
+import Link from "../router/Link";
+import Stack, { TManageTransitions } from "../router/Stack";
+import HomePage from "./HomePage";
+import ArticlePage from "./ArticlePage";
+import YoloPage from "./YoloPage";
 
 const componentName: string = "BarPage";
+const debug = require("debug")(`front:${componentName}`);
+
 const BarPage = () => {
   const rootRef = useRef(null);
-
 
   useStack({
     componentName,
@@ -14,9 +22,56 @@ const BarPage = () => {
     playOut: () => transitionsHelper(rootRef.current, false),
   });
 
+  const manageTransitions = ({
+    previousPage,
+    currentPage,
+    unmountPrev,
+  }: TManageTransitions): Promise<any> => {
+    return new Promise(async (resolve) => {
+      const previousPageRef = previousPage?.rootRef.current;
+      const currentPageRef = currentPage?.rootRef.current;
+      debug("> ref", { previousPageRef, currentPageRef });
+
+      if (currentPageRef) currentPageRef.style.visibility = "hidden";
+
+      if (previousPage) {
+        await previousPage.playOut();
+        debug("> previousPage playOut ended");
+
+        unmountPrev();
+        debug("previousPage unmount");
+      }
+
+      if (currentPageRef) currentPageRef.style.visibility = "visible";
+
+      await currentPage?.playIn();
+      debug("> currentPage playIn ended");
+
+      resolve();
+    });
+  };
+
   return (
     <div className={componentName} ref={rootRef}>
-      {componentName}
+      About
+      <Router
+        routes={[
+          { path: "/about/bar/yolo", component: YoloPage },
+        ]}
+        base={process.env.APP_BASE}
+        id={3}
+      >
+        <div className={componentName}>
+          <nav>
+            <ul>
+              <li>
+                <Link href={"/about/bar/yolo"}>Yolo</Link>{" "}
+              </li>
+            </ul>
+          </nav>
+          <Stack manageTransitions={manageTransitions} key={"stack-3"} />
+        </div>
+      </Router>
     </div>
   );
 };

@@ -1,11 +1,12 @@
 import RouterManager, { TRoute } from "./RouterManager";
-import React, { createContext, ReactElement, useState } from "react";
+import React, { createContext, memo, ReactElement, useState } from "react";
 
 interface IProps {
   base: string;
   routes: TRoute[];
-  fakeRouting?: boolean;
   children: ReactElement;
+  fakeRouting?: boolean;
+  id?: number | string;
 }
 
 // Router instance will be keep on this context
@@ -20,7 +21,7 @@ RouterContext.displayName = "RouterContext";
  */
 const Router = (props: IProps) => {
   const [routerManager] = useState<RouterManager>(
-    () => new RouterManager(props.base, props.routes, props.fakeRouting || false)
+    () => new RouterManager(props.base, props.routes, props.fakeRouting, props.id)
   );
 
   return (
@@ -30,4 +31,4 @@ const Router = (props: IProps) => {
   );
 };
 
-export default Router;
+export default memo(Router);
