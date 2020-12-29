@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import Router from "../router/core/Router";
+import Router from "../router/Router";
 import { useStack } from "../router/useStack";
 import { transitionsHelper } from "../helper/transitionsHelper";
 import Link from "../router/Link";

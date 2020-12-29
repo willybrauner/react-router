@@ -1,4 +1,4 @@
-import RouterManager, { TRoute } from "./RouterManager";
+import RouterManager, { TRoute } from "./core/RouterManager";
 import React, { createContext, memo, ReactElement, useState } from "react";
 
 interface IProps {

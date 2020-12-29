@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { RouterContext } from "./core/Router";
+import { RouterContext } from "./Router";
 
 /**
  * Return current router instance
