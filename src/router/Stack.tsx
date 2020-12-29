@@ -36,16 +36,22 @@ function Stack(props: IProps) {
   // 2. animate when route state changed
   // need to be "layoutEffect" to execute transitions before render to avoid screen "clip"
   useLayoutEffect(() => {
-    const pageTransitions = router.stackPageTransitions;
+    debug(router.id, "routes", {previousRoute, currentRoute})
+    const routeTransitions = router.stackPageTransitions;
+
+    if (!currentRoute) {
+      debug(router.id, "current route doesn't exist, return.");
+      return;
+    }
 
     props.manageTransitions({
-      previousPage: pageTransitions?.[previousRoute?.path],
-      currentPage: pageTransitions?.[currentRoute?.path],
+      previousPage: routeTransitions?.[previousRoute?.path],
+      currentPage: routeTransitions?.[currentRoute?.path],
       unmountPrev: () => {
         setPreviousRoute(null);
       }
     }).then(() => {
-      debug('manageTransitions promise resolve');
+      debug(router.id, 'manageTransitions promise resolve!');
     })
   }, [currentRoute]);
 
