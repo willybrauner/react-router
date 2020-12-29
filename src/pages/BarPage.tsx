@@ -8,6 +8,7 @@ import Stack, { TManageTransitions } from "../router/Stack";
 import HomePage from "./HomePage";
 import ArticlePage from "./ArticlePage";
 import YoloPage from "./YoloPage";
+import { useLocation } from "../router/useLocation";
 
 const componentName: string = "BarPage";
 const debug = require("debug")(`front:${componentName}`);
@@ -22,38 +23,13 @@ const BarPage = () => {
     playOut: () => transitionsHelper(rootRef.current, false),
   });
 
-  const manageTransitions = ({
-    previousPage,
-    currentPage,
-    unmountPrev,
-  }: TManageTransitions): Promise<any> => {
-    return new Promise(async (resolve) => {
-      const previousPageRef = previousPage?.rootRef.current;
-      const currentPageRef = currentPage?.rootRef.current;
-      debug("> ref", { previousPageRef, currentPageRef });
-
-      if (currentPageRef) currentPageRef.style.visibility = "hidden";
-
-      if (previousPage) {
-        await previousPage.playOut();
-        debug("> previousPage playOut ended");
-
-        unmountPrev();
-        debug("previousPage unmount");
-      }
-
-      if (currentPageRef) currentPageRef.style.visibility = "visible";
-
-      await currentPage?.playIn();
-      debug("> currentPage playIn ended");
-
-      resolve();
-    });
-  };
+  // test of redirection
+  const [location, setLocation] = useLocation();
 
   return (
     <div className={componentName} ref={rootRef}>
       Bar
+      <button onClick={() => setLocation("/about")}>back to /about</button>
     </div>
   );
 };

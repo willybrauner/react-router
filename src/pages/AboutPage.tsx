@@ -22,6 +22,8 @@ const AboutPage = () => {
     playOut: () => transitionsHelper(rootRef.current, false),
   });
 
+  // test of redirection
+
   return (
     <div className={componentName} ref={rootRef}>
       About
@@ -50,13 +52,14 @@ const AboutPage = () => {
  */
 const AboutPageNestedRouter = (props) => {
   const router = useRouter();
-  const [parentLocation] = useLocation();
+  const [parentLocation, setParentLocation] = useLocation();
 
   const nestedBase = `${router.base}${props.base}`.replace("//", "/");
   debug("nestedBase", nestedBase);
   //debug("parentLocation", parentLocation);
 
   return (
+
     <Router
       base={nestedBase}
       key={nestedBase}

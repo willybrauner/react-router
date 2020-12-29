@@ -19,16 +19,16 @@ export const routesList: TRoute[] = [
   {
     path: "/about",
     component: AboutPage,
-    // children: [
-    //   {
-    //     path: "/about/foo",
-    //     component: FooPage,
-    //   },
-    //   {
-    //     path: "/about/bar",
-    //     component: BarPage,
-    //   },
-    //],
+    children: [
+      {
+        path: "/about/foo",
+        component: FooPage,
+      },
+      {
+        path: "/about/bar",
+        component: BarPage,
+      },
+    ],
   },
   {
     path: "/blog/:id",

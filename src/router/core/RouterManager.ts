@@ -101,7 +101,6 @@ export default class RouterManager {
     this.previousRoute = this.currentRoute;
     this.currentRoute = matchingRoute;
     GlobalRouter.currentRoute = matchingRoute;
-    debug(this.id, "CURRENT_ROUTE", GlobalRouter.currentRoute);
 
     if (addToHistory) {
       this.fakeMode
@@ -131,52 +130,54 @@ export default class RouterManager {
       const pathParser: Path = new Path(currentRoutePath);
 
       const currentUrl = url === "/" ? url : url?.replace(this.base, "");
-      debug(this.id,`getRouteFromUrl: currentUrl "${currentUrl}" match with "${currentRoutePath}" ?`, !!pathParser.test(currentUrl));
+      // debug(this.id,`getRouteFromUrl: currentUrl "${currentUrl}" match with "${currentRoutePath}" ?`, !!pathParser.test(currentUrl));
 
       let match;
       // if url match with current route path
       // or if 1rst part of url match with  current route path
-      match = pathParser.test(currentUrl);
-
+      match = pathParser.test(currentUrl) || null;
 
       /**
        * Needed if access to /foo/bar sub-router on first load
        * router 1 need to instantiate '/foo' for router 2 will be able to render '/bar'
        * So we check URL part
        */
+      let partialMatch = false;
       // if not match
       if (!match) {
+        partialMatch = true;
         const currentUrlParts = currentUrl.split('/');
         for (let i = 0; i < currentUrlParts.length; i++) {
-          const specificPartOfUrl = currentUrlParts[i];
-          debug(this.id,`getRouteFromUrl: specificPartOfUrl "${specificPartOfUrl}" match with "${currentRoutePath}" ?`, !!pathParser.test(specificPartOfUrl));
 
+          // get one part of the url array
+          const specificPartOfUrl = currentUrlParts[i];
+          // debug(this.id,`getRouteFromUrl: specificPartOfUrl "${specificPartOfUrl}" match with "${currentRoutePath}" ?`, !!pathParser.test(specificPartOfUrl));
+
+          // if match,register it
           if (pathParser.test(specificPartOfUrl)) {
             match = pathParser.test(specificPartOfUrl);
           }
         }
       }
 
-      debug(this.id, 'getRouteFromUrl: >> MATCH?', !!match, match, currentRoute)
-
-      // if current route path match with one url
+      // if current route path match with the param url
       if (match) {
-        debug(this.id, "getRouteFromUrl: this currentRoute match:", {
-          currentRoute,
-          base: this.base,
-          urlToMatch: url,
-          pathParser,
-          routeObjMatchWithUrl: match,
-        });
-        return {
+
+        // prepare route object
+        const routeObj: TRoute = {
           path: currentRoute.path,
           component: currentRoute.component,
+          children: currentRoute?.children,
           parser: pathParser,
           props: {
             params: match,
             ...(currentRoute.props || {}),
           },
         };
+
+        debug(this.id, 'getRouteFromUrl: > MATCH routeObj', routeObj);
+
+        return routeObj;
       }
     }
   }

@@ -37,7 +37,7 @@ class GlobalRouter {
    * Seulement si il a une sous-stack imbriqué
    *
    *-----------------
-   * LE RETOUR FONCTIONNE QUAND PREVIOUS ROUTE EST UNDEFINED
+   * LE RETOUR FONCTIONNE QUAND path: currentRoute.path n'est pas la meme que /about au premier chargement
    * (pour le constater - charger l'app sur /about/bar et cliquer sur /about, ça marche.
    * quand on trigg un sous-router sa stack parent doit donc vider le state "previousRoute" ?
    *
