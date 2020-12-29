@@ -60,6 +60,7 @@ const AboutPageNestedRouter = (props) => {
     <Router
       base={nestedBase}
       key={nestedBase}
+      subRouter={true}
       routes={[
         { path: "/foo", component: FooPage },
         { path: "/bar", component: BarPage },

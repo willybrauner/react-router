@@ -2,6 +2,7 @@ import { Path } from "path-parser";
 import React from "react";
 import { EventEmitter } from "events";
 import { TStackTransitions } from "../useStack";
+import RoutersWrapper from "./RoutersWrapper";
 const debug = require("debug")("front:RouterManager");
 
 export type TRoute = {
@@ -19,10 +20,9 @@ export enum ERouterEvent {
   ROUTER_STACK_IS_ANIMATING = "router-stack-is-animating",
 }
 
-// GLOBAL STATE
-let ROUTER_INSTANCE_LENGTH = 0;
-let CURRENT_ROUTE: TRoute;
-
+/**
+ * Single router
+ */
 export default class RouterManager {
   // base url
   public base: string;
@@ -39,7 +39,6 @@ export default class RouterManager {
   // get number of pages
   public routesCounter: number = 0;
   // perform fake routing to not allow url changing between routes
-  protected _fakeRouting: boolean;
   protected _id: number | string;
 
   public stackPageTransitions: TStackTransitions;
@@ -50,10 +49,7 @@ export default class RouterManager {
     fakeRouting = false,
     id: number | string = 1
   ) {
-    ROUTER_INSTANCE_LENGTH++;
-
     this.base = base;
-    this._fakeRouting = fakeRouting;
     this._id = id;
 
     routes.forEach((el) => this.addRoute(el));
@@ -95,11 +91,7 @@ export default class RouterManager {
       return;
     }
 
-    if (
-      this.currentRoute?.path === matchingRoute?.path
-      // &&
-      // CURRENT_ROUTE?.path === matchingRoute?.path
-    ) {
+    if (this.currentRoute?.path === matchingRoute?.path) {
       debug(this._id, "updateRoute > This is the same URL, return.", {
         currentRoutePath: this.currentRoute?.path,
         matchingRoutePath: matchingRoute?.path,
@@ -109,11 +101,11 @@ export default class RouterManager {
 
     this.previousRoute = this.currentRoute;
     this.currentRoute = matchingRoute;
-    CURRENT_ROUTE = matchingRoute;
-    debug(this._id, "CURRENT_ROUTE", CURRENT_ROUTE);
+    RoutersWrapper.currentRoute = matchingRoute;
+    debug(this._id, "CURRENT_ROUTE", RoutersWrapper.currentRoute);
 
     if (addToHistory) {
-      this._fakeRouting
+      RoutersWrapper.fakeMode
         ? window.history.replaceState(null, null, url)
         : window.history.pushState(null, null, url);
     }
@@ -121,9 +113,7 @@ export default class RouterManager {
     this.events.emit(ERouterEvent.PREVIOUS_ROUTE_CHANGE, this.previousRoute);
     this.events.emit(ERouterEvent.CURRENT_ROUTE_CHANGE, this.currentRoute);
 
-    // this can't works if multi stack...
-    this.routesCounter++;
-    this.isFirstRoute = this.routesCounter === 1;
+    RoutersWrapper.routeCounter++;
   }
 
   /**
