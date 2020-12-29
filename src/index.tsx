@@ -21,11 +21,11 @@ export const routesList: TRoute[] = [
     component: AboutPage,
     children: [
       {
-        path: "/about/foo",
+        path: "/foo",
         component: FooPage,
       },
       {
-        path: "/about/bar",
+        path: "/bar",
         component: BarPage,
       },
     ],

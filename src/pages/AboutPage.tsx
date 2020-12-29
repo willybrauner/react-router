@@ -8,6 +8,7 @@ import FooPage from "./FooPage";
 import BarPage from "./BarPage";
 import { useLocation } from "../router/useLocation";
 import { useRouter } from "../router/useRouter";
+import { routesList } from "../index";
 
 const componentName: string = "AboutPage";
 const debug = require("debug")(`front:${componentName}`);
@@ -58,16 +59,14 @@ const AboutPageNestedRouter = (props) => {
   debug("nestedBase", nestedBase);
   //debug("parentLocation", parentLocation);
 
-  return (
+  const routes = routesList.find(el => el.path === "/about").children;
 
+  return (
     <Router
       base={nestedBase}
       key={nestedBase}
       subRouter={true}
-      routes={[
-        { path: "/foo", component: FooPage },
-        { path: "/bar", component: BarPage },
-      ]}
+      routes={routes}
       id={2}
     >
       {props.children}
