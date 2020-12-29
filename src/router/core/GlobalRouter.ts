@@ -4,12 +4,7 @@ import { EventEmitter } from "events";
 /**
  * Global router
  */
-class RoutersWrapper {
-  /**
-   * Static properties
-   */
-  public fakeMode = false;
-
+class GlobalRouter {
   /**
    * Dynamic properties
    */
@@ -22,6 +17,9 @@ class RoutersWrapper {
   public currentRoute: TRoute;
 
   public isFirstRoute = this.routeCounter === 1;
+
+  //
+  public oneStackIsAnimating;
 }
 
-export default new RoutersWrapper();
+export default new GlobalRouter();

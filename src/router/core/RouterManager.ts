@@ -2,7 +2,7 @@ import { Path } from "path-parser";
 import React from "react";
 import { EventEmitter } from "events";
 import { TStackTransitions } from "../useStack";
-import RoutersWrapper from "./RoutersWrapper";
+import RoutersWrapper from "./GlobalRouter";
 const debug = require("debug")("front:RouterManager");
 
 export type TRoute = {
@@ -17,7 +17,7 @@ export enum ERouterEvent {
   PREVIOUS_ROUTE_CHANGE = "previous-route-change",
   CURRENT_ROUTE_CHANGE = "current-route-change",
   // TODO add listener to stack and create hook useStackIsAnimating();
-  ROUTER_STACK_IS_ANIMATING = "router-stack-is-animating",
+  STACK_IS_ANIMATING = "stack-is-animating",
 }
 
 /**
@@ -34,23 +34,22 @@ export default class RouterManager {
   public currentRoute: TRoute;
   // previous route object
   public previousRoute: TRoute;
-  // allow to check if is first page
-  public isFirstRoute: boolean = true;
-  // get number of pages
-  public routesCounter: number = 0;
   // perform fake routing to not allow url changing between routes
   protected _id: number | string;
+
+  public fakeMode = false;
 
   public stackPageTransitions: TStackTransitions;
 
   constructor(
     base: string = "/",
     routes: TRoute[] = null,
-    fakeRouting = false,
+    fakeMode: boolean = false,
     id: number | string = 1
   ) {
     this.base = base;
     this._id = id;
+    this.fakeMode = fakeMode;
 
     routes.forEach((el) => this.addRoute(el));
 
@@ -105,7 +104,7 @@ export default class RouterManager {
     debug(this._id, "CURRENT_ROUTE", RoutersWrapper.currentRoute);
 
     if (addToHistory) {
-      RoutersWrapper.fakeMode
+      this.fakeMode
         ? window.history.replaceState(null, null, url)
         : window.history.pushState(null, null, url);
     }

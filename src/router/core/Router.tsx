@@ -1,12 +1,12 @@
 import RouterManager, { TRoute } from "./RouterManager";
 import React, { createContext, memo, ReactElement, useState } from "react";
-import RoutersWrapper from "./RoutersWrapper";
+import GlobalRouter from "./GlobalRouter";
 
 interface IProps {
   base: string;
   routes: TRoute[];
   children: ReactElement;
-  fakeRouting?: boolean;
+  fakeMode?: boolean;
   id?: number | string;
   subRouter?: boolean;
 }
@@ -15,20 +15,19 @@ interface IProps {
 // Big thing is you can access this context from the closest provider in the tree.
 // This allow to manage easily nested stack instances.
 export const RouterContext = createContext<RouterManager>(null);
-RouterContext.displayName = "RouterContext";
+RouterContext.displayName = "Router";
 
 // If is 1st level router, we add wrapper provider instance
-export const RoutersContext = createContext<typeof RoutersWrapper>(null);
-RoutersContext.displayName = "RoutersContext";
+export const GlobalRouterContext = createContext<typeof GlobalRouter>(null);
+GlobalRouterContext.displayName = "GlobalRouter";
 
 /**
  * Router
  * will wrap Link and Stack components
  */
-
 const Router = (props: IProps) => {
   const [routerManager] = useState<RouterManager>(
-    () => new RouterManager(props.base, props.routes, props.fakeRouting, props.id)
+    () => new RouterManager(props.base, props.routes, props.fakeMode, props.id)
   );
 
   const routerRender = (
@@ -41,9 +40,9 @@ const Router = (props: IProps) => {
     routerRender
   ) : (
     // 1st level
-    <RoutersContext.Provider value={RoutersWrapper}>
+    <GlobalRouterContext.Provider value={GlobalRouter}>
       {routerRender}
-    </RoutersContext.Provider>
+    </GlobalRouterContext.Provider>
   );
 };
 
