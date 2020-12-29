@@ -22,7 +22,7 @@ const BarPage = () => {
   return (
     <div className={componentName} ref={rootRef}>
       Bar
-      <button onClick={() => setLocation("/about")}>back to /about</button>
+      <button onClick={() => setLocation("/")}>back to /</button>
     </div>
   );
 };

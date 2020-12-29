@@ -2,7 +2,7 @@ import { Path } from "path-parser";
 import React from "react";
 import { EventEmitter } from "events";
 import { TStackTransitions } from "../useStack";
-import GlobalRouter from "./GlobalRouter";
+import GlobalRouter, { EGlobalRouterEvent } from "./GlobalRouter";
 const debug = require("debug")("front:RouterManager");
 
 export type TRoute = {
@@ -90,6 +90,9 @@ export default class RouterManager {
       return;
     }
 
+    // si currentRoute est un child (contient ~? ex: ~/bar)
+    // et matchingRoute ...
+
     if (this.currentRoute?.path === matchingRoute?.path) {
       debug(this.id, "updateRoute > This is the same URL, return.", {
         currentRoutePath: this.currentRoute?.path,
@@ -100,7 +103,6 @@ export default class RouterManager {
 
     this.previousRoute = this.currentRoute;
     this.currentRoute = matchingRoute;
-    GlobalRouter.currentRoute = matchingRoute;
 
     if (addToHistory) {
       this.fakeMode
