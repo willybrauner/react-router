@@ -51,7 +51,7 @@ function Stack(props: IProps) {
         setPreviousRoute(null);
       }
     }).then(() => {
-      debug(router.id, 'manageTransitions promise resolve!');
+      //debug(router.id, 'manageTransitions promise resolve!');
     })
   }, [currentRoute]);
 

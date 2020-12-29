@@ -1,6 +1,5 @@
 import RouterManager, { TRoute } from "./RouterManager";
 import React, { createContext, memo, ReactElement, useState } from "react";
-import GlobalRouter from "./GlobalRouter";
 
 interface IProps {
   base: string;
@@ -17,10 +16,6 @@ interface IProps {
 export const RouterContext = createContext<RouterManager>(null);
 RouterContext.displayName = "Router";
 
-// If is 1st level router, we add wrapper provider instance
-export const GlobalRouterContext = createContext<typeof GlobalRouter>(null);
-GlobalRouterContext.displayName = "GlobalRouter";
-
 /**
  * Router
  * will wrap Link and Stack components
@@ -30,19 +25,10 @@ const Router = (props: IProps) => {
     () => new RouterManager(props.base, props.routes, props.fakeMode, props.id)
   );
 
-  const routerRender = (
+  return (
     <RouterContext.Provider value={routerManager}>
       {props.children}
     </RouterContext.Provider>
-  );
-
-  return props.subRouter ? (
-    routerRender
-  ) : (
-    // 1st level
-    <GlobalRouterContext.Provider value={GlobalRouter}>
-      {routerRender}
-    </GlobalRouterContext.Provider>
   );
 };
 

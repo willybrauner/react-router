@@ -138,6 +138,12 @@ export default class RouterManager {
       // or if 1rst part of url match with  current route path
       match = pathParser.test(currentUrl);
 
+
+      /**
+       * Needed if access to /foo/bar sub-router on first load
+       * router 1 need to instantiate '/foo' for router 2 will be able to render '/bar'
+       * So we check URL part
+       */
       // if not match
       if (!match) {
         const currentUrlParts = currentUrl.split('/');
@@ -155,10 +161,15 @@ export default class RouterManager {
 
       // if current route path match with one url
       if (match) {
-        debug(this.id, "getRouteFromUrl: this currentRoute match:",
-            { currentRoute, base: this.base, url, pathParser, routeObjMatchWithUrl: match });
+        debug(this.id, "getRouteFromUrl: this currentRoute match:", {
+          currentRoute,
+          base: this.base,
+          urlToMatch: url,
+          pathParser,
+          routeObjMatchWithUrl: match,
+        });
         return {
-          path: url,
+          path: currentRoute.path,
           component: currentRoute.component,
           parser: pathParser,
           props: {
