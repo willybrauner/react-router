@@ -8,7 +8,6 @@ import App from "./components/App";
 import Router from "./router/core/Router";
 import FooPage from "./pages/FooPage";
 import BarPage from "./pages/BarPage";
-
 const debug = require("debug")(`front:index`);
 
 export const routesList: TRoute[] = [

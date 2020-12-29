@@ -1,13 +1,6 @@
 import React, { useRef } from "react";
 import { useStack } from "../router/useStack";
 import { transitionsHelper } from "../helper/transitionsHelper";
-import Router from "../router/core/Router";
-import FooPage from "./FooPage";
-import Link from "../router/Link";
-import Stack, { TManageTransitions } from "../router/Stack";
-import HomePage from "./HomePage";
-import ArticlePage from "./ArticlePage";
-import YoloPage from "./YoloPage";
 import { useLocation } from "../router/useLocation";
 
 const componentName: string = "BarPage";

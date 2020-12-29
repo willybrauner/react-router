@@ -4,8 +4,6 @@ import { useStack } from "../router/useStack";
 import { transitionsHelper } from "../helper/transitionsHelper";
 import Link from "../router/Link";
 import Stack, { TManageTransitions } from "../router/Stack";
-import FooPage from "./FooPage";
-import BarPage from "./BarPage";
 import { useLocation } from "../router/useLocation";
 import { useRouter } from "../router/useRouter";
 import { routesList } from "../index";
