@@ -22,7 +22,13 @@ RouterContext.displayName = "Router";
  */
 const Router = (props: IProps) => {
   const [routerManager] = useState<RouterManager>(
-    () => new RouterManager(props.base, props.routes, props.fakeMode, props.id)
+    () =>
+      new RouterManager({
+        base: props.base,
+        routes: props.routes,
+        fakeMode: props.fakeMode,
+        id: props.id,
+      })
   );
 
   return (

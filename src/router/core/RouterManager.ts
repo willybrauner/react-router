@@ -2,7 +2,7 @@ import { Path } from "path-parser";
 import React from "react";
 import { EventEmitter } from "events";
 import { TStackTransitions } from "../useStack";
-import GlobalRouter, { EGlobalRouterEvent } from "./GlobalRouter";
+import GlobalRouter from "./GlobalRouter";
 const debug = require("debug")("front:RouterManager");
 
 export type TRoute = {
@@ -41,12 +41,17 @@ export default class RouterManager {
 
   public stackPageTransitions: TStackTransitions;
 
-  constructor(
-    base: string = "/",
-    routes: TRoute[] = null,
-    fakeMode: boolean = false,
-    id: number | string = 1
-  ) {
+  constructor({
+    base = "/",
+    routes = null,
+    fakeMode = false,
+    id = 1,
+  }: {
+    base?: string;
+    routes?: TRoute[];
+    fakeMode?: boolean;
+    id?: number | string;
+  }) {
     this.base = base;
     this.id = id;
     this.fakeMode = fakeMode;
