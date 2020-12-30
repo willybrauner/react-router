@@ -38,6 +38,9 @@ commonConfig = {
     ],
     alias: {
       "@common": `${paths.src}/common`,
+      "react": "preact/compat",
+      "react-dom/test-utils": "preact/test-utils",
+      "react-dom": "preact/compat",
     },
     modules: [paths.nodeModules, paths.src],
   },
