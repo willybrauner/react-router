@@ -48,7 +48,7 @@ export const routesList: TRoute[] = [
  */
 export function initApp() {
   ReactDOM.render(
-    <Router routes={routesList} base={process.env.APP_BASE} id={1}>
+    <Router routes={routesList} base={process.env.APP_BASE}>
       <App />
     </Router>,
     document.getElementById("Root")

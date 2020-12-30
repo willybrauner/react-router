@@ -37,7 +37,7 @@ export default class RouterManager {
   // perform fake routing to not allow url changing between routes
   public id: number | string;
 
-  public fakeMode = false;
+  public fakeMode: boolean;
 
   public stackPageTransitions: TStackTransitions;
 
@@ -61,7 +61,7 @@ export default class RouterManager {
     this.updateRoute();
     window.addEventListener("popstate", (e) => {
       debug(this.id, "pass dans popstate", e);
-      this.updateRoute(location.pathname, false);
+      this.updateRoute(window.location.pathname, false);
     });
   }
 
@@ -84,7 +84,7 @@ export default class RouterManager {
    * - emit selected route object on route-change event (listen by RouterStack)
    */
   public updateRoute(
-    url: string = window.location.pathname,
+    url: string = this.fakeMode ? this.base : window.location.pathname,
     addToHistory: boolean = true
   ): void {
     // get matching route depending of current URL
@@ -109,10 +109,10 @@ export default class RouterManager {
     this.previousRoute = this.currentRoute;
     this.currentRoute = matchingRoute;
 
-    if (addToHistory) {
-      this.fakeMode
-        ? window.history.replaceState(null, null, url)
-        : window.history.pushState(null, null, url);
+    if (!this.fakeMode) {
+      addToHistory
+        ? window.history.pushState(null, null, url)
+        : window.history.replaceState(null, null, url);
     }
 
     this.events.emit(ERouterEvent.PREVIOUS_ROUTE_CHANGE, this.previousRoute);

@@ -57,16 +57,10 @@ const AboutPageNestedRouter = (props) => {
   debug("nestedBase", nestedBase);
   //debug("parentLocation", parentLocation);
 
-  const routes = routesList.find(el => el.path === "/about").children;
+  const routes = routesList.find((el) => el.path === "/about").children;
 
   return (
-    <Router
-      base={nestedBase}
-      key={nestedBase}
-      subRouter={true}
-      routes={routes}
-      id={2}
-    >
+    <Router base={nestedBase} key={nestedBase} subRouter={true} routes={routes} id={2}>
       {props.children}
     </Router>
   );
