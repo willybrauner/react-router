@@ -1,12 +1,12 @@
-import React, { MutableRefObject, useLayoutEffect, useRef, useState } from "react";
-import { TStackTransitionObject } from "./useStack";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import { useRouter } from "./useRouter";
 import { useRoutes } from "./useRoutes";
 
 export type TManageTransitions = {
-  previousPage: TStackTransitionObject;
-  currentPage: TStackTransitionObject;
+  previousPage;
+  currentPage;
   unmountPrev: () => void;
+  currentRouteIsReady: () => Promise<any>;
 };
 
 interface IProps {
@@ -44,31 +44,35 @@ function Stack(props: IProps) {
 
     debug("refs",{currentRef, prevRef})
     debug(router.id, "routes", {previousRoute, currentRoute})
-    const routeTransitions = router.stackPageTransitions;
 
     if (!currentRoute) {
       debug(router.id, "current route doesn't exist, return.");
       return;
     }
 
+    debug('currentRef.current?.isReadyPromise',currentRef.current?.isReadyPromise)
+
     props.manageTransitions({
       previousPage: {
         componentName: "prev",
         rootRef: prevRef,
         playIn: prevRef.current?.playIn,
-        playOut: prevRef.current?.playOut
+        playOut: prevRef.current?.playOut,
       },
       currentPage: {
         componentName: "current",
         rootRef: currentRef,
         playIn: currentRef.current?.playIn,
-        playOut: currentRef.current?.playOut
+        playOut: currentRef.current?.playOut,
     },
+
+      currentRouteIsReady: ()=> currentRef.current?.isReadyPromise,
+      
       unmountPrev: () => {
         setPreviousRoute(null);
       }
     }).then(() => {
-      //debug(router.id, 'manageTransitions promise resolve!');
+      debug(router.id, 'manageTransitions promise resolve!');
     })
   }, [currentRoute]);
 

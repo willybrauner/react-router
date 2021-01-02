@@ -30,6 +30,7 @@ const AboutPage = forwardRef((props: TProps, ref: MutableRefObject<any>) => {
   //   playOut: () => transitionsHelper(rootRef.current, false),
   // });
   useImperativeHandle(ref, () => ({
+    componentName,
     ref: rootRef,
     playIn: () => transitionsHelper(rootRef.current, true),
     playOut: () => transitionsHelper(rootRef.current, false),

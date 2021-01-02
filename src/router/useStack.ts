@@ -3,7 +3,7 @@ import {
   useEffect,
   useImperativeHandle,
   useLayoutEffect,
-  useMemo
+  useMemo,
 } from "react";
 import { useRouter } from "./useRouter";
 import { transitionsHelper } from "../helper/transitionsHelper";
@@ -19,7 +19,6 @@ export type TStackTransitionObject = {
   playIn?: () => Promise<any>;
   playOut?: () => Promise<any>;
   currentPageIsReady?: boolean;
-  currentPageIsReadyPromise?: () => Promise<any>;
 };
 
 /**
@@ -38,7 +37,7 @@ export function useStack({
 
   // Page is ready deferred promise
   // Create a promise and get resolve anywhere
-  const readyDeferred = useMemo(() => {
+  const deferredPromise = useMemo(() => {
     const deferred: any = {};
     deferred.promise = new Promise((resolve) => {
       deferred.resolve = resolve;
@@ -48,19 +47,8 @@ export function useStack({
 
   // resolve deferred if currentPageIsReady param is true
   useEffect(() => {
-    currentPageIsReady && readyDeferred.resolve();
+    currentPageIsReady && deferredPromise.resolve();
   }, [currentPageIsReady]);
-
-
-  useImperativeHandle(
-    rootRef,
-    () => ({
-      $element: rootRef.current,
-      playIn: () => transitionsHelper(rootRef.current, true),
-      playOut: () => transitionsHelper(rootRef.current, false),
-    }),
-    []
-  );
 
   // register pages before render
   useLayoutEffect(() => {
@@ -73,7 +61,7 @@ export function useStack({
         playOut,
         rootRef,
         currentPageIsReady,
-        currentPageIsReadyPromise: () => readyDeferred.promise,
+        currentPageIsReadyPromise: () => deferredPromise.promise,
       },
     };
     //debug("> newPage", newPage);
