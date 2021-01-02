@@ -11,16 +11,16 @@ It provides Stack component who render previous and current page component when 
 
 ## Components
 
-- `<Router />` Wrap Link and stack component
-- `<Link />` Trig current stack
-- `<Stack />` Wrap previous and current page
+- [`<Router />`](#Router) Wrap Link and stack component
+- [`<Link />`](#Link) Trig current stack
+- [`<Stack />`](#Stack) Wrap previous and current page
 
 ## Hooks
 
-- `useRouter` Get router instance from any component
-- `useLocation` Get current location and set new location `[currentRoute.path + setLocationFn()]`
-- `useRoutes` Get previous and current route `{ previousRoute, currentRoute }`
-- `useStack` Register page component in stack
+- [`useRouter`](#useRouter) Get router instance from any component
+- [`useLocation`](#useLocation) Get current location and set new location `[currentRoute.path + setLocationFn()]`
+- [`useRoutes`](#useRoutes) Get previous and current route `{ previousRoute, currentRoute }`
+- [`useStack`](#useStack) Register page component in stack
 
 ## Simple usage
 
@@ -81,6 +81,120 @@ const FooPage = forwardRef((props, handleRef) => {
     </div>
   );
 });
+```
+
+## API
+
+### <a name="Router"></a>Router
+
+Create a new router instance.
+
+```jsx
+<Router routes={} base={} id={} fakeMode={}>
+  // can now use <Link /> and <Stack /> component
+</Router>
+```
+
+### <a name="Link"></a>Link
+
+Trig new route
+
+params:
+
+- href `string`
+- className `string`
+
+example:
+
+```jsx
+<Link href={""} className={""} />
+```
+
+### <a name="Stack"></a>Stack
+
+Returns previous and current page.
+
+params:
+
+- manageTransitions `()=> void`
+- className `string`
+
+example:
+
+```jsx
+<Stack manageTransitions={} className={""} />
+```
+
+### <a name="useRouter"></a>useRouter()
+
+Get current router instance.
+
+example:
+
+```jsx
+const router = useRouter();
+```
+
+### <a name="useLocation"></a>useLocation()
+
+returns:
+
+- `location` Get current location
+- `setLocation` trig new route
+
+example:
+
+```jsx
+const [location, setLocation] = useLocation();
+setLocation("/bar");
+```
+
+### <a name="useRoutes"></a>useRoutes()
+
+Get previous and current route properties (TRoute)
+
+returns:
+
+- currentRoute `TRoute`
+- previousRoute `TRoute`
+
+```js
+{
+  path: string;
+  component: React.ComponentType<any>;
+  parser?: Path;
+  props?: { [x: string]: any };
+  children?: TRoute[];
+}
+```
+
+example:
+
+```jsx
+const { currentRoute, previousRoute } = useRoutes();
+```
+
+### <a name="useStack"></a>useStack()
+
+params:
+
+- componentName `string`
+- handleRef `MutableRefObject<any>`
+- rootRef `MutableRefObject<any>`
+- playIn `?() => Promise<any>`
+- playOut `?() => Promise<any>`
+- isReady `?boolean`
+
+returns:
+
+nothing
+
+example:
+
+```jsx
+const useStack({
+  componentName, handleRef, rootRef, playIn, playOut, isReady
+ });
 ```
 
 ## Example
