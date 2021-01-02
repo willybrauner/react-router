@@ -2,6 +2,7 @@ import React, { useLayoutEffect, useRef, useState } from "react";
 import { useRouter } from "./useRouter";
 import { useRoutes } from "./useRoutes";
 import { IRouteStack } from "./useStack";
+import { ERouterEvent } from "./core/RouterManager";
 
 export type TManageTransitions = {
   previousPage: IRouteStack;
@@ -47,19 +48,26 @@ function Stack(props: IProps) {
       return;
     }
 
+    router.events.emit(ERouterEvent.STACK_IS_ANIMATING, true);
+
+    // prepare unmount func
     const unmountPreviousPage = () => setPreviousRoute(null);
 
-    // execute transition function from outside the stack
+    // execute transitions function from outside the stack
     props
       .manageTransitions({
         previousPage: prevRef.current,
         currentPage: currentRef.current,
         unmountPreviousPage,
       } as TManageTransitions)
+
+      // when transitions are ended
       .then(() => {
         debug(router.id, "manageTransitions promise resolve!");
         // if previous page wasn't unmount manually, we force unmount here
         unmountPreviousPage();
+
+        router.events.emit(ERouterEvent.STACK_IS_ANIMATING, false);
       });
   }, [currentRoute]);
 

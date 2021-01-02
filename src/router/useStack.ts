@@ -44,7 +44,6 @@ export function useStack({
   useImperativeHandle(
     handleRef,
     () => {
-      debug("rootRef.current", rootRef?.current);
       // Objects properties will be used by Stack
       const handleRouteCallback: IRouteStack = {
         componentName,
