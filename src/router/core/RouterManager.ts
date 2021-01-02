@@ -1,7 +1,6 @@
 import { Path } from "path-parser";
 import React from "react";
 import { EventEmitter } from "events";
-import { TStackTransitions } from "../useStack";
 import GlobalRouter from "./GlobalRouter";
 const debug = require("debug")("front:RouterManager");
 
@@ -38,8 +37,6 @@ export default class RouterManager {
   public id: number | string;
 
   public fakeMode: boolean;
-
-  public stackPageTransitions: TStackTransitions;
 
   constructor({
     base = "/",

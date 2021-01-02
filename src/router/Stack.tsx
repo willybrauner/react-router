@@ -6,7 +6,7 @@ export type TManageTransitions = {
   previousPage;
   currentPage;
   unmountPrev: () => void;
-  currentRouteIsReady: () => Promise<any>;
+  currentRouteIsReadyPromise: () => Promise<any>;
 };
 
 interface IProps {
@@ -50,23 +50,23 @@ function Stack(props: IProps) {
       return;
     }
 
-    debug('currentRef.current?.isReadyPromise',currentRef.current?.isReadyPromise)
-
     props.manageTransitions({
       previousPage: {
         componentName: "prev",
         rootRef: prevRef,
         playIn: prevRef.current?.playIn,
         playOut: prevRef.current?.playOut,
+        isReady:prevRef.current?.isReady,
       },
       currentPage: {
         componentName: "current",
         rootRef: currentRef,
         playIn: currentRef.current?.playIn,
         playOut: currentRef.current?.playOut,
+        isReady:currentRef.current?.isReady,
     },
 
-      currentRouteIsReady: ()=> currentRef.current?.isReadyPromise,
+      currentRouteIsReadyPromise: currentRef.current?.isReadyPromise,
       
       unmountPrev: () => {
         setPreviousRoute(null);

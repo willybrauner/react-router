@@ -1,11 +1,4 @@
-import React, {
-  forwardRef,
-  MutableRefObject,
-  useEffect,
-  useImperativeHandle,
-  useLayoutEffect,
-  useRef,
-} from "react";
+import React, { forwardRef, MutableRefObject, useRef } from "react";
 import Router from "../router/Router";
 import { useStack } from "../router/useStack";
 import { transitionsHelper } from "../helper/transitionsHelper";
@@ -14,29 +7,21 @@ import Stack, { TManageTransitions } from "../router/Stack";
 import { useLocation } from "../router/useLocation";
 import { useRouter } from "../router/useRouter";
 import { routesList } from "../index";
-
 const componentName: string = "AboutPage";
 const debug = require("debug")(`front:${componentName}`);
 
 type TProps = {};
 
-const AboutPage = forwardRef((props: TProps, ref: MutableRefObject<any>) => {
+const AboutPage = forwardRef((props: TProps, handleRef: MutableRefObject<any>) => {
   const rootRef = useRef(null);
 
-  // useStack({
-  //   componentName,
-  //   rootRef,
-  //   playIn: () => transitionsHelper(rootRef.current, true),
-  //   playOut: () => transitionsHelper(rootRef.current, false),
-  // });
-  useImperativeHandle(ref, () => ({
+  useStack({
     componentName,
-    ref: rootRef,
+    handleRef,
+    rootRef,
     playIn: () => transitionsHelper(rootRef.current, true),
     playOut: () => transitionsHelper(rootRef.current, false),
-  }), []);
-
-  // test of redirection
+  });
 
   return (
     <div className={componentName} ref={rootRef}>

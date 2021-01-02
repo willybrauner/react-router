@@ -18,13 +18,13 @@ const debug = require("debug")(`front:${componentName}`);
 function ArticlePage(props: IProps) {
   debug("params", props);
   const rootRef = useRef(null);
-
-  useStack({
-    componentName,
-    rootRef,
-    playIn: () => transitionsHelper(rootRef.current, true),
-    playOut: () => transitionsHelper(rootRef.current, false),
-  });
+  //
+  // useStack({
+  //   componentName,
+  //   rootRef,
+  //   playIn: () => transitionsHelper(rootRef.current, true),
+  //   playOut: () => transitionsHelper(rootRef.current, false),
+  // });
 
   // test of redirection
   const [location, setLocation] = useLocation();

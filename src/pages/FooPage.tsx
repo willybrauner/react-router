@@ -7,12 +7,12 @@ const FooPage = () => {
   const rootRef = useRef(null);
 
 
-  useStack({
-    componentName,
-    rootRef,
-    playIn: () => transitionsHelper(rootRef.current, true),
-    playOut: () => transitionsHelper(rootRef.current, false),
-  });
+  // useStack({
+  //   componentName,
+  //   rootRef,
+  //   playIn: () => transitionsHelper(rootRef.current, true),
+  //   playOut: () => transitionsHelper(rootRef.current, false),
+  // });
 
   return (
     <div className={componentName} ref={rootRef}>

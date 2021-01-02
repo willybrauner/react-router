@@ -1,61 +1,21 @@
-import React, {
-  forwardRef,
-  MutableRefObject,
-  useEffect,
-  useImperativeHandle,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-} from "react";
+import React, { forwardRef, MutableRefObject, useRef } from "react";
 import { useStack } from "../router/useStack";
 import { transitionsHelper } from "../helper/transitionsHelper";
-const debug = require("debug")("front:HomePage");
+const componentName: string = "HomePage";
+const debug = require("debug")(`front:${componentName}`);
 
 type TProps = {};
 
-const componentName: string = "HomePage";
-const HomePage = forwardRef((props: TProps, ref: MutableRefObject<any>) => {
+const HomePage = forwardRef((props: TProps, handleRef: MutableRefObject<any>) => {
   const rootRef = useRef(null);
 
   useStack({
     componentName,
+    handleRef,
     rootRef,
     playIn: () => transitionsHelper(rootRef.current, true),
     playOut: () => transitionsHelper(rootRef.current, false),
   });
-
-  // Page is ready deferred promise
-  // Create a promise and get resolve anywhere
-  const readyDeferred = useMemo(() => {
-    const deferred: any = {};
-    deferred.promise = new Promise((resolve) => {
-      deferred.resolve = resolve;
-    });
-    return deferred;
-  }, []);
-
-  // resolve deferred if currentPageIsReady param is true
-  useEffect(() => {
-    setTimeout(() => {
-      debug("ready deferred is resolve !");
-      readyDeferred.resolve();
-    }, 2000);
-  }, []);
-
-  useImperativeHandle(
-    ref,
-    () => {
-      debug("readyDeferred.promise", readyDeferred.promise);
-      return {
-        componentName,
-        ref: rootRef,
-        playIn: () => transitionsHelper(rootRef.current, true),
-        playOut: () => transitionsHelper(rootRef.current, false),
-        isReadyPromise: readyDeferred.promise,
-      };
-    },
-    [readyDeferred]
-  );
 
   return (
     <div className={componentName} ref={rootRef}>

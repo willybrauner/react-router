@@ -1,42 +1,28 @@
-import {
-  MutableRefObject,
-  useEffect,
-  useImperativeHandle,
-  useLayoutEffect,
-  useMemo,
-} from "react";
-import { useRouter } from "./useRouter";
-import { transitionsHelper } from "../helper/transitionsHelper";
+import { MutableRefObject, useEffect, useImperativeHandle, useMemo } from "react";
 const debug = require("debug")("front:useStack");
 
-export type TStackTransitions = {
-  [currentPath: string]: TStackTransitionObject;
-};
-
-export type TStackTransitionObject = {
+export type TUseStack = {
   componentName: string;
+  handleRef: MutableRefObject<any>;
   rootRef: MutableRefObject<any>;
   playIn?: () => Promise<any>;
   playOut?: () => Promise<any>;
-  currentPageIsReady?: boolean;
+  isReady?: boolean;
 };
 
 /**
  * @name useStack
  * @description Allow set page properties in router
  */
-
 export function useStack({
   componentName,
   playIn = () => Promise.resolve(),
   playOut = () => Promise.resolve(),
+  handleRef,
   rootRef,
-  currentPageIsReady = true,
-}: TStackTransitionObject) {
-  const router = useRouter();
-
-  // Page is ready deferred promise
-  // Create a promise and get resolve anywhere
+  isReady = true,
+}: TUseStack) {
+  // create deferred promise who we can resolve in the scope
   const deferredPromise = useMemo(() => {
     const deferred: any = {};
     deferred.promise = new Promise((resolve) => {
@@ -45,36 +31,21 @@ export function useStack({
     return deferred;
   }, []);
 
-  // resolve deferred if currentPageIsReady param is true
+  // resolve deferred if isReady param is true
   useEffect(() => {
-    currentPageIsReady && deferredPromise.resolve();
-  }, [currentPageIsReady]);
+    isReady && deferredPromise.resolve();
+  }, [isReady]);
 
-  // register pages before render
-  useLayoutEffect(() => {
-    // set transitions in current router instance
-
-    const newPage = {
-      [router.currentRoute.path]: {
-        componentName,
-        playIn,
-        playOut,
-        rootRef,
-        currentPageIsReady,
-        currentPageIsReadyPromise: () => deferredPromise.promise,
-      },
-    };
-    //debug("> newPage", newPage);
-    //debug(">> current stackPageTransitions", router.stackPageTransitions);
-
-    router.stackPageTransitions = {
-      ...router.stackPageTransitions,
-      ...newPage,
-    };
-
-    debug(
-      `>>>>>> pageTransition list from ${componentName}`,
-      router.stackPageTransitions
-    );
-  }, []);
+  useImperativeHandle(
+    handleRef,
+    () => ({
+      componentName,
+      ref: rootRef,
+      playIn,
+      playOut,
+      isReady,
+      isReadyPromise: () => deferredPromise.promise,
+    }),
+    [deferredPromise]
+  );
 }

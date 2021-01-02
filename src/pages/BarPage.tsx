@@ -9,12 +9,12 @@ const debug = require("debug")(`front:${componentName}`);
 const BarPage = () => {
   const rootRef = useRef(null);
 
-  useStack({
-    componentName,
-    rootRef,
-    playIn: () => transitionsHelper(rootRef.current, true),
-    playOut: () => transitionsHelper(rootRef.current, false),
-  });
+  // useStack({
+  //   componentName,
+  //   rootRef,
+  //   playIn: () => transitionsHelper(rootRef.current, true),
+  //   playOut: () => transitionsHelper(rootRef.current, false),
+  // });
 
   // test of redirection
   const [location, setLocation] = useLocation();

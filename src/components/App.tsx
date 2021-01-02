@@ -41,7 +41,7 @@ const manageTransitions = ({
   previousPage,
   currentPage,
   unmountPrev,
-  currentRouteIsReady,
+  currentRouteIsReadyPromise,
 
 }): Promise<any> => {
   return new Promise(async (resolve) => {
@@ -59,8 +59,8 @@ const manageTransitions = ({
       debug("previousPage unmount");
     }
 
-    debug("currentRouteIsReady", currentRouteIsReady);
-    await currentRouteIsReady?.();
+    debug("currentRouteIsReadyPromise", currentRouteIsReadyPromise);
+    await currentRouteIsReadyPromise?.();
 
     if (currentPageRef) currentPageRef.style.visibility = "visible";
 
