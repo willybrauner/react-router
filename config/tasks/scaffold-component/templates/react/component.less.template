@@ -1,6 +1,0 @@
-@import (reference) "../../../common/references.less";
-@COMPONENT: %%upperComponentName%%;
-
-.Root { }
-
-

@@ -1,21 +1,41 @@
-# New React Router
+# react router
+
+*This repo is WIP*
+
+React router API is inspired by [wouter](https://github.com/molefrog/wouter), 
+[router solidify](https://github.com/solid-js/solidify/blob/master/navigation/Router.ts) and 
+[vue router](https://router.vuejs.org/) API.
+
 
 ## Components
 
-- `<Router routes={} base={} id={} />`
-- `<SubRouter base={} id={} />` // TODO
-- `<Link href={} />`
-- `<Stack manageTransitions={} />`
+- `<Router />` Wrap Link and stack component
+- `<Link />` Trigg current stack
+- `<Stack />` Wrap previous and current page
 
 ## Hooks
 
-- `useRouter` : retourne l'instance du router courant
-- `useLocation` : retourne dynamiquement `[currentRoute.path + setLocationFn()]`
-- `useRoutes` : retourne dynamiquement `{ previousRoute, currentRoute }`
-- `useStack` : permet d'enregister un composant dans la page avec ses transitions
+- `useRouter` Get router instance from any component
+- `useLocation` get current location and set new location `[currentRoute.path + setLocationFn()]`
+- `useRoutes` get previous and current route `{ previousRoute, currentRoute }`
+- `useStack` Register page component in stack
+
+## Example
+
+Install dependencies
+
+```shell
+$ npm i
+```
+
+Start dev server
+
+```shell
+$ npm run dev
+```
+
+## Installation
+
+TODO
 
 ## Credits
-
-- [wouter](https://github.com/molefrog/wouter)
-- [router solidify](https://github.com/solid-js/solidify/blob/master/navigation/Router.ts)
-- [vue router](https://router.vuejs.org/)

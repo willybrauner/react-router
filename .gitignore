@@ -1,39 +1,8 @@
-# ------------------------------------------------------------------------------ AUTO-COMMENTED
-# values auto-commented during first setup
-config/install.config.js
-
-# ------------------------------------------------------------------------------ GENERATED
-
-# Output application depend of project
-dist
-
-# Auto generated atoms
-src/atoms/atoms.ts
-
-# Auto generated prebuild-sprites
-src/sprites/*.less
-src/sprites/*.png
-src/sprites/*.ts
-src/sprites/*.cache
-
-# Auto generate bundles list
-src/bundles.ts
-
-# Auto generate pages list for js router
-src/**/pages.ts
-
-# ------------------------------------------------------------------------------ ENV
-
 .env
-
-# ------------------------------------------------------------------------------ DEP
-
 node_modules
-
-# ------------------------------------------------------------------------------ IDE / OTHERS
-
 .DS_Store
 .idea
-
-
-
+tsconfig.tsbuildinfo
+.cache
+dist
+example/dist

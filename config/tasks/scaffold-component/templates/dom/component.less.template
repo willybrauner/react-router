@@ -1,6 +1,0 @@
-@import (reference) "../../references.less";
-@COMPONENT: %%upperComponentName%%;
-
-.%%upperComponentName%% {
-
-}
