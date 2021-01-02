@@ -6,6 +6,9 @@ React router API is inspired by [wouter](https://github.com/molefrog/wouter),
 [router solidify](https://github.com/solid-js/solidify/blob/master/navigation/Router.ts) and 
 [vue router](https://router.vuejs.org/) API.
 
+## Why another react router
+
+Because manage routes transitions with React is always f****** complicated. This router provide a Stack component who provide previous and current page component when new page is requested. 
 
 ## Components
 
@@ -37,6 +40,12 @@ $ npm run dev
 ## Installation
 
 TODO
+
+
+## How it's working
+
+TODO
+
 
 ## Credits
 
