@@ -39,3 +39,5 @@ $ npm run dev
 TODO
 
 ## Credits
+
+Willy Brauner
