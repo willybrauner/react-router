@@ -1,30 +1,34 @@
-import React, { useRef } from "react";
+import React, { forwardRef, MutableRefObject, useRef } from "react";
+import { useLocation } from "../router/useLocation";
 import { useStack } from "../router/useStack";
 import { transitionsHelper } from "../helper/transitionsHelper";
-import { useLocation } from "../router/useLocation";
 
 const componentName: string = "BarPage";
 const debug = require("debug")(`front:${componentName}`);
 
-const BarPage = () => {
+interface IProps {}
+
+export const BarPage = forwardRef((props: IProps, handleRef: MutableRefObject<any>) => {
   const rootRef = useRef(null);
 
-  // useStack({
-  //   componentName,
-  //   rootRef,
-  //   playIn: () => transitionsHelper(rootRef.current, true),
-  //   playOut: () => transitionsHelper(rootRef.current, false),
-  // });
+  useStack({
+    componentName,
+    handleRef,
+    rootRef,
+    playIn: () => transitionsHelper(rootRef.current, true),
+    playOut: () => transitionsHelper(rootRef.current, false),
+  });
 
   // test of redirection
   const [location, setLocation] = useLocation();
 
   return (
     <div className={componentName} ref={rootRef}>
-      Bar
+      {componentName}
       <button onClick={() => setLocation("/")}>back to /</button>
     </div>
   );
-};
+});
 
+BarPage.displayName = componentName;
 export default BarPage;

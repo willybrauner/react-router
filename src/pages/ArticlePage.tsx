@@ -1,7 +1,7 @@
-import React, { useRef } from "react";
-import { transitionsHelper } from "../helper/transitionsHelper";
-import { useStack } from "../router/useStack";
+import React, { forwardRef, MutableRefObject, useRef } from "react";
 import { useLocation } from "../router/useLocation";
+import { useStack } from "../router/useStack";
+import { transitionsHelper } from "../helper/transitionsHelper";
 
 interface IProps {
   params?: {
@@ -15,27 +15,31 @@ const debug = require("debug")(`front:${componentName}`);
 /**
  * @name ArticlePage
  */
-function ArticlePage(props: IProps) {
-  debug("params", props);
-  const rootRef = useRef(null);
-  //
-  // useStack({
-  //   componentName,
-  //   rootRef,
-  //   playIn: () => transitionsHelper(rootRef.current, true),
-  //   playOut: () => transitionsHelper(rootRef.current, false),
-  // });
+export const ArticlePage = forwardRef(
+  (props: IProps, handleRef: MutableRefObject<any>) => {
+    debug("params", props);
+    const rootRef = useRef(null);
 
-  // test of redirection
-  const [location, setLocation] = useLocation();
+    useStack({
+      componentName,
+      handleRef,
+      rootRef,
+      playIn: () => transitionsHelper(rootRef.current, true),
+      playOut: () => transitionsHelper(rootRef.current, false),
+    });
 
-  return (
-    <div className={componentName} ref={rootRef}>
-      {componentName} - id: {props?.params?.id}
-      <br />
-      <button onClick={() => setLocation("/")}>navigate to /</button>
-    </div>
-  );
-}
+    // test of redirection
+    const [location, setLocation] = useLocation();
 
+    return (
+      <div className={componentName} ref={rootRef}>
+        {componentName} - id: {props?.params?.id}
+        <br />
+        <button onClick={() => setLocation("/")}>navigate to /</button>
+      </div>
+    );
+  }
+);
+
+ArticlePage.displayName = componentName;
 export default ArticlePage;

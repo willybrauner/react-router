@@ -1,4 +1,4 @@
-import React, { forwardRef, memo, MutableRefObject, useRef } from "react";
+import React, { forwardRef, MutableRefObject, useRef } from "react";
 import Router from "../router/Router";
 import { useStack } from "../router/useStack";
 import { transitionsHelper } from "../helper/transitionsHelper";
@@ -10,9 +10,9 @@ import { routesList } from "../index";
 const componentName: string = "AboutPage";
 const debug = require("debug")(`front:${componentName}`);
 
-type TProps = {};
+interface IProps {}
 
-const AboutPage = forwardRef((props: TProps, handleRef: MutableRefObject<any>) => {
+const AboutPage = forwardRef((props: IProps, handleRef: MutableRefObject<any>) => {
   const rootRef = useRef(null);
 
   useStack({
@@ -23,24 +23,64 @@ const AboutPage = forwardRef((props: TProps, handleRef: MutableRefObject<any>) =
     playOut: () => transitionsHelper(rootRef.current, false),
   });
 
+  /**
+   * Manage Router Stack Transitions
+   * @param previousPage
+   * @param currentPage
+   * @param unmountPreviousPage
+   */
+  const manageTransitions = ({
+    previousPage,
+    currentPage,
+    unmountPreviousPage,
+  }: TManageTransitions): Promise<any> => {
+    return new Promise(async (resolve) => {
+      debug("> previousPage", previousPage);
+      debug("> currentPage", currentPage);
+
+      const $prev = previousPage?.$element;
+      const $current = currentPage?.$element;
+      debug("> $elements", { $prev, $current });
+
+      if ($current) $current.style.visibility = "hidden";
+
+      if (previousPage) {
+        await previousPage?.playOut?.();
+        debug("> previousPage playOut ended");
+
+        unmountPreviousPage();
+        debug("previousPage unmount");
+      }
+
+      await currentPage.isReadyPromise?.();
+
+      if ($current) $current.style.visibility = "visible";
+
+      await currentPage?.playIn?.();
+      debug("> currentPage playIn ended");
+
+      resolve();
+    });
+  };
+
   return (
     <div className={componentName} ref={rootRef}>
-      About
-      {/*<AboutPageNestedRouter base={"/about/"}>*/}
-      {/*  <div className={componentName}>*/}
-      {/*    <nav>*/}
-      {/*      <ul>*/}
-      {/*        <li>*/}
-      {/*          <Link href={"/about/foo"}>Foo</Link>{" "}*/}
-      {/*        </li>*/}
-      {/*        <li>*/}
-      {/*          <Link href={"/about/bar"}>Bar</Link>{" "}*/}
-      {/*        </li>*/}
-      {/*      </ul>*/}
-      {/*    </nav>*/}
-      {/*    <Stack manageTransitions={} key={"stack-2"} />*/}
-      {/*  </div>*/}
-      {/*</AboutPageNestedRouter>*/}
+      {componentName}
+      <AboutPageNestedRouter base={"/about/"}>
+        <div className={componentName}>
+          <nav>
+            <ul>
+              <li>
+                <Link href={"/about/foo"}>Foo</Link>{" "}
+              </li>
+              <li>
+                <Link href={"/about/bar"}>Bar</Link>{" "}
+              </li>
+            </ul>
+          </nav>
+          <Stack manageTransitions={manageTransitions} key={"stack-2"} />
+        </div>
+      </AboutPageNestedRouter>
     </div>
   );
 });
@@ -65,8 +105,6 @@ const AboutPageNestedRouter = (props) => {
     </Router>
   );
 };
-
-
 
 AboutPage.displayName = componentName;
 export default AboutPage;

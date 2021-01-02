@@ -4,9 +4,9 @@ import { transitionsHelper } from "../helper/transitionsHelper";
 const componentName: string = "HomePage";
 const debug = require("debug")(`front:${componentName}`);
 
-type TProps = {};
+interface IProps {}
 
-const HomePage = forwardRef((props: TProps, handleRef: MutableRefObject<any>) => {
+const HomePage = forwardRef((props: IProps, handleRef: MutableRefObject<any>) => {
   const rootRef = useRef(null);
 
   useStack({
@@ -19,7 +19,7 @@ const HomePage = forwardRef((props: TProps, handleRef: MutableRefObject<any>) =>
 
   return (
     <div className={componentName} ref={rootRef}>
-      Home
+      {componentName}
     </div>
   );
 });
