@@ -1,17 +1,17 @@
 import React, { useLayoutEffect, useRef, useState } from "react";
 import { useRouter } from "./useRouter";
 import { useRoutes } from "./useRoutes";
+import { IRouteStack } from "./useStack";
 
 export type TManageTransitions = {
-  previousPage;
-  currentPage;
-  unmountPrev: () => void;
-  currentRouteIsReadyPromise: () => Promise<any>;
+  previousPage: IRouteStack;
+  currentPage: IRouteStack;
+  unmountPreviousPage: () => void;
 };
 
 interface IProps {
   className?: string;
-  manageTransitions: (T: TManageTransitions) => Promise<any>;
+  manageTransitions: (T: TManageTransitions) => Promise<void>;
 }
 
 const componentName = "Stack";
@@ -28,10 +28,9 @@ function Stack(props: IProps) {
   // set number index to component instance
   const [index, setIndex] = useState<number>(0);
 
+  // handle components with refs
   const prevRef = useRef(null);
   const currentRef = useRef(null);
-
-
 
   // 1 get routes
   const {previousRoute, setPreviousRoute, currentRoute} = useRoutes(()=> {
@@ -39,41 +38,29 @@ function Stack(props: IProps) {
   }, [index])
 
   // 2. animate when route state changed
-  // need to be "layoutEffect" to execute transitions before render to avoid screen "clip"
+  // need to be "layoutEffect" to play transitions before render, to avoid screen "clip"
   useLayoutEffect(() => {
-
-    debug("refs",{currentRef, prevRef})
-    debug(router.id, "routes", {previousRoute, currentRoute})
+    debug(router.id, "routes", { previousRoute, currentRoute });
 
     if (!currentRoute) {
       debug(router.id, "current route doesn't exist, return.");
       return;
     }
 
-    props.manageTransitions({
-      previousPage: {
-        componentName: "prev",
-        rootRef: prevRef,
-        playIn: prevRef.current?.playIn,
-        playOut: prevRef.current?.playOut,
-        isReady:prevRef.current?.isReady,
-      },
-      currentPage: {
-        componentName: "current",
-        rootRef: currentRef,
-        playIn: currentRef.current?.playIn,
-        playOut: currentRef.current?.playOut,
-        isReady:currentRef.current?.isReady,
-    },
+    const unmountPreviousPage = () => setPreviousRoute(null);
 
-      currentRouteIsReadyPromise: currentRef.current?.isReadyPromise,
-      
-      unmountPrev: () => {
-        setPreviousRoute(null);
-      }
-    }).then(() => {
-      debug(router.id, 'manageTransitions promise resolve!');
-    })
+    // execute transition function from outside the stack
+    props
+      .manageTransitions({
+        previousPage: prevRef.current,
+        currentPage: currentRef.current,
+        unmountPreviousPage,
+      } as TManageTransitions)
+      .then(() => {
+        debug(router.id, "manageTransitions promise resolve!");
+        // if previous page wasn't unmount manually, we force unmount here
+        unmountPreviousPage();
+      });
   }, [currentRoute]);
 
   return (

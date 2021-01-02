@@ -40,29 +40,29 @@ export default App;
 const manageTransitions = ({
   previousPage,
   currentPage,
-  unmountPrev,
-  currentRouteIsReadyPromise,
-
-}): Promise<any> => {
+  unmountPreviousPage,
+}: TManageTransitions): Promise<any> => {
   return new Promise(async (resolve) => {
-    const previousPageRef = previousPage?.rootRef.current?.ref?.current;
-    const currentPageRef = currentPage?.rootRef.current?.ref?.current;
-    debug("> ref", { previousPageRef, currentPageRef });
+    debug("> previousPage", previousPage);
+    debug("> currentPage", currentPage);
 
-    if (currentPageRef) currentPageRef.style.visibility = "hidden";
+    const $prev = previousPage?.$element;
+    const $current = currentPage?.$element;
+    debug("> $elements", { $prev, $current });
+
+    if ($current) $current.style.visibility = "hidden";
 
     if (previousPage) {
       await previousPage?.playOut?.();
       debug("> previousPage playOut ended");
 
-      unmountPrev();
+      unmountPreviousPage();
       debug("previousPage unmount");
     }
 
-    debug("currentRouteIsReadyPromise", currentRouteIsReadyPromise);
-    await currentRouteIsReadyPromise?.();
+    await currentPage.isReadyPromise?.();
 
-    if (currentPageRef) currentPageRef.style.visibility = "visible";
+    if ($current) $current.style.visibility = "visible";
 
     await currentPage?.playIn?.();
     debug("> currentPage playIn ended");

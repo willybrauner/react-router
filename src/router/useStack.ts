@@ -1,14 +1,19 @@
 import { MutableRefObject, useEffect, useImperativeHandle, useMemo } from "react";
 const debug = require("debug")("front:useStack");
 
-export type TUseStack = {
-  componentName: string;
+export interface IUseStack extends Omit<IRouteStack, "$element" | "isReadyPromise"> {
   handleRef: MutableRefObject<any>;
   rootRef: MutableRefObject<any>;
+}
+
+export interface IRouteStack {
+  componentName: string;
   playIn?: () => Promise<any>;
   playOut?: () => Promise<any>;
   isReady?: boolean;
-};
+  $element: HTMLElement;
+  isReadyPromise?: () => Promise<void>;
+}
 
 /**
  * @name useStack
@@ -21,7 +26,7 @@ export function useStack({
   handleRef,
   rootRef,
   isReady = true,
-}: TUseStack) {
+}: IUseStack) {
   // create deferred promise who we can resolve in the scope
   const deferredPromise = useMemo(() => {
     const deferred: any = {};
@@ -38,14 +43,20 @@ export function useStack({
 
   useImperativeHandle(
     handleRef,
-    () => ({
-      componentName,
-      ref: rootRef,
-      playIn,
-      playOut,
-      isReady,
-      isReadyPromise: () => deferredPromise.promise,
-    }),
+    () => {
+      debug("rootRef.current", rootRef?.current);
+      // Objects properties will be used by Stack
+      const handleRouteCallback: IRouteStack = {
+        componentName,
+        playIn,
+        playOut,
+        isReady,
+        isReadyPromise: () => deferredPromise.promise,
+        $element: rootRef.current,
+      };
+
+      return handleRouteCallback;
+    },
     [deferredPromise]
   );
 }

@@ -24,4 +24,5 @@ const HomePage = forwardRef((props: TProps, handleRef: MutableRefObject<any>) =>
   );
 });
 
+HomePage.displayName = componentName;
 export default HomePage;

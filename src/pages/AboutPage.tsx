@@ -1,4 +1,4 @@
-import React, { forwardRef, MutableRefObject, useRef } from "react";
+import React, { forwardRef, memo, MutableRefObject, useRef } from "react";
 import Router from "../router/Router";
 import { useStack } from "../router/useStack";
 import { transitionsHelper } from "../helper/transitionsHelper";
@@ -38,7 +38,7 @@ const AboutPage = forwardRef((props: TProps, handleRef: MutableRefObject<any>) =
       {/*        </li>*/}
       {/*      </ul>*/}
       {/*    </nav>*/}
-      {/*    <Stack manageTransitions={manageTransitions} key={"stack-2"} />*/}
+      {/*    <Stack manageTransitions={} key={"stack-2"} />*/}
       {/*  </div>*/}
       {/*</AboutPageNestedRouter>*/}
     </div>
@@ -66,33 +66,7 @@ const AboutPageNestedRouter = (props) => {
   );
 };
 
-const manageTransitions = ({
-  previousPage,
-  currentPage,
-  unmountPrev,
-}: TManageTransitions): Promise<any> => {
-  return new Promise(async (resolve) => {
-    const previousPageRef = previousPage?.rootRef.current;
-    const currentPageRef = currentPage?.rootRef.current;
-    debug("> ref", { previousPageRef, currentPageRef });
 
-    if (currentPageRef) currentPageRef.style.visibility = "hidden";
 
-    if (previousPage) {
-      await previousPage.playOut();
-      debug("> previousPage playOut ended");
-
-      unmountPrev();
-      debug("previousPage unmount");
-    }
-
-    if (currentPageRef) currentPageRef.style.visibility = "visible";
-
-    await currentPage?.playIn();
-    debug("> currentPage playIn ended");
-
-    resolve();
-  });
-};
-
+AboutPage.displayName = componentName;
 export default AboutPage;
