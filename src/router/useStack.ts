@@ -1,5 +1,12 @@
-import { MutableRefObject, useEffect, useLayoutEffect, useMemo } from "react";
+import {
+  MutableRefObject,
+  useEffect,
+  useImperativeHandle,
+  useLayoutEffect,
+  useMemo
+} from "react";
 import { useRouter } from "./useRouter";
+import { transitionsHelper } from "../helper/transitionsHelper";
 const debug = require("debug")("front:useStack");
 
 export type TStackTransitions = {
@@ -43,6 +50,17 @@ export function useStack({
   useEffect(() => {
     currentPageIsReady && readyDeferred.resolve();
   }, [currentPageIsReady]);
+
+
+  useImperativeHandle(
+    rootRef,
+    () => ({
+      $element: rootRef.current,
+      playIn: () => transitionsHelper(rootRef.current, true),
+      playOut: () => transitionsHelper(rootRef.current, false),
+    }),
+    []
+  );
 
   // register pages before render
   useLayoutEffect(() => {

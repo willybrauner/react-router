@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, { MutableRefObject, useLayoutEffect, useRef, useState } from "react";
 import { TStackTransitionObject } from "./useStack";
 import { useRouter } from "./useRouter";
 import { useRoutes } from "./useRoutes";
@@ -28,6 +28,11 @@ function Stack(props: IProps) {
   // set number index to component instance
   const [index, setIndex] = useState<number>(0);
 
+  const prevRef = useRef(null);
+  const currentRef = useRef(null);
+
+
+
   // 1 get routes
   const {previousRoute, setPreviousRoute, currentRoute} = useRoutes(()=> {
     setIndex(index + 1)
@@ -36,6 +41,8 @@ function Stack(props: IProps) {
   // 2. animate when route state changed
   // need to be "layoutEffect" to execute transitions before render to avoid screen "clip"
   useLayoutEffect(() => {
+
+    debug("refs",{currentRef, prevRef})
     debug(router.id, "routes", {previousRoute, currentRoute})
     const routeTransitions = router.stackPageTransitions;
 
@@ -45,8 +52,18 @@ function Stack(props: IProps) {
     }
 
     props.manageTransitions({
-      previousPage: routeTransitions?.[previousRoute?.path],
-      currentPage: routeTransitions?.[currentRoute?.path],
+      previousPage: {
+        componentName: "prev",
+        rootRef: prevRef,
+        playIn: prevRef.current?.playIn,
+        playOut: prevRef.current?.playOut
+      },
+      currentPage: {
+        componentName: "current",
+        rootRef: currentRef,
+        playIn: currentRef.current?.playIn,
+        playOut: currentRef.current?.playOut
+    },
       unmountPrev: () => {
         setPreviousRoute(null);
       }
@@ -59,12 +76,14 @@ function Stack(props: IProps) {
     <div className={componentName}>
       {previousRoute?.component && (
         <previousRoute.component
+          ref={prevRef}
           key={index - 1}
           {...(previousRoute.props || {})}
         />
       )}
       {currentRoute?.component && (
         <currentRoute.component
+          ref={currentRef}
           key={index}
           {...(currentRoute.props || {})}
         />

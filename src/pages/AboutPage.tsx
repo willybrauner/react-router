@@ -1,4 +1,11 @@
-import React, { useRef } from "react";
+import React, {
+  forwardRef,
+  MutableRefObject,
+  useEffect,
+  useImperativeHandle,
+  useLayoutEffect,
+  useRef,
+} from "react";
 import Router from "../router/Router";
 import { useStack } from "../router/useStack";
 import { transitionsHelper } from "../helper/transitionsHelper";
@@ -11,39 +18,46 @@ import { routesList } from "../index";
 const componentName: string = "AboutPage";
 const debug = require("debug")(`front:${componentName}`);
 
-const AboutPage = () => {
+type TProps = {};
+
+const AboutPage = forwardRef((props: TProps, ref: MutableRefObject<any>) => {
   const rootRef = useRef(null);
 
-  useStack({
-    componentName,
-    rootRef,
+  // useStack({
+  //   componentName,
+  //   rootRef,
+  //   playIn: () => transitionsHelper(rootRef.current, true),
+  //   playOut: () => transitionsHelper(rootRef.current, false),
+  // });
+  useImperativeHandle(ref, () => ({
+    ref: rootRef,
     playIn: () => transitionsHelper(rootRef.current, true),
     playOut: () => transitionsHelper(rootRef.current, false),
-  });
+  }), []);
 
   // test of redirection
 
   return (
     <div className={componentName} ref={rootRef}>
       About
-      <AboutPageNestedRouter base={"/about/"}>
-        <div className={componentName}>
-          <nav>
-            <ul>
-              <li>
-                <Link href={"/about/foo"}>Foo</Link>{" "}
-              </li>
-              <li>
-                <Link href={"/about/bar"}>Bar</Link>{" "}
-              </li>
-            </ul>
-          </nav>
-          <Stack manageTransitions={manageTransitions} key={"stack-2"} />
-        </div>
-      </AboutPageNestedRouter>
+      {/*<AboutPageNestedRouter base={"/about/"}>*/}
+      {/*  <div className={componentName}>*/}
+      {/*    <nav>*/}
+      {/*      <ul>*/}
+      {/*        <li>*/}
+      {/*          <Link href={"/about/foo"}>Foo</Link>{" "}*/}
+      {/*        </li>*/}
+      {/*        <li>*/}
+      {/*          <Link href={"/about/bar"}>Bar</Link>{" "}*/}
+      {/*        </li>*/}
+      {/*      </ul>*/}
+      {/*    </nav>*/}
+      {/*    <Stack manageTransitions={manageTransitions} key={"stack-2"} />*/}
+      {/*  </div>*/}
+      {/*</AboutPageNestedRouter>*/}
     </div>
   );
-};
+});
 
 /**
  * AboutPage nested router
