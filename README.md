@@ -6,30 +6,32 @@ React router API is inspired by [wouter](https://github.com/molefrog/wouter),
 
 ## Why another react router
 
-Because manage routes transitions with React is always complicated. This router provide a Stack component who render previous and current page component when new page is requested.
+Because manage routes transitions with React is always complicated, this router is build allow transitions flexibility.
+It provides Stack component who render previous and current page component when route change.
 
 ## Components
 
 - `<Router />` Wrap Link and stack component
-- `<Link />` Trigg current stack
+- `<Link />` Trig current stack
 - `<Stack />` Wrap previous and current page
 
 ## Hooks
 
 - `useRouter` Get router instance from any component
-- `useLocation` get current location and set new location `[currentRoute.path + setLocationFn()]`
-- `useRoutes` get previous and current route `{ previousRoute, currentRoute }`
+- `useLocation` Get current location and set new location `[currentRoute.path + setLocationFn()]`
+- `useRoutes` Get previous and current route `{ previousRoute, currentRoute }`
 - `useStack` Register page component in stack
 
-## How it's working
+## Simple usage
 
 ```jsx
-// List your routes
+// create a route object
 const routesList = [
   { path: "/foo", component: FooPage },
   { path: "/bar", component: BarPage },
 ];
 
+// wrap render with <Router /> component
 function App() {
   return (
     <Router routes={routesList} base={"/"}>
@@ -51,30 +53,34 @@ const manageTransitions = ({ previousPage, currentPage }) =>
   });
 ```
 
-In page component:
+Page component need to be wrap by `React.forwardRef`. The `handleRef` allow to handle transitions, ref, etc. used by `<Stack />` component.
+
 ```jsx
 const FooPage = forwardRef((props, handleRef) => {
+  const componentName = "FooPage";
   const rootRef = useRef(null);
-  
-  useStack({
-    componentName: "FooPage",
-    handleRef,
-    rootRef,
-    // add custom page transitions 
-    playIn: () => new Promise(resolve => { 
-      gsap.from(rootRef.current, { autoAlpha: 0, onComplete: resolve })  
-    }),
-    playOut: () => new Promise(resolve => { 
-      gsap.to(rootRef.current, { autoAlpha: 0, onComplete: resolve })  
-    }),
-  });
+
+  // create custom page transitions (example with GSAP)
+  const playIn = () => {
+    return new Promise((resolve) => {
+      gsap.from(rootRef.current, { autoAlpha: 0, onComplete: resolve });
+    });
+  };
+  const playOut = () => {
+    return new Promise((resolve) => {
+      gsap.to(rootRef.current, { autoAlpha: 0, onComplete: resolve });
+    });
+  };
+
+  // register page transition properties used by Stack component
+  useStack({ componentName, handleRef, rootRef, playIn, playOut });
 
   return (
     <div className={componentName} ref={rootRef}>
       {componentName}
     </div>
   );
-}); 
+});
 ```
 
 ## Example
