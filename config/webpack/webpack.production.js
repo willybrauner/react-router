@@ -61,18 +61,6 @@ const productionConfig = {
       defaultSizes: "gzip",
     }),
 
-    /**
-     * CopyWebpackPlugin
-     * Copies files from target to destination folder.
-     */
-
-    new CopyWebpackPlugin([
-      {
-        from: config.outputPath,
-        to: "/",
-        ignore: ["*.DS_Store", ".gitkeep", ".*"],
-      },
-    ]),
   ],
 
   /**

@@ -1,14 +1,17 @@
-import React, { useRef } from "react";
+import React, { forwardRef, MutableRefObject, useRef } from "react";
 import { useStack } from "../router/useStack";
 import { transitionsHelper } from "../helper/transitionsHelper";
-
 const componentName: string = "FooPage";
-const FooPage = () => {
-  const rootRef = useRef(null);
+const debug = require("debug")(`front:${componentName}`);
 
+interface IProps {}
+
+const FooPage = forwardRef((props: IProps, handleRef: MutableRefObject<any>) => {
+  const rootRef = useRef(null);
 
   useStack({
     componentName,
+    handleRef,
     rootRef,
     playIn: () => transitionsHelper(rootRef.current, true),
     playOut: () => transitionsHelper(rootRef.current, false),
@@ -19,6 +22,7 @@ const FooPage = () => {
       {componentName}
     </div>
   );
-};
+});
 
+FooPage.displayName = componentName;
 export default FooPage;

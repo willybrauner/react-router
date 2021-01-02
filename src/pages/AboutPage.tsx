@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { forwardRef, MutableRefObject, useRef } from "react";
 import Router from "../router/Router";
 import { useStack } from "../router/useStack";
 import { transitionsHelper } from "../helper/transitionsHelper";
@@ -7,25 +7,65 @@ import Stack, { TManageTransitions } from "../router/Stack";
 import { useLocation } from "../router/useLocation";
 import { useRouter } from "../router/useRouter";
 import { routesList } from "../index";
-
 const componentName: string = "AboutPage";
 const debug = require("debug")(`front:${componentName}`);
 
-const AboutPage = () => {
+interface IProps {}
+
+const AboutPage = forwardRef((props: IProps, handleRef: MutableRefObject<any>) => {
   const rootRef = useRef(null);
 
   useStack({
     componentName,
+    handleRef,
     rootRef,
     playIn: () => transitionsHelper(rootRef.current, true),
     playOut: () => transitionsHelper(rootRef.current, false),
   });
 
-  // test of redirection
+  /**
+   * Manage Router Stack Transitions
+   * @param previousPage
+   * @param currentPage
+   * @param unmountPreviousPage
+   */
+  const manageTransitions = ({
+    previousPage,
+    currentPage,
+    unmountPreviousPage,
+  }: TManageTransitions): Promise<any> => {
+    return new Promise(async (resolve) => {
+      debug("> previousPage", previousPage);
+      debug("> currentPage", currentPage);
+
+      const $prev = previousPage?.$element;
+      const $current = currentPage?.$element;
+      debug("> $elements", { $prev, $current });
+
+      if ($current) $current.style.visibility = "hidden";
+
+      if (previousPage) {
+        await previousPage?.playOut?.();
+        debug("> previousPage playOut ended");
+
+        unmountPreviousPage();
+        debug("previousPage unmount");
+      }
+
+      await currentPage.isReadyPromise?.();
+
+      if ($current) $current.style.visibility = "visible";
+
+      await currentPage?.playIn?.();
+      debug("> currentPage playIn ended");
+
+      resolve();
+    });
+  };
 
   return (
     <div className={componentName} ref={rootRef}>
-      About
+      {componentName}
       <AboutPageNestedRouter base={"/about/"}>
         <div className={componentName}>
           <nav>
@@ -43,7 +83,7 @@ const AboutPage = () => {
       </AboutPageNestedRouter>
     </div>
   );
-};
+});
 
 /**
  * AboutPage nested router
@@ -66,33 +106,5 @@ const AboutPageNestedRouter = (props) => {
   );
 };
 
-const manageTransitions = ({
-  previousPage,
-  currentPage,
-  unmountPrev,
-}: TManageTransitions): Promise<any> => {
-  return new Promise(async (resolve) => {
-    const previousPageRef = previousPage?.rootRef.current;
-    const currentPageRef = currentPage?.rootRef.current;
-    debug("> ref", { previousPageRef, currentPageRef });
-
-    if (currentPageRef) currentPageRef.style.visibility = "hidden";
-
-    if (previousPage) {
-      await previousPage.playOut();
-      debug("> previousPage playOut ended");
-
-      unmountPrev();
-      debug("previousPage unmount");
-    }
-
-    if (currentPageRef) currentPageRef.style.visibility = "visible";
-
-    await currentPage?.playIn();
-    debug("> currentPage playIn ended");
-
-    resolve();
-  });
-};
-
+AboutPage.displayName = componentName;
 export default AboutPage;
