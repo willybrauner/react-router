@@ -155,7 +155,7 @@ Get current router instance.
 const router = useRouter();
 ```
 
-### <a name="useLocation"></a>useLocation()
+### <a name="useLocation"></a>`useLocation()`
 
 Allow the router to change location.
 
@@ -169,7 +169,7 @@ setLocation("/bar");
 - `location (string)` Get current location
 - `setLocation ((path:string)=> void)` Set new route
 
-### <a name="useRoutes"></a>useRoutes()
+### <a name="useRoutes"></a>`useRoutes()`
 
 ```jsx
 const { currentRoute, previousRoute } = useRoutes();
@@ -192,7 +192,13 @@ type TRoute = {
 };
 ```
 
-### <a name="useStack"></a>useStack()
+### <a name="useStack"></a>`useStack()`
+
+Prepare page component for Stack.
+
+```js
+useStack({ componentName, handleRef, rootRef, playIn, playOut, isReady });
+```
 
 #### Parameters
 
