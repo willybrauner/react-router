@@ -4,10 +4,12 @@ React router API is inspired by [wouter](https://github.com/molefrog/wouter),
 [solidify router](https://github.com/solid-js/solidify/blob/master/navigation/Router.ts) and
 [vue router](https://router.vuejs.org/) API.
 
-## Why another react router
+## Why another react router?
 
 Because manage routes transitions with React is always complicated, this router is build to allow transitions flexibility.
 It provides Stack component who render previous and current page component when route change.
+
+This router only loads [path-parser](https://github.com/troch/path-parser) as dependency.
 
 ## Components
 
@@ -161,13 +163,23 @@ Allow the router to change location.
 
 ```jsx
 const [location, setLocation] = useLocation();
+// give URL 
 setLocation("/bar");
+// or an object
+setLocation({  name: "FooPage", param: { id: "2" } });
 ```
 
 #### Returns
 
 - `location (string)` Get current location
-- `setLocation ((path:string)=> void)` Set new route
+- `setLocation ((path:string | TOpenRoute)=> void)` Open new route
+
+```ts
+type TOpenRoute = {
+  name: string;
+  params?: { [x: string]: any };
+};
+```
 
 ### <a name="useRoutes"></a>`useRoutes()`
 
@@ -186,9 +198,10 @@ Get previous and current route properties (TRoute)
 type TRoute = {
   path: string;
   component: React.ComponentType<any>;
-  parser?: Path;
   props?: { [x: string]: any };
+  parser?: Path;
   children?: TRoute[];
+  url?:string
 };
 ```
 
