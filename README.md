@@ -24,6 +24,10 @@ This router only loads [path-parser](https://github.com/troch/path-parser) as de
 - [`useRoutes`](#useRoutes) Get previous and current route
 - [`useStack`](#useStack) Register page component in stack
 
+## Installation
+
+TODO
+
 ## Simple usage
 
 ```jsx
@@ -84,6 +88,17 @@ const FooPage = forwardRef((props, handleRef) => {
   );
 });
 ```
+
+## Nested Router
+
+TODO
+
+## Manage transition examples
+
+TODO
+
+- isReadyPromise example
+- crossed transition example
 
 ## API
 
@@ -163,10 +178,10 @@ Allow the router to change location.
 
 ```jsx
 const [location, setLocation] = useLocation();
-// give URL 
+// give URL
 setLocation("/bar");
 // or an object
-setLocation({  name: "FooPage", param: { id: "2" } });
+setLocation({ name: "FooPage", param: { id: "2" } });
 ```
 
 #### Returns
@@ -201,7 +216,7 @@ type TRoute = {
   props?: { [x: string]: any };
   parser?: Path;
   children?: TRoute[];
-  url?:string
+  url?: string;
 };
 ```
 
@@ -239,10 +254,6 @@ Start dev server
 ```shell
 $ npm run dev
 ```
-
-## Installation
-
-TODO
 
 ## Credits
 
