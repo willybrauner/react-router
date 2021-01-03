@@ -29,19 +29,20 @@ export enum ERouterEvent {
  * RouterManager instance
  */
 class RouterManager {
-  // base url
+  // base URL
   public base: string;
   // routes list
   public routes: TRoute[] = [];
   // create event emitter
   public events: EventEmitter = new EventEmitter();
-  // current route object
+
+  // current / previous route object
   public currentRoute: TRoute;
-  // previous route object
   public previousRoute: TRoute;
-  // perform fake routing to not allow url changing between routes
+
+  // router instance ID, useful for debug if there is multiple router instance
   public id: number | string;
-  // if active, do not push navigation in browser history
+  // perform fake routing to not allow URL changing between routes
   public fakeMode: boolean;
 
   constructor({
