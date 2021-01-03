@@ -11,9 +11,9 @@ It provides Stack component who render previous and current page component when 
 
 ## Components
 
-- [`<Router />`](#Router) Wrap Link and stack component
-- [`<Link />`](#Link) Trig current stack
-- [`<Stack />`](#Stack) Wrap previous and current page
+- [`<Router />`](#router-) Wrap Link and stack component
+- [`<Link />`](#link-) Trig current stack
+- [`<Stack />`](#stack-) Wrap previous and current page
 
 ## Hooks
 
@@ -85,7 +85,7 @@ const FooPage = forwardRef((props, handleRef) => {
 
 ## API
 
-### <a name="Router"></a>Router
+### `<Router />`
 
 Create a new router instance.
 
@@ -102,7 +102,7 @@ Create a new router instance.
 - `id (number)` Router instance ID - default: `1`
 - `fakeMode (boolean)` Allow to access routes without push in browser history
 
-### <a name="Link"></a>Link
+### `<Link />`
 
 Trig new route.
 
@@ -115,7 +115,7 @@ Trig new route.
 - `href (string)` ex: "/foo"
 - `className (?string)` className added to component root DOM element
 
-### <a name="Stack"></a>Stack
+### `<Stack />`
 
 Returns previous and current page.
 
@@ -147,7 +147,7 @@ interface IRouteStack {
 
 - `className (?string)` className added to component root DOM element
 
-### <a name="useRouter"></a>useRouter()
+### <a name="useRouter"></a>`useRouter()`
 
 Get current router instance.
 
@@ -155,7 +155,7 @@ Get current router instance.
 const router = useRouter();
 ```
 
-### <a name="useLocation"></a>useLocation()
+### <a name="useLocation"></a>`useLocation()`
 
 Allow the router to change location.
 
@@ -169,7 +169,7 @@ setLocation("/bar");
 - `location (string)` Get current location
 - `setLocation ((path:string)=> void)` Set new route
 
-### <a name="useRoutes"></a>useRoutes()
+### <a name="useRoutes"></a>`useRoutes()`
 
 ```jsx
 const { currentRoute, previousRoute } = useRoutes();
@@ -192,7 +192,13 @@ type TRoute = {
 };
 ```
 
-### <a name="useStack"></a>useStack()
+### <a name="useStack"></a>`useStack()`
+
+Prepare page component for Stack.
+
+```js
+useStack({ componentName, handleRef, rootRef, playIn, playOut, isReady });
+```
 
 #### Parameters
 
