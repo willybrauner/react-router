@@ -20,15 +20,15 @@
     "compile": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "path-parser": "^6.1.0",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "path-parser": "^6.1.0"
   },
   "peerDependencies": {
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },
   "devDependencies": {
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
     "@types/node": "^14.14.19",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
