@@ -17,10 +17,12 @@ const debug = require("debug")(`front:index`);
  */
 export const routesList: TRoute[] = [
   {
+    name: "HomePage",
     path: "/",
     component: HomePage,
   },
   {
+    name: "AboutPage",
     path: "/about",
     component: AboutPage,
     children: [
@@ -35,6 +37,7 @@ export const routesList: TRoute[] = [
     ],
   },
   {
+    name: "article",
     path: "/blog/:id",
     component: ArticlePage,
     props: {

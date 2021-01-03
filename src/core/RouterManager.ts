@@ -5,6 +5,7 @@ import GlobalRouter from "./GlobalRouter";
 const debug = require("debug")("front:RouterManager");
 
 export type TRoute = {
+  name?: string;
   path: string;
   component: React.ComponentType<any>;
   parser?: Path;
@@ -100,7 +101,7 @@ class RouterManager {
         currentRoutePath: this.currentRoute?.path,
         matchingRoutePath: matchingRoute?.path,
       });
-      return;
+      //  return;
     }
 
     this.previousRoute = this.currentRoute;
@@ -184,6 +185,41 @@ class RouterManager {
         return routeObj;
       }
     }
+   }
+
+  /**
+   * Build an URL with path and params
+   */
+  public buildUrl(path: string, params?: { [x: string]: any }) {
+    const newPath = new Path(path);
+    return newPath.build(params);
+  }
+
+  /**
+   * Open a specific route by is name
+   * @param componentName
+   * @param params
+   */
+  public openRoute({
+    componentName,
+    params,
+  }: {
+    componentName: string;
+    params?: { [x: string]: any };
+  }): void {
+    // get route by name
+    const targetRoute = this.routes.find((el) => el.name === componentName);
+
+    if (!targetRoute?.path) {
+      debug(this.id, "There is no route with this name, exit", componentName);
+      return;
+    }
+
+    // build url
+    let url = this.buildUrl(targetRoute.path, params);
+
+    // update route with this url
+    this.updateRoute(url);
   }
 
   /**

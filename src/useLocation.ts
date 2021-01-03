@@ -7,5 +7,6 @@ import { useRoutes } from "./useRoutes";
 export const useLocation = (): [string, (url: string) => void] => {
   const router = useRouter();
   const { currentRoute } = useRoutes();
-  return [currentRoute?.path, (url) => router.updateRoute(url)];
+  const setLocation = (url: string) => router.updateRoute(url);
+  return [currentRoute?.path, setLocation];
 };
