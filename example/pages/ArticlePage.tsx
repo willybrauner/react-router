@@ -1,5 +1,5 @@
 import React, { forwardRef, MutableRefObject, useRef } from "react";
-import { useLocation, useRouter } from "../../src";
+import { useLocation } from "../../src";
 import { useStack } from "../../src";
 import { transitionsHelper } from "../helper/transitionsHelper";
 
@@ -19,6 +19,7 @@ export const ArticlePage = forwardRef(
   (props: IProps, handleRef: MutableRefObject<any>) => {
     debug("params", props);
     const rootRef = useRef(null);
+    const [location, setLocation] = useLocation();
 
     useStack({
       componentName,
@@ -28,21 +29,23 @@ export const ArticlePage = forwardRef(
       playOut: () => transitionsHelper(rootRef.current, false),
     });
 
-    // test of redirection
-    const [location, setLocation] = useLocation();
-
-    const router = useRouter();
-
     return (
       <div className={componentName} ref={rootRef}>
         {componentName} - id: {props?.params?.id}
         <br />
         <button
           onClick={() => {
-            router.openRoute({ componentName: "HomePage" });
+            setLocation("/");
           }}
         >
           navigate to /
+        </button>
+        <button
+          onClick={() => {
+            setLocation({ name: "ArticlePage", params: { id: "yolo" } });
+          }}
+        >
+          navigate to article with param "yolo"
         </button>
       </div>
     );

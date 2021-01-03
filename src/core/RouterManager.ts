@@ -11,17 +11,22 @@ export type TRoute = {
   parser?: Path;
   props?: { [x: string]: any };
   children?: TRoute[];
+  url?: string;
+};
+
+export type TOpenRoute = {
+  name: string;
+  params?: { [x: string]: any };
 };
 
 export enum ERouterEvent {
   PREVIOUS_ROUTE_CHANGE = "previous-route-change",
   CURRENT_ROUTE_CHANGE = "current-route-change",
-  // TODO add listener to stack and create hook useStackIsAnimating();
   STACK_IS_ANIMATING = "stack-is-animating",
 }
 
 /**
- * Single router
+ * RouterManager instance
  */
 class RouterManager {
   // base url
@@ -36,7 +41,7 @@ class RouterManager {
   public previousRoute: TRoute;
   // perform fake routing to not allow url changing between routes
   public id: number | string;
-
+  // if active, do not push navigation in browser history
   public fakeMode: boolean;
 
   constructor({
@@ -93,15 +98,12 @@ class RouterManager {
       return;
     }
 
-    // si currentRoute est un child (contient ~? ex: ~/bar)
-    // et matchingRoute ...
-
-    if (this.currentRoute?.path === matchingRoute?.path) {
+    if (this.currentRoute?.url === matchingRoute?.url) {
       debug(this.id, "updateRoute > This is the same URL, return.", {
-        currentRoutePath: this.currentRoute?.path,
-        matchingRoutePath: matchingRoute?.path,
+        currentRouteUrl: this.currentRoute?.url,
+        matchingRouteUrl: matchingRoute?.url,
       });
-      //  return;
+      return;
     }
 
     this.previousRoute = this.currentRoute;
@@ -178,6 +180,7 @@ class RouterManager {
             params: match,
             ...(currentRoute.props || {}),
           },
+          url,
         };
 
         debug(this.id, 'getRouteFromUrl: > MATCH routeObj', routeObj);
@@ -190,7 +193,7 @@ class RouterManager {
   /**
    * Build an URL with path and params
    */
-  public buildUrl(path: string, params?: { [x: string]: any }) {
+  public buildUrl(path: string, params?: { [x: string]: any }): string {
     const newPath = new Path(path);
     return newPath.build(params);
   }
@@ -200,25 +203,19 @@ class RouterManager {
    * @param componentName
    * @param params
    */
-  public openRoute({
-    componentName,
-    params,
-  }: {
-    componentName: string;
-    params?: { [x: string]: any };
-  }): void {
-    // get route by name
-    const targetRoute = this.routes.find((el) => el.name === componentName);
+  public openRoute({ name, params }: TOpenRoute): void {
+    // get route by name property (by default) or by component displayName
+    const targetRoute = this.routes.find(
+      (el) => el?.name === name || el.component?.displayName === name
+    );
 
     if (!targetRoute?.path) {
-      debug(this.id, "There is no route with this name, exit", componentName);
+      debug(this.id, "There is no route with this name, exit", name);
       return;
     }
-
-    // build url
+    // build URL
     let url = this.buildUrl(targetRoute.path, params);
-
-    // update route with this url
+    // update route with this URL
     this.updateRoute(url);
   }
 

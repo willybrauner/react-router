@@ -9,6 +9,7 @@ import ArticlePage from "./pages/ArticlePage";
 import FooPage from "./pages/FooPage";
 import BarPage from "./pages/BarPage";
 import "./index.css";
+import { forwardRef } from "react";
 
 const debug = require("debug")(`front:index`);
 
@@ -17,12 +18,10 @@ const debug = require("debug")(`front:index`);
  */
 export const routesList: TRoute[] = [
   {
-    name: "HomePage",
     path: "/",
     component: HomePage,
   },
   {
-    name: "AboutPage",
     path: "/about",
     component: AboutPage,
     children: [
@@ -37,7 +36,6 @@ export const routesList: TRoute[] = [
     ],
   },
   {
-    name: "article",
     path: "/blog/:id",
     component: ArticlePage,
     props: {
@@ -47,7 +45,7 @@ export const routesList: TRoute[] = [
   },
   {
     path: "/:rest",
-    component: () => <div className="NotFoundPage">Not Found</div>,
+    component: forwardRef((props, r) => <div className="NotFoundPage">Not Found</div>),
   },
 ];
 
