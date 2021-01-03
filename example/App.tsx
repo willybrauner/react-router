@@ -8,7 +8,7 @@ const debug = require("debug")(`front:${componentName}`);
 /**
  * @name App
  */
-export function App() {
+export default function App() {
   return (
     <div className={componentName}>
       <nav>
@@ -20,7 +20,7 @@ export function App() {
             <Link href={"/about"}>About</Link>{" "}
           </li>
           <li>
-            <Link href={"/blog/article-1"}>blog article "article 1"</Link>
+            <Link href={"/blog/article-1"}>blog article param id "article-1"</Link>
           </li>
         </ul>
       </nav>
@@ -28,8 +28,6 @@ export function App() {
     </div>
   );
 }
-
-export default App;
 
 /**
  * Manage Router Stack Transitions

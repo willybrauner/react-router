@@ -19,6 +19,7 @@ export const ArticlePage = forwardRef(
   (props: IProps, handleRef: MutableRefObject<any>) => {
     debug("params", props);
     const rootRef = useRef(null);
+    const [location, setLocation] = useLocation();
 
     useStack({
       componentName,
@@ -28,14 +29,24 @@ export const ArticlePage = forwardRef(
       playOut: () => transitionsHelper(rootRef.current, false),
     });
 
-    // test of redirection
-    const [location, setLocation] = useLocation();
-
     return (
       <div className={componentName} ref={rootRef}>
         {componentName} - id: {props?.params?.id}
         <br />
-        <button onClick={() => setLocation("/")}>navigate to /</button>
+        <button
+          onClick={() => {
+            setLocation("/");
+          }}
+        >
+          navigate to /
+        </button>
+        <button
+          onClick={() => {
+            setLocation({ name: "ArticlePage", params: { id: "yolo" } });
+          }}
+        >
+          navigate to article with param "yolo"
+        </button>
       </div>
     );
   }

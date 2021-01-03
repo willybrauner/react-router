@@ -22,7 +22,7 @@ RouterContext.displayName = componentName;
  * Router
  * will wrap Link and Stack components
  */
-const Router = memo((props: IProps) => {
+export const Router = memo((props: IProps) => {
   const [routerManager] = useState<RouterManager>(
     () =>
       new RouterManager({
@@ -39,6 +39,4 @@ const Router = memo((props: IProps) => {
     </RouterContext.Provider>
   );
 });
-
 Router.displayName = componentName;
-export { Router };
