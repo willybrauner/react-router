@@ -1,12 +1,12 @@
 # 🚃 react router _(WIP)_
 
 React router API is inspired by [wouter](https://github.com/molefrog/wouter),
-[router solidify](https://github.com/solid-js/solidify/blob/master/navigation/Router.ts) and
+[solidify router](https://github.com/solid-js/solidify/blob/master/navigation/Router.ts) and
 [vue router](https://router.vuejs.org/) API.
 
 ## Why another react router
 
-Because manage routes transitions with React is always complicated, this router is build allow transitions flexibility.
+Because manage routes transitions with React is always complicated, this router is build to allow transitions flexibility.
 It provides Stack component who render previous and current page component when route change.
 
 ## Components
@@ -18,8 +18,8 @@ It provides Stack component who render previous and current page component when 
 ## Hooks
 
 - [`useRouter`](#useRouter) Get router instance from any component
-- [`useLocation`](#useLocation) Get current location and set new location `[currentRoute.path + setLocationFn()]`
-- [`useRoutes`](#useRoutes) Get previous and current route `{ previousRoute, currentRoute }`
+- [`useLocation`](#useLocation) Get current location and set new location
+- [`useRoutes`](#useRoutes) Get previous and current route
 - [`useStack`](#useStack) Register page component in stack
 
 ## Simple usage
@@ -53,7 +53,7 @@ const manageTransitions = ({ previousPage, currentPage }) =>
   });
 ```
 
-Page component need to be wrap by `React.forwardRef`. The `handleRef` allow to handle transitions, ref, etc. used by `<Stack />` component.
+Page component need to be wrap by `React.forwardRef`. The `handleRef` lets hold transitions, ref, etc. used by `<Stack />` component.
 
 ```jsx
 const FooPage = forwardRef((props, handleRef) => {
@@ -91,45 +91,65 @@ Create a new router instance.
 
 ```jsx
 <Router routes={} base={} id={} fakeMode={}>
-  // can now use <Link /> and <Stack /> component
+  {/* can now use <Link /> and <Stack /> component */}
 </Router>
 ```
 
+#### Props
+
+- `routes (TRoute[])` Routes list
+- `base (string)` base URL - default: `"/"`
+- `id (number)` Router instance ID - default: `1`
+- `fakeMode (boolean)` Allow to access routes without push in browser history
+
 ### <a name="Link"></a>Link
 
-Trig new route
-
-params:
-
-- href `string`
-- className `string`
-
-example:
+Trig new route.
 
 ```jsx
-<Link href={""} className={""} />
+<Link href={} className={} />
 ```
+
+#### Props
+
+- `href (string)` ex: "/foo"
+- `className (?string)` className added to component root DOM element
 
 ### <a name="Stack"></a>Stack
 
 Returns previous and current page.
 
-params:
-
-- manageTransitions `()=> void`
-- className `string`
-
-example:
-
 ```jsx
-<Stack manageTransitions={} className={""} />
+<Stack manageTransitions={} className={} />
 ```
+
+#### Props
+
+- `manageTransitions ((T:TManageTransitions) => Promise<void>)`
+  This function allow to create the transition scenario.
+
+```ts
+type TManageTransitions = {
+  previousPage: IRouteStack;
+  currentPage: IRouteStack;
+  unmountPreviousPage: () => void;
+};
+
+interface IRouteStack {
+  componentName: string;
+  playIn: () => Promise<any>;
+  playOut: () => Promise<any>;
+  isReady: boolean;
+  $element: HTMLElement;
+  isReadyPromise: () => Promise<void>;
+}
+```
+
+- `className (?string)` className added to component root DOM element
 
 ### <a name="useRouter"></a>useRouter()
 
 Get current router instance.
-
-example:
 
 ```jsx
 const router = useRouter();
@@ -137,65 +157,55 @@ const router = useRouter();
 
 ### <a name="useLocation"></a>useLocation()
 
-returns:
-
-- `location` Get current location
-- `setLocation` trig new route
-
-example:
+Allow the router to change location.
 
 ```jsx
 const [location, setLocation] = useLocation();
 setLocation("/bar");
 ```
 
+#### Returns
+
+- `location (string)` Get current location
+- `setLocation ((path:string)=> void)` Set new route
+
 ### <a name="useRoutes"></a>useRoutes()
-
-Get previous and current route properties (TRoute)
-
-returns:
-
-- currentRoute `TRoute`
-- previousRoute `TRoute`
-
-```js
-{
-  path: string;
-  component: React.ComponentType<any>;
-  parser?: Path;
-  props?: { [x: string]: any };
-  children?: TRoute[];
-}
-```
-
-example:
 
 ```jsx
 const { currentRoute, previousRoute } = useRoutes();
 ```
 
+Get previous and current route properties (TRoute)
+
+#### Returns
+
+- `currentRoute (TRoute)` Current route object
+- `previousRoute (TRoute)` Previous route object
+
+```ts
+type TRoute = {
+  path: string;
+  component: React.ComponentType<any>;
+  parser?: Path;
+  props?: { [x: string]: any };
+  children?: TRoute[];
+};
+```
+
 ### <a name="useStack"></a>useStack()
 
-params:
+#### Parameters
 
-- componentName `string`
-- handleRef `MutableRefObject<any>`
-- rootRef `MutableRefObject<any>`
-- playIn `?() => Promise<any>`
-- playOut `?() => Promise<any>`
-- isReady `?boolean`
+- `componentName (string)` Name of current component
+- `handleRef (MutableRefObject<any>)` Ref handled by parent component
+- `rootRef (MutableRefObject<any>)` Ref on root component element
+- `playIn (?() => Promise<any>)` Play in transition - default: `new Promise.resolve()`
+- `playOut (?() => Promise<any>)` Play out transition - default: `new Promise.resolve()`
+- `isReady (?boolean)` Is ready state - default: `true`
 
-returns:
+#### Returns
 
 nothing
-
-example:
-
-```jsx
-const useStack({
-  componentName, handleRef, rootRef, playIn, playOut, isReady
- });
-```
 
 ## Example
 
