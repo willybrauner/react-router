@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, TManageTransitions } from "../src";
+import { Link, TManageTransitions, useRouter } from "../src";
 import { Stack } from "../src";
 
 const componentName = "App";
@@ -9,6 +9,10 @@ const debug = require("debug")(`front:${componentName}`);
  * @name App
  */
 export default function App() {
+
+  const router = useRouter()
+
+
   return (
     <div className={componentName}>
       <nav>

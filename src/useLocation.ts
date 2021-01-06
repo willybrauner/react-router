@@ -6,15 +6,16 @@ import { TOpenRoute } from "./core/RouterManager";
  * useLocation
  */
 export const useLocation = (): [string, (param: string | TOpenRoute) => void] => {
-  const router = useRouter();
+  //const router = useRouter();
   const { currentRoute } = useRoutes();
 
   const setLocation = (param: string | TOpenRoute) => {
     if (typeof param === "string") {
-      router.updateRoute(param);
+      //router.updateRoute(param);
+      window.history.pushState({ }, param, param)
     }
     if (typeof param === "object") {
-      router.openRoute(param);
+      //router.openRoute(param);
     }
   };
   return [currentRoute?.path, setLocation];

@@ -21,6 +21,26 @@ export const routesList: TRoute[] = [
     path: "/",
     component: HomePage,
   },
+
+  // "/blog/4/update"
+  {
+    path: "/blog/:id",
+    component: ArticlePage,
+    props: {
+      name: "article",
+      color: "red",
+    },
+    children: [
+      {
+        path: "/",
+        component: FooPage,
+      },
+      {
+        path: "/update",
+        component: FooPage,
+      },
+    ]
+  },
   {
     path: "/about",
     component: AboutPage,
@@ -34,14 +54,6 @@ export const routesList: TRoute[] = [
         component: BarPage,
       },
     ],
-  },
-  {
-    path: "/blog/:id",
-    component: ArticlePage,
-    props: {
-      name: "article",
-      color: "red",
-    },
   },
   {
     path: "/:rest",

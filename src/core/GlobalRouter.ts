@@ -15,14 +15,8 @@ class GlobalRouter {
   public routeCounter = 0;
   public isFirstRoute;
   public currentRouteList;
-
-
   public currentRoute: TRoute;
   public previousRoute: TRoute;
-
-
-
-
 }
 
 export default new GlobalRouter();
