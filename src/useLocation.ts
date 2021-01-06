@@ -1,18 +1,15 @@
-import { useRouter } from "./useRouter";
 import { useRoutes } from "./useRoutes";
-import { TOpenRoute } from "./core/RouterManager";
+import { PUSH_NEW_LOCATION, locationEvent, TOpenRoute } from "./core/RouterManager";
 
 /**
  * useLocation
  */
 export const useLocation = (): [string, (param: string | TOpenRoute) => void] => {
-  //const router = useRouter();
   const { currentRoute } = useRoutes();
 
   const setLocation = (param: string | TOpenRoute) => {
     if (typeof param === "string") {
-      //router.updateRoute(param);
-      window.history.pushState({ }, param, param)
+      locationEvent.emit(PUSH_NEW_LOCATION, param);
     }
     if (typeof param === "object") {
       //router.openRoute(param);

@@ -25,6 +25,9 @@ export enum ERouterEvent {
   STACK_IS_ANIMATING = "stack-is-animating",
 }
 
+export const locationEvent = new EventEmitter();
+export const PUSH_NEW_LOCATION = "push-new-location";
+
 /**
  * RouterManager instance
  */
@@ -63,10 +66,30 @@ class RouterManager {
     routes.forEach((el) => this.addRoute(el));
 
     this.updateRoute();
-    window.addEventListener("popstate", (e) => {
-      debug(this.id, "pass dans popstate", e);
-      this.updateRoute(window.location.pathname, false);
-    });
+    this.initEvent();
+  }
+
+  /**
+   * Initialise event
+   */
+  public initEvent() {
+    window.addEventListener("popstate", this.handlePopState);
+    locationEvent.on(PUSH_NEW_LOCATION, this.handleNewLocation);
+  }
+
+  protected handlePopState = (e) => {
+    debug(this.id, "pass dans popstate", e);
+    this.updateRoute(window.location.pathname, false);
+  };
+
+  protected handleNewLocation = (e) => {
+    debug(this.id, "pass dans pushstate");
+    this.updateRoute(e, true);
+  };
+
+  public destroy() {
+    window.removeEventListener("popstate", this.handlePopState);
+    locationEvent.off(PUSH_NEW_LOCATION, this.handleNewLocation);
   }
 
   /**
@@ -87,18 +110,23 @@ class RouterManager {
    * - push URL in history
    * - emit selected route object on route-change event (listen by RouterStack)
    */
-  public updateRoute(
+  protected updateRoute(
     url: string = this.fakeMode ? this.base : window.location.pathname,
     addToHistory: boolean = true
   ): void {
     // get matching route depending of current URL
     const matchingRoute: TRoute = this.getRouteFromUrl(url);
 
+    debug(this.id, { matchingRoute, url });
     if (!matchingRoute) {
       debug(this.id, "updateRoute > No matching route. return", { matchingRoute, url });
       return;
     }
 
+    debug(this.id, {
+      currentRouteUrl: this.currentRoute?.url,
+      matchingRouteUrl: matchingRoute?.url,
+    });
     if (this.currentRoute?.url === matchingRoute?.url) {
       debug(this.id, "updateRoute > This is the same URL, return.", {
         currentRouteUrl: this.currentRoute?.url,
@@ -127,68 +155,85 @@ class RouterManager {
    * @doc https://www.npmjs.com/package/path-parser
    */
   // prettier-ignore
-  public getRouteFromUrl(url: string, routes = this.routes): TRoute {
+  protected getRouteFromUrl(url: string, routes = this.routes, base = this.base): TRoute {
     if (!routes || routes?.length === 0) return;
 
+
+    const prepareMatchingRoute = (currentRoute, pathParser, match, url): TRoute => ({
+      path: currentRoute.path,
+      component: currentRoute.component,
+      children: currentRoute?.children,
+      parser: pathParser,
+      props: {
+        params: match,
+        ...(currentRoute.props || {}),
+      },
+      url,
+    })
+
+    let match;
+
+    // test
     for (let i = 0; i < routes.length; i++) {
       let currentRoute = routes[i];
 
       // create parser & matcher
-      const currentRoutePath = currentRoute.path.slice(1) || "/";
+      const currentRoutePath = `${base}${currentRoute.path}`.replace("//", "/");
       const pathParser: Path = new Path(currentRoutePath);
 
-      const currentUrl = url === "/" ? url : url?.replace(this.base, "");
-      // debug(this.id,`getRouteFromUrl: currentUrl "${currentUrl}" match with "${currentRoutePath}" ?`, !!pathParser.test(currentUrl));
+      //const currentUrl = url === "/" ? url : url?.replace(this.base, "");
+       debug(this.id,`getRouteFromUrl: currentUrl "${url}" match with "${currentRoutePath}" ?`, !!pathParser.test(url));
 
-      let match;
       // if url match with current route path
       // or if 1rst part of url match with  current route path
-      match = pathParser.test(currentUrl) || null;
+      match = pathParser.test(url) || null;
 
-      /**
-       * Needed if access to /foo/bar sub-router on first load
-       * router 1 need to instantiate '/foo' for router 2 will be able to render '/bar'
-       * So we check URL part
-       */
-      let partialMatch = false;
-      // if not match
       if (!match) {
-        partialMatch = true;
-        const currentUrlParts = currentUrl.split('/');
-        for (let i = 0; i < currentUrlParts.length; i++) {
+        const children = currentRoute.children;
+        debug('children',children)
 
-          // get one part of the url array
-          const specificPartOfUrl = currentUrlParts[i];
-          // debug(this.id,`getRouteFromUrl: specificPartOfUrl "${specificPartOfUrl}" match with "${currentRoutePath}" ?`, !!pathParser.test(specificPartOfUrl));
+        // next
+        if (!children) continue;
 
-          // if match,register it
-          if (pathParser.test(specificPartOfUrl)) {
-            match = pathParser.test(specificPartOfUrl);
-          }
+        for (let i = 0; i < children.length; i++) {
+          debug("children",children[i])
+          this.getRouteFromUrl(url, children);
         }
+
       }
+
+      // /**
+      //  * Needed if access to /foo/bar sub-router on first load
+      //  * router 1 need to instantiate '/foo' for router 2 will be able to render '/bar'
+      //  * So we check URL part
+      //  */
+      // let partialMatch = false;
+      // // if not match
+      // if (!match) {
+      //   partialMatch = true;
+      //   const currentUrlParts = url.split('/');
+      //   for (let i = 0; i < currentUrlParts.length; i++) {
+      //
+      //     // get one part of the url array
+      //     const specificPartOfUrl = currentUrlParts[i];
+      //     debug(this.id,`getRouteFromUrl: specificPartOfUrl "${specificPartOfUrl}" match with "${currentRoutePath}" ?`, !!pathParser.test(specificPartOfUrl));
+      //
+      //     // if match,register it
+      //     if (pathParser.test(specificPartOfUrl)) {
+      //       match = pathParser.test(specificPartOfUrl);
+      //     }
+      //   }
+      //}
 
       // if current route path match with the param url
       if (match) {
-
-        // prepare route object
-        const routeObj: TRoute = {
-          path: currentRoute.path,
-          component: currentRoute.component,
-          children: currentRoute?.children,
-          parser: pathParser,
-          props: {
-            params: match,
-            ...(currentRoute.props || {}),
-          },
-          url,
-        };
-
+        const routeObj = prepareMatchingRoute(currentRoute, pathParser, match, url);
         debug(this.id, 'getRouteFromUrl: > MATCH routeObj', routeObj);
-
         return routeObj;
       }
     }
+
+
    }
 
   /**

@@ -66,7 +66,7 @@ const AboutPage = forwardRef((props: IProps, handleRef: MutableRefObject<any>) =
   return (
     <div className={componentName} ref={rootRef}>
       {componentName}
-      <AboutPageNestedRouter base={"/about/"}>
+      <AboutPageNestedRouter base={"/about"}>
         <div className={componentName}>
           <nav>
             <ul>
@@ -91,13 +91,8 @@ const AboutPage = forwardRef((props: IProps, handleRef: MutableRefObject<any>) =
  */
 const AboutPageNestedRouter = (props) => {
   const router = useRouter();
-  const [parentLocation, setParentLocation] = useLocation();
-
   const nestedBase = `${router.base}${props.base}`.replace("//", "/");
-  debug("nestedBase", nestedBase);
-  //debug("parentLocation", parentLocation);
-
-  const routes = routesList.find((el) => el.path === "/about").children;
+  const routes = routesList.find((el) => el.path === props.base).children;
 
   return (
     <Router base={nestedBase} key={nestedBase} routes={routes} id={2}>
