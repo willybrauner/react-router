@@ -198,11 +198,11 @@ type TOpenRoute = {
 
 ### <a name="useRoute"></a>`useRoute()`
 
+Get previous and current route properties (TRoute)
+
 ```jsx
 const { currentRoute, previousRoute } = useRoute();
 ```
-
-Get previous and current route properties (TRoute)
 
 #### Returns
 
