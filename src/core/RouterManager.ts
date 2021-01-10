@@ -129,17 +129,22 @@ class RouterManager {
     // prettier-ignore
     debug(this.id, "updateRoute > ", { currentRouteUrl: this.currentRoute?.url, matchingRouteUrl: matchingRoute?.url });
 
-    // TODO le 1er niveau va aussi recevoir une nouvelle URL et va emit alors qu'il ne devrait pas si uniquement la sous route change
-    // prettier-ignore
-    if (this.currentRoute?.url === matchingRoute?.url || this.currentRoute?.path === matchingRoute?.path) {
+    if (
+      // FIXME condition à revoir
+      // si c'est la même URL que la précende, exit /// comme tous les routeurs reçoivent la même demande d'update
+      // il faudrait que this.currentRoute?.url ne soit pas l'URL emit par setLocation,
+      // mais seulement la partie de l'URL qui permet de matcher sur le router courant
+      this.currentRoute?.url === matchingRoute?.url ||
+      // FIXME condition à revoir
+      // si /blog/:id -> /blog/:id exit /// ce n'est pas ce que l'on veut dans certains cas
+      this.currentRoute?.path === matchingRoute?.path
+    ) {
       debug(this.id, "updateRoute > This is the same URL, return.");
       return;
     }
 
     if (!this.fakeMode) {
-      addToHistory
-        ? window.history.pushState(null, null, url)
-        : window.history.replaceState(null, null, url);
+      window.history[addToHistory ? "pushState" : "replaceState"](null, null, url);
     }
 
     this.previousRoute = this.currentRoute;
