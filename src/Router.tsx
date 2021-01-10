@@ -1,5 +1,5 @@
 import { RouterManager, TRoute } from "./core/RouterManager";
-import React, { createContext, memo, ReactElement, useState } from "react";
+import React, { createContext, memo, ReactElement, useEffect, useState } from "react";
 
 const componentName = "Router";
 const debug = require("debug")(`front:${componentName}`);
@@ -32,6 +32,10 @@ export const Router = memo((props: IProps) => {
         id: props.id,
       })
   );
+
+  useEffect(() => {
+    return () => routerManager.destroy();
+  }, [routerManager]);
 
   return (
     <RouterContext.Provider value={routerManager}>
