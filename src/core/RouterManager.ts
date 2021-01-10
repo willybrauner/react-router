@@ -1,7 +1,6 @@
 import { Path } from "path-parser";
 import React from "react";
 import { EventEmitter } from "events";
-import GlobalRouter from "./GlobalRouter";
 const debug = require("debug")("front:RouterManager");
 
 export type TRoute = {
@@ -11,7 +10,7 @@ export type TRoute = {
   parser?: Path;
   props?: { [x: string]: any };
   children?: TRoute[];
-  url?: string;
+  buildUrl?: string;
 };
 
 export type TOpenRoute = {
@@ -25,12 +24,15 @@ export enum ERouterEvent {
   STACK_IS_ANIMATING = "stack-is-animating",
 }
 
-// TODO tester avec https://github.com/ReactTraining/history/blob/master/docs/getting-started.md
+// TODO tester avec history lib ? https://github.com/ReactTraining/history/blob/master/docs/getting-started.md
 export const locationEvent = new EventEmitter();
 export const PUSH_NEW_LOCATION = "push-new-location";
 
+// store current full URL available for each instance
+let GLOBAL_CURRENT_URL: string = window.location.href;
+
 /**
- * RouterManager instance
+ * RouterManager
  */
 class RouterManager {
   // base URL
@@ -64,8 +66,7 @@ class RouterManager {
     this.id = id;
     this.fakeMode = fakeMode;
 
-    routes.forEach((el) => this.addRoute(el));
-
+    routes.forEach((el: TRoute) => this.addRoute(el));
     this.updateRoute();
     this.initEvent();
   }
@@ -84,27 +85,23 @@ class RouterManager {
 
   /**
    * Handlers
-   * @param e
    */
-  protected handlePopState = (e) => {
-    debug(this.id, "in handle popstate", e);
+  protected handlePopState = () => {
     this.updateRoute(window.location.pathname, false);
   };
 
-  protected handleNewLocation = (e) => {
-    debug(this.id, "in handle newLocation");
-    this.updateRoute(e, true);
+  protected handleNewLocation = (url: string) => {
+    this.updateRoute(url, true);
   };
 
   /**
    * Add new route object to routes array
    */
   protected addRoute(route: TRoute): void {
-    const routeParams: TRoute = {
+    this.routes.push({
       ...route,
       parser: new Path(route.path),
-    };
-    this.routes.push(routeParams);
+    });
   }
 
   /**
@@ -120,29 +117,25 @@ class RouterManager {
     // get matching route depending of current URL
     const matchingRoute: TRoute = this.getRouteFromUrl(url);
 
-    debug(this.id, "updateRoute > ", { matchingRoute, url });
+    // check if there is matching route
     if (!matchingRoute) {
-      debug(this.id, "updateRoute > No matching route. return");
+      debug(this.id, "updateRoute: NO MATCHING ROUTE. RETURN.");
       return;
     }
 
-    // prettier-ignore
-    debug(this.id, "updateRoute > ", { currentRouteUrl: this.currentRoute?.url, matchingRouteUrl: matchingRoute?.url });
+    // check if new route has the same URL or not
+    debug(this.id, "updateRoute: ", {
+      currentRouteBuildUrl: this.currentRoute?.buildUrl,
+      matchingRouteBuildUrl: matchingRoute?.buildUrl,
+      GLOBAL_CURRENT_URL: GLOBAL_CURRENT_URL,
+    });
 
-    if (
-      // FIXME condition à revoir
-      // si c'est la même URL que la précende, exit /// comme tous les routeurs reçoivent la même demande d'update
-      // il faudrait que this.currentRoute?.url ne soit pas l'URL emit par setLocation,
-      // mais seulement la partie de l'URL qui permet de matcher sur le router courant
-      this.currentRoute?.url === matchingRoute?.url ||
-      // FIXME condition à revoir
-      // si /blog/:id -> /blog/:id exit /// ce n'est pas ce que l'on veut dans certains cas
-      this.currentRoute?.path === matchingRoute?.path
-    ) {
-      debug(this.id, "updateRoute > This is the same URL, return.");
+    if (this.currentRoute?.buildUrl === matchingRoute?.buildUrl) {
+      debug(this.id, "updateRoute > THIS IS THE SAME URL, RETURN.");
       return;
     }
 
+    // We have got a matching route and can continue...
     if (!this.fakeMode) {
       window.history[addToHistory ? "pushState" : "replaceState"](null, null, url);
     }
@@ -152,7 +145,8 @@ class RouterManager {
     this.events.emit(ERouterEvent.PREVIOUS_ROUTE_CHANGE, this.previousRoute);
     this.events.emit(ERouterEvent.CURRENT_ROUTE_CHANGE, this.currentRoute);
 
-    GlobalRouter.routeCounter++;
+    // keep global state
+    GLOBAL_CURRENT_URL = url;
   }
 
   /**
@@ -171,7 +165,7 @@ class RouterManager {
 
     let match;
 
-    // test
+    // test each routes
     for (let i in routes) {
       let currentRoute = routes[i];
 
@@ -180,26 +174,27 @@ class RouterManager {
       const pathParser: Path = new Path(currentRoutePath);
 
       // prettier-ignore
-      debug(this.id, `getRouteFromUrl: currentUrl "${url}" match with "${currentRoutePath}" ?`, !!pathParser.test(url));
+      debug(this.id, `getRouteFromUrl: currentUrl "${url}" match with "${currentRoutePath}"?`, !!pathParser.test(url));
 
-      // if url match with current route path
-      // or if 1rst part of url match with  current route path
+      // set new matcher
       match = pathParser.test(url) || null;
 
       // if current route path match with the param url
       if (match) {
         // prepare route obj
         const route = pCurrentRoute || currentRoute;
+        const params = pMatch || match;
+
         const routeObj = {
+          buildUrl: this.buildUrl(route.path, params),
           path: route?.path,
           component: route?.component,
           children: route?.children,
           parser: pPathParser || pathParser,
           props: {
-            params: pMatch || match,
+            params,
             ...(route?.props || {}),
           },
-          url,
         };
 
         debug(this.id, "getRouteFromUrl: > MATCH routeObj", routeObj);
@@ -208,13 +203,10 @@ class RouterManager {
         // if not match
       } else {
         const children = currentRoute?.children;
-        debug("children", children);
 
         // next
         if (!children) continue;
-
         const parentBase = currentRoutePath;
-        debug("parentBase", parentBase);
 
         // recursive call
         return this.getRouteFromUrl(
@@ -258,12 +250,6 @@ class RouterManager {
     // update route with this URL
     this.updateRoute(url);
   }
-
-  /**
-   * TODO
-   * Use middleWare
-   */
-  public use() {}
 }
 
 export { RouterManager };
