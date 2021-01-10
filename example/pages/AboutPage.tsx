@@ -71,10 +71,10 @@ const AboutPage = forwardRef((props: IProps, handleRef: MutableRefObject<any>) =
           <nav>
             <ul>
               <li>
-                <Link href={"/about/foo"}>Foo</Link>{" "}
+                <Link to={"/about/foo"}>Foo</Link>{" "}
               </li>
               <li>
-                <Link href={"/about/bar"}>Bar</Link>{" "}
+                <Link to={"/about/bar"}>Bar</Link>{" "}
               </li>
             </ul>
           </nav>

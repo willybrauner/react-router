@@ -2,10 +2,10 @@ import React, { ReactNode, useMemo } from "react";
 import { useLocation } from "./useLocation";
 
 interface IProps {
-  children: ReactNode;
-  href: string;
+  to: string;
   onClick?: () => void;
   className?: string;
+  children: ReactNode;
 }
 
 const componentName = "Link";
@@ -19,11 +19,14 @@ function Link(props: IProps) {
 
   const handleClick = (e) => {
     e.preventDefault();
-    setLocation(props.href);
     props.onClick?.();
+    setLocation(props.to);
   };
 
-  const isActive = useMemo(() => location === props.href, [location, props.href]);
+  const isActive = useMemo(() => {
+    debug("location", { location, propsTo: props.to });
+    return location === props.to;
+  }, [location, props.to]);
 
   return (
     <a
@@ -31,7 +34,7 @@ function Link(props: IProps) {
         .filter((e) => e)
         .join(" ")}
       onClick={handleClick}
-      href={props.href}
+      href={props.to}
       children={props.children}
     />
   );

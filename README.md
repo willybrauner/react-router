@@ -21,7 +21,7 @@ This router only loads [path-parser](https://github.com/troch/path-parser) and [
 
 - [`useRouter`](#useRouter) Get router instance from any component
 - [`useLocation`](#useLocation) Get current location and set new location
-- [`useRoutes`](#useRoutes) Get previous and current route
+- [`useRoute`](#useRoute) Get previous and current route
 - [`useStack`](#useStack) Register page component in stack
 
 ## Installation
@@ -124,12 +124,12 @@ Create a new router instance.
 Trig new route.
 
 ```jsx
-<Link href={} className={} />
+<Link to={} className={} />
 ```
 
 #### Props
 
-- `href (string)` ex: "/foo"
+- `to (string)` ex: "/foo"
 - `className (?string)` className added to component root DOM element
 
 ### `<Stack />`
@@ -186,7 +186,7 @@ setLocation({ name: "FooPage", param: { id: "2" } });
 
 #### Returns
 
-- `location (string)` Get current location
+- `location (string)` Get current pathname location
 - `setLocation ((path:string | TOpenRoute)=> void)` Open new route
 
 ```ts
@@ -196,10 +196,10 @@ type TOpenRoute = {
 };
 ```
 
-### <a name="useRoutes"></a>`useRoutes()`
+### <a name="useRoute"></a>`useRoute()`
 
 ```jsx
-const { currentRoute, previousRoute } = useRoutes();
+const { currentRoute, previousRoute } = useRoute();
 ```
 
 Get previous and current route properties (TRoute)
