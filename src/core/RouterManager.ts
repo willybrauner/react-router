@@ -87,12 +87,12 @@ class RouterManager {
    * @param e
    */
   protected handlePopState = (e) => {
-    debug(this.id, "in popstate", e);
+    debug(this.id, "in handle popstate", e);
     this.updateRoute(window.location.pathname, false);
   };
 
   protected handleNewLocation = (e) => {
-    debug(this.id, "in pushstate");
+    debug(this.id, "in handle newLocation");
     this.updateRoute(e, true);
   };
 
@@ -104,7 +104,6 @@ class RouterManager {
       ...route,
       parser: new Path(route.path),
     };
-    // keep routes in local array
     this.routes.push(routeParams);
   }
 
@@ -184,24 +183,19 @@ class RouterManager {
 
       // if current route path match with the param url
       if (match) {
-        const prepareMatchingRoute = (route, pathParser, match, url): TRoute => ({
-          path: route.path,
-          component: route.component,
+        // prepare route obj
+        const route = pCurrentRoute || currentRoute;
+        const routeObj = {
+          path: route?.path,
+          component: route?.component,
           children: route?.children,
-          parser: pathParser,
+          parser: pPathParser || pathParser,
           props: {
-            params: match,
-            ...(route.props || {}),
+            params: pMatch || match,
+            ...(route?.props || {}),
           },
           url,
-        });
-
-        const routeObj = prepareMatchingRoute(
-          pCurrentRoute || currentRoute,
-          pPathParser || pathParser,
-          pMatch || match,
-          url
-        );
+        };
 
         debug(this.id, "getRouteFromUrl: > MATCH routeObj", routeObj);
         return routeObj;
@@ -213,8 +207,9 @@ class RouterManager {
 
         // next
         if (!children) continue;
+
         const parentBase = currentRoutePath;
-        debug(" parentBase", parentBase);
+        debug("parentBase", parentBase);
 
         // recursive call
         return this.getRouteFromUrl(
