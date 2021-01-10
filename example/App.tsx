@@ -18,13 +18,13 @@ export default function App() {
       <nav>
         <ul>
           <li>
-            <Link href={"/"}>Home</Link>{" "}
+            <Link to={"/"}>Home</Link>{" "}
           </li>
           <li>
-            <Link href={"/about"}>About</Link>{" "}
+            <Link to={"/about"}>About</Link>{" "}
           </li>
           <li>
-            <Link href={"/blog/article-1"}>blog article param id "article-1"</Link>
+            <Link to={"/blog/article-1"}>blog article param id "article-1"</Link>
           </li>
         </ul>
       </nav>

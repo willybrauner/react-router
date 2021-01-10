@@ -6,5 +6,5 @@ export { Stack, TManageTransitions } from "./Stack";
 
 export { useRouter } from "./useRouter";
 export { useLocation } from "./useLocation";
-export { useRoutes } from "./useRoutes";
+export { useRoute } from "./useRoute";
 export { useStack, IRouteStack } from "./useStack";

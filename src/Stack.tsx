@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useRef, useState } from "react";
 import { useRouter } from "./useRouter";
-import { useRoutes } from "./useRoutes";
+import { useRoute } from "./useRoute";
 import { IRouteStack } from "./useStack";
 import { ERouterEvent } from "./core/RouterManager";
 
@@ -33,7 +33,7 @@ function Stack(props: IProps) {
   const currentRef = useRef(null);
 
   // 1 get routes
-  const { previousRoute, setPreviousRoute, currentRoute } = useRoutes(() => {
+  const { previousRoute, setPreviousRoute, currentRoute } = useRoute(() => {
     setIndex(index + 1);
   }, [index]);
 

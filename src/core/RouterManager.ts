@@ -10,7 +10,11 @@ export type TRoute = {
   parser?: Path;
   props?: { [x: string]: any };
   children?: TRoute[];
+
+  // URL re-build with params needed by nested router
   buildUrl?: string;
+  // pathname who not depend of current instance
+  pathname?: string;
 };
 
 export type TOpenRoute = {
@@ -34,7 +38,7 @@ let GLOBAL_CURRENT_URL: string = window.location.href;
 /**
  * RouterManager
  */
-class RouterManager {
+export class RouterManager {
   // base URL
   public base: string;
   // routes list
@@ -187,6 +191,7 @@ class RouterManager {
         const params = pMatch || match;
 
         const routeObj = {
+          pathname: url,
           buildUrl: this.buildUrl(route.path, params),
           path: route?.path,
           component: route?.component,
@@ -251,5 +256,3 @@ class RouterManager {
     this.updateRoute(url);
   }
 }
-
-export { RouterManager };
