@@ -90,8 +90,9 @@ class RouterManager {
     this.updateRoute(window.location.pathname, false);
   };
 
-  protected handleNewLocation = (url: string) => {
-    this.updateRoute(url, true);
+  protected handleNewLocation = (param: string | TOpenRoute) => {
+    if (typeof param === "string") this.updateRoute(param);
+    else if (typeof param === "object") this.openRoute(param);
   };
 
   /**
@@ -230,7 +231,6 @@ class RouterManager {
   }
 
   /**
-   * TODO revoir
    * Open a specific route by is name
    * @param componentName
    * @param params
@@ -238,7 +238,7 @@ class RouterManager {
   public openRoute({ name, params }: TOpenRoute): void {
     // get route by name property (by default) or by component displayName
     const targetRoute = this.routes.find(
-      (el) => el?.name === name || el.component?.displayName === name
+      (el: TRoute) => el?.name === name || el.component?.displayName === name
     );
 
     if (!targetRoute?.path) {
