@@ -88,6 +88,9 @@ const AboutPage = forwardRef((props: IProps, handleRef: MutableRefObject<any>) =
 /**
  * AboutPage nested router
  * @param props
+ *
+ * FIXME REFACTO avec path
+ * On aura plus besoin de cette logique qui sera intégrée à <Router />
  */
 const AboutPageNestedRouter = (props) => {
   const router = useRouter();
@@ -95,7 +98,7 @@ const AboutPageNestedRouter = (props) => {
   const routes = routesList.find((el) => el.path === props.base).children;
 
   return (
-    <Router base={nestedBase} key={nestedBase} routes={routes} id={2}>
+    <Router base={nestedBase} key={nestedBase} routes={routes} path={"/about"} id={2}>
       {props.children}
     </Router>
   );

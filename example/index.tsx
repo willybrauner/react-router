@@ -35,7 +35,7 @@ export const routesList: TRoute[] = [
     component: AboutPage,
     children: [
       {
-        path: "/foo",
+        path: "/about",
         component: FooPage,
       },
       {
@@ -52,9 +52,11 @@ export const routesList: TRoute[] = [
 
 /**
  * Init Application
+ * // path : chemin du sous router pour identifier les routes dans le tableau de route
  */
+
 ReactDOM.render(
-  <Router routes={routesList} base={"/"}>
+  <Router routes={routesList} base={"/"} path={"/"}>
     <App />
   </Router>,
   document.getElementById("root")
