@@ -6,7 +6,6 @@ const debug = require("debug")(`front:${componentName}`);
 
 interface IProps {
   base: string;
-  path: string;
   routes: TRoute[];
   children: ReactElement;
   id?: number | string;

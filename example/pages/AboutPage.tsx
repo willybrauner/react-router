@@ -98,7 +98,7 @@ const AboutPageNestedRouter = (props) => {
   const routes = routesList.find((el) => el.path === props.base).children;
 
   return (
-    <Router base={nestedBase} key={nestedBase} routes={routes} path={"/about"} id={2}>
+    <Router base={nestedBase} key={nestedBase} routes={routes} id={2}>
       {props.children}
     </Router>
   );
