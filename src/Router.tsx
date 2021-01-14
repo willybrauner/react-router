@@ -9,7 +9,6 @@ interface IProps {
   path: string;
   routes: TRoute[];
   children: ReactElement;
-  fakeMode?: boolean;
   id?: number | string;
 }
 
@@ -29,7 +28,6 @@ export const Router = memo((props: IProps) => {
       new RouterManager({
         base: props.base,
         routes: props.routes,
-        fakeMode: props.fakeMode,
         id: props.id,
       })
   );

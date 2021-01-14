@@ -52,15 +52,12 @@ export class RouterManager {
 
   // router instance ID, useful for debug if there is multiple router instance
   public id: number | string;
-  // perform fake routing to not allow URL changing between routes
-  public fakeMode: boolean;
 
   protected unlistenHistory;
 
   constructor({
     base = "/",
     routes = null,
-    fakeMode = false,
     id = 1,
   }: {
     base?: string;
@@ -70,7 +67,6 @@ export class RouterManager {
   }) {
     this.base = base;
     this.id = id;
-    this.fakeMode = fakeMode;
 
     routes.forEach((el: TRoute) => this.addRoute(el));
     this.updateRoute();
@@ -117,9 +113,8 @@ export class RouterManager {
    */
   protected updateRoute(url: string = history.location.pathname): void {
     // get matching route depending of current URL
-    const matchingRoute: TRoute = this.getRouteFromUrl(url);
+    const matchingRoute: TRoute = this.getRouteFromUrl({ pUrl: url });
 
-    // check if there is matching route
     if (!matchingRoute) {
       debug(this.id, "updateRoute: NO MATCHING ROUTE. RETURN.");
       return;
@@ -137,43 +132,45 @@ export class RouterManager {
   }
 
   /**
-   * Get current route from url using path-parser
+   * Get current route from URL using path-parser
    * @doc https://www.npmjs.com/package/path-parser
    */
-  protected getRouteFromUrl(
-    url: string,
-    routes = this.routes,
-    base = this.base,
-    pCurrentRoute: TRoute = null,
+  protected getRouteFromUrl({
+    pUrl,
+    pRoutes = this.routes,
+    pBase = this.base,
+    pCurrentRoute = null,
     pPathParser = null,
-    pMatch = null
-  ): TRoute {
-    if (!routes || routes?.length === 0) return;
-
+    pMatch = null,
+  }: {
+    pUrl: string;
+    pRoutes?: TRoute[];
+    pBase?: string;
+    pCurrentRoute?: TRoute;
+    pPathParser?: any;
+    pMatch?: any;
+  }): TRoute {
+    if (!pRoutes || pRoutes?.length === 0) return;
     let match;
 
     // test each routes
-    for (let i in routes) {
-      let currentRoute = routes[i];
-
+    for (let i in pRoutes) {
+      let currentRoute = pRoutes[i];
       // create parser & matcher
-      const currentRoutePath = `${base}${currentRoute.path}`.replace("//", "/");
+      const currentRoutePath = `${pBase}${currentRoute.path}`.replace("//", "/");
+      // prepare parser
       const pathParser: Path = new Path(currentRoutePath);
-
       // prettier-ignore
-      debug(this.id, `getRouteFromUrl: currentUrl "${url}" match with "${currentRoutePath}"?`, !!pathParser.test(url));
-
+      debug(this.id, `getRouteFromUrl: currentUrl "${pUrl}" match with "${currentRoutePath}"?`, !!pathParser.test(pUrl));
       // set new matcher
-      match = pathParser.test(url) || null;
-
+      match = pathParser.test(pUrl) || null;
       // if current route path match with the param url
       if (match) {
         // prepare route obj
         const route = pCurrentRoute || currentRoute;
         const params = pMatch || match;
-
         const routeObj = {
-          pathname: url,
+          pathname: pUrl,
           buildUrl: this.buildUrl(route.path, params),
           path: route?.path,
           component: route?.component,
@@ -191,20 +188,17 @@ export class RouterManager {
         // if not match
       } else {
         const children = currentRoute?.children;
-
-        // next
+        // if there is no child, continue to next iteration
         if (!children) continue;
-        const parentBase = currentRoutePath;
-
-        // recursive call
-        return this.getRouteFromUrl(
-          url,
-          children,
-          parentBase,
-          currentRoute,
-          pathParser,
-          match
-        );
+        // else, call recursivly this same method with new params
+        return this.getRouteFromUrl({
+          pUrl: pUrl,
+          pRoutes: children,
+          pBase: currentRoutePath, // parent base
+          pCurrentRoute: currentRoute,
+          pPathParser: pathParser,
+          pMatch: match,
+        });
       }
     }
   }
