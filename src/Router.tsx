@@ -1,4 +1,4 @@
-import { RouterManager, TRoute } from "./core/RouterManager";
+import { RouterManager, TRoute } from "./RouterManager";
 import React, { createContext, memo, ReactElement, useEffect, useState } from "react";
 
 const componentName = "Router";
@@ -8,7 +8,6 @@ interface IProps {
   base: string;
   routes: TRoute[];
   children: ReactElement;
-  fakeMode?: boolean;
   id?: number | string;
 }
 
@@ -28,13 +27,12 @@ export const Router = memo((props: IProps) => {
       new RouterManager({
         base: props.base,
         routes: props.routes,
-        fakeMode: props.fakeMode,
         id: props.id,
       })
   );
 
   useEffect(() => {
-    return () => routerManager.destroy();
+    return () => routerManager.destroyEvents();
   }, [routerManager]);
 
   return (

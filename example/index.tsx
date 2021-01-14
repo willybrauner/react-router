@@ -52,7 +52,9 @@ export const routesList: TRoute[] = [
 
 /**
  * Init Application
+ * // path : chemin du sous router pour identifier les routes dans le tableau de route
  */
+
 ReactDOM.render(
   <Router routes={routesList} base={"/"}>
     <App />

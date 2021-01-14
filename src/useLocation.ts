@@ -1,17 +1,42 @@
-import { useRoute } from "./useRoute";
-import { PUSH_NEW_LOCATION, locationEvent, TOpenRoute } from "./core/RouterManager";
+import { history } from "./RouterManager";
+import { useRouter } from "./useRouter";
+import { getUrlByRouteName, TOpenRouteParams } from "./helpers";
+import { useEffect, useRef, useState } from "react";
+const debug = require("debug")("front:useLocation");
 
 /**
  * useLocation
  */
-export const useLocation = (): [string, (param: string | TOpenRoute) => void] => {
-  const { currentRoute } = useRoute();
+export const useLocation = (): [string, (param: string | TOpenRouteParams) => void] => {
+  const router = useRouter();
 
-  const location = currentRoute?.pathname;
+  /**
+   * Get dynamic current location
+   */
+  const [location, setLoc] = useState(window.location.pathname);
+  const unlistenHistory = useRef(null);
 
-  const setLocation = (param: string | TOpenRoute): void => {
-    locationEvent.emit(PUSH_NEW_LOCATION, param);
-  };
+  useEffect(() => {
+    unlistenHistory.current = history.listen(({ location, action }) => {
+      debug("history", action, location.pathname, location.state);
+      setLoc(location.pathname);
+    });
+    return () => unlistenHistory.current();
+  }, []);
+
+  /**
+   * Prepare setLocation function, who push in history
+   * @param args
+   */
+  function setLocation(args: string | TOpenRouteParams): void {
+    if (typeof args === "string") {
+      history.push(args);
+    }
+    // case this is TOpenRouteParams
+    if (typeof args === "object" && args.name) {
+      history.push(getUrlByRouteName(router.routes, args));
+    }
+  }
 
   return [location, setLocation];
 };

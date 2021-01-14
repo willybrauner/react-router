@@ -107,7 +107,7 @@ TODO
 Create a new router instance.
 
 ```jsx
-<Router routes={} base={} id={} fakeMode={}>
+<Router routes={} base={} id={}>
   {/* can now use <Link /> and <Stack /> component */}
 </Router>
 ```
@@ -117,7 +117,6 @@ Create a new router instance.
 - `routes (TRoute[])` Routes list
 - `base (string)` base URL - default: `"/"`
 - `id (number)` Router instance ID - default: `1`
-- `fakeMode (boolean)` Allow to access routes without push in browser history
 
 ### `<Link />`
 

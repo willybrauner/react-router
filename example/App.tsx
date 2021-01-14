@@ -10,7 +10,9 @@ const debug = require("debug")(`front:${componentName}`);
  */
 export default function App() {
 
-  const router = useRouter()
+  const router = useRouter();
+
+  const {currentRoute} = useRouter();
 
 
   return (

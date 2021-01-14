@@ -1,4 +1,4 @@
-export { RouterManager, TRoute, TOpenRoute, ERouterEvent } from "./core/RouterManager";
+export { RouterManager, TRoute, ERouterEvent } from "./RouterManager";
 
 export { Router } from "./Router";
 export { Link } from "./Link";
