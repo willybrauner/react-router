@@ -1,4 +1,4 @@
-import { ERouterEvent, TRoute } from "./core/RouterManager";
+import { ERouterEvent, TRoute } from "./RouterManager";
 import { useRouter } from "./useRouter";
 import { useLayoutEffect, useState } from "react";
 

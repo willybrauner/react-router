@@ -1,4 +1,4 @@
-import { RouterManager, TRoute } from "./core/RouterManager";
+import { RouterManager, TRoute } from "./RouterManager";
 import React, { createContext, memo, ReactElement, useEffect, useState } from "react";
 
 const componentName = "Router";
@@ -32,7 +32,7 @@ export const Router = memo((props: IProps) => {
   );
 
   useEffect(() => {
-    return () => routerManager.destroy();
+    return () => routerManager.destroyEvents();
   }, [routerManager]);
 
   return (

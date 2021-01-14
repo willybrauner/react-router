@@ -4,22 +4,17 @@ import { EventEmitter } from "events";
 const debug = require("debug")("front:RouterManager");
 
 export type TRoute = {
-  name?: string;
   path: string;
   component: React.ComponentType<any>;
+  name?: string;
+
   parser?: Path;
   props?: { [x: string]: any };
   children?: TRoute[];
-
-  // URL re-build with params needed by nested router
+  // URL re-build with params (needed by nested router)
   buildUrl?: string;
-  // pathname who not depend of current instance
+  // real pathname who not depend of current instance
   pathname?: string;
-};
-
-export type TOpenRoute = {
-  name: string;
-  params?: { [x: string]: any };
 };
 
 export enum ERouterEvent {
@@ -33,6 +28,7 @@ export enum ERouterEvent {
  * doc: https://github.com/ReactTraining/history/blob/master/docs/getting-started.md
  */
 import { createBrowserHistory } from "history";
+import { buildUrl } from "./helpers";
 export const history = createBrowserHistory();
 
 /**
@@ -50,10 +46,11 @@ export class RouterManager {
   public currentRoute: TRoute;
   public previousRoute: TRoute;
 
+  // store history listener
+  protected unlistenHistory;
+
   // router instance ID, useful for debug if there is multiple router instance
   public id: number | string;
-
-  protected unlistenHistory;
 
   constructor({
     base = "/",
@@ -70,19 +67,20 @@ export class RouterManager {
 
     routes.forEach((el: TRoute) => this.addRoute(el));
     this.updateRoute();
-    this.initEvent();
+    this.initEvents();
   }
 
   /**
    * Initialise event
    */
-  public initEvent() {
+  public initEvents() {
     this.unlistenHistory = history.listen(({ location, action }) => {
-      debug("LISTEN LISTEN LISTEN ", action, location.pathname, location.state);
-      this.handleNewLocation(location.pathname);
+      debug(this.id, " initEvents > history", action, location.pathname, location.state);
+      this.handleHistory(location.pathname);
     });
   }
-  public destroy() {
+
+  public destroyEvents() {
     // To stop listening, call the function returned from listen().
     this.unlistenHistory();
   }
@@ -90,13 +88,8 @@ export class RouterManager {
   /**
    * Handlers
    */
-  protected handlePopState = () => {
-    this.updateRoute(window.location.pathname);
-  };
-
-  protected handleNewLocation = (param: string | TOpenRoute) => {
-    if (typeof param === "string") this.updateRoute(param);
-    else if (typeof param === "object") this.openRoute(param);
+  protected handleHistory = (param: string) => {
+    this.updateRoute(param);
   };
 
   /**
@@ -171,7 +164,7 @@ export class RouterManager {
         const params = pMatch || match;
         const routeObj = {
           pathname: pUrl,
-          buildUrl: this.buildUrl(route.path, params),
+          buildUrl: buildUrl(route.path, params),
           path: route?.path,
           component: route?.component,
           children: route?.children,
@@ -201,34 +194,5 @@ export class RouterManager {
         });
       }
     }
-  }
-
-  /**
-   * Build an URL with path and params
-   */
-  public buildUrl(path: string, params?: { [x: string]: any }): string {
-    const newPath = new Path(path);
-    return newPath.build(params);
-  }
-
-  /**
-   * Open a specific route by is name
-   * @param componentName
-   * @param params
-   */
-  public openRoute({ name, params }: TOpenRoute): void {
-    // get route by name property (by default) or by component displayName
-    const targetRoute = this.routes.find(
-      (el: TRoute) => el?.name === name || el.component?.displayName === name
-    );
-
-    if (!targetRoute?.path) {
-      debug(this.id, "There is no route with this name, exit", name);
-      return;
-    }
-    // build URL
-    let url = this.buildUrl(targetRoute.path, params);
-    // update route with this URL
-    this.updateRoute(url);
   }
 }

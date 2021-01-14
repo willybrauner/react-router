@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useRef, useState } from "react";
 import { useRouter } from "./useRouter";
 import { useRoute } from "./useRoute";
 import { IRouteStack } from "./useStack";
-import { ERouterEvent } from "./core/RouterManager";
+import { ERouterEvent } from "./RouterManager";
 
 export type TManageTransitions = {
   previousPage: IRouteStack;
