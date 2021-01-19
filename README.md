@@ -1,5 +1,9 @@
 # 🚃 react router
 
+## IMPORTANT: This project as been copied and continues on [fly-router repository](https://github.com/cher-ami/fly-router)
+
+----
+
 React router API is inspired by [wouter](https://github.com/molefrog/wouter),
 [solidify router](https://github.com/solid-js/solidify/blob/master/navigation/Router.ts) and
 [vue router](https://router.vuejs.org/) API.
