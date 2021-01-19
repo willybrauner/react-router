@@ -11,13 +11,15 @@ It provides Stack component who render previous and current page component when 
 
 This router loads [history](https://github.com/ReactTraining/history), [path-parser](https://github.com/troch/path-parser) and [debug](https://github.com/visionmedia/debug) as dependencies.
 
-## Components
+## API
 
-- [`<Router />`](#router-) Wrap Link and stack component
-- [`<Link />`](#link-) Trig current stack
-- [`<Stack />`](#stack-) Wrap previous and current page
+Components: 
 
-## Hooks
+- [`<Router />`](#Router) Wrap Link and stack component
+- [`<Link />`](#Link) Trig current stack
+- [`<Stack />`](#Stack) Wrap previous and current page
+
+Hooks: 
 
 - [`useRouter`](#useRouter) Get router instance from any component
 - [`useLocation`](#useLocation) Get current location and set new location
@@ -102,9 +104,7 @@ TODO
 - isReadyPromise example
 - crossed transition example
 
-## API
-
-### Router
+## <a name="Router"></a>`<Router />`
 
 Create a new router instance.
 
@@ -120,7 +120,7 @@ Create a new router instance.
 - base `(string)` base URL - default: `"/"`
 - id `(number|string)` Router instance ID - default: `1`
 
-### Link
+## <a name="Link"></a>`<Link />`
 
 Trig new route.
 
@@ -133,7 +133,7 @@ Trig new route.
 - to `(string)` ex: "/foo"
 - className `(?string)` className added to component root DOM element
 
-### Stack
+## <a name="Stack"></a>`<Stack />`
 
 Returns previous and current page.
 
@@ -165,7 +165,7 @@ interface IRouteStack {
 
 - className `(?string)` className added to component root DOM element
 
-### <a name="useRouter"></a>useRouter()
+## <a name="useRouter"></a>useRouter()
 
 Get current router instance.
 
@@ -173,7 +173,7 @@ Get current router instance.
 const router = useRouter();
 ```
 
-### <a name="useLocation"></a>useLocation()
+## <a name="useLocation"></a>useLocation()
 
 Allow the router to change location.
 
@@ -197,7 +197,7 @@ type TOpenRouteParams = {
 };
 ```
 
-### <a name="useRoute"></a>useRoute()
+## <a name="useRoute"></a>useRoute()
 
 Get previous and current route properties (TRoute)
 
@@ -221,7 +221,7 @@ type TRoute = {
 };
 ```
 
-### <a name="useStack"></a>useStack()
+## <a name="useStack"></a>useStack()
 
 Prepare page component for Stack.
 
