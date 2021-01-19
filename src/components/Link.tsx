@@ -1,5 +1,5 @@
-import React, { ReactNode, useMemo } from "react";
-import { useLocation } from "./useLocation";
+import React, { ReactNode } from "react";
+import { useLocation } from "..";
 
 interface IProps {
   to: string;

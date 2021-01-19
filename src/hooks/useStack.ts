@@ -1,5 +1,7 @@
 import { MutableRefObject, useEffect, useImperativeHandle, useMemo } from "react";
-const debug = require("debug")("front:useStack");
+
+const componentName = "useStack";
+const debug = require("debug")(`front:${componentName}`);
 
 export interface IUseStack extends Omit<IRouteStack, "$element" | "isReadyPromise"> {
   handleRef: MutableRefObject<any>;
@@ -17,7 +19,7 @@ export interface IRouteStack {
 
 /**
  * @name useStack
- * @description Allow set page properties in router
+ * @description Allow to Stack component to handle page information object
  */
 export const useStack = ({
   componentName,

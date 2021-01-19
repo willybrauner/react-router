@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Link, TManageTransitions, useRouter } from "../src";
 import { Stack } from "../src";
-import { useRootRouter } from "../src/useRouter";
+import { useRootRouter } from "../src";
 
 const componentName = "App";
 const debug = require("debug")(`front:${componentName}`);
@@ -12,8 +12,8 @@ const debug = require("debug")(`front:${componentName}`);
 export default function App() {
   const router = useRouter();
   const { currentRoute } = useRouter();
+  const rootRouter = useRootRouter();
 
-  const rootRouter = useRootRouter()
   useEffect(()=> {
 
   }, [])
