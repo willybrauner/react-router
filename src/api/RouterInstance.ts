@@ -4,7 +4,7 @@ import { EventEmitter } from "events";
 import { buildUrl } from "./helpers";
 import { history } from "./history";
 
-const debug = require("debug")("front:RouterManager");
+const debug = require("debug")("front:RouterInstance");
 
 export type TRoute = {
   path: string;
@@ -14,9 +14,9 @@ export type TRoute = {
   parser?: Path;
   props?: { [x: string]: any };
   children?: TRoute[];
-  // URL re-build with params (needed by nested router)
+  // local match URL with params (needed by nested router)
   matchUrl?: string;
-  // real pathname who not depend of current instance
+  // full URL who not depend of current instance
   fullUrl?: string;
 };
 
@@ -27,9 +27,9 @@ export enum ERouterEvent {
 }
 
 /**
- * RouterManager
+ * RouterInstance
  */
-export class RouterManager {
+export class RouterInstance {
   // base URL
   public base: string;
   // routes list

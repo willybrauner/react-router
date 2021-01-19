@@ -1,5 +1,5 @@
 import { Path } from "path-parser";
-import { TRoute } from "./RouterManager";
+import { TRoute } from "./RouterInstance";
 const debug = require("debug")("front:helpers");
 
 export type TParams = { [x: string]: any };

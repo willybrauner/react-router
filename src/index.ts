@@ -1,4 +1,4 @@
-export { RouterManager, TRoute, ERouterEvent } from "./api/RouterManager";
+export { RouterInstance, TRoute, ERouterEvent } from "./api/RouterInstance";
 
 export { Router } from "./components/Router";
 export { Link } from "./components/Link";
