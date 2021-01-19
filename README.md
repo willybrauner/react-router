@@ -1,4 +1,4 @@
-# 🚃 react router _(WIP)_
+# 🚃 react router
 
 React router API is inspired by [wouter](https://github.com/molefrog/wouter),
 [solidify router](https://github.com/solid-js/solidify/blob/master/navigation/Router.ts) and
@@ -11,18 +11,20 @@ It provides Stack component who render previous and current page component when 
 
 This router loads [history](https://github.com/ReactTraining/history), [path-parser](https://github.com/troch/path-parser) and [debug](https://github.com/visionmedia/debug) as dependencies.
 
-## Components
+## API
 
-- [`<Router />`](#router-) Wrap Link and stack component
-- [`<Link />`](#link-) Trig current stack
-- [`<Stack />`](#stack-) Wrap previous and current page
+Components:
 
-## Hooks
+- [`<Router />`](#Router) Wrap Link and stack component
+- [`<Link />`](#Link) Trig current stack
+- [`<Stack />`](#Stack) Wrap previous and current page
+
+Hooks:
 
 - [`useRouter`](#useRouter) Get router instance from any component
 - [`useLocation`](#useLocation) Get current location and set new location
 - [`useRoute`](#useRoute) Get previous and current route
-- [`useStack`](#useStack) Register page component in sta
+- [`useStack`](#useStack) Register page component in stack
 - [`useRouteCounter`](#useRouteCounter) Get route counter + isFirstRoute state
 - [`useHistory`](#useHistory) Handle history changed and get global router history
 
@@ -102,11 +104,9 @@ TODO
 - isReadyPromise example
 - crossed transition example
 
-## API
+## <a name="Router"></a>Router
 
-### `<Router />`
-
-Create a new router instance.
+Router component create a new router instance.
 
 ```jsx
 <Router routes={} base={} id={}>
@@ -114,13 +114,13 @@ Create a new router instance.
 </Router>
 ```
 
-#### Props
+**Props:**
 
-- `routes (TRoute[])` Routes list
-- `base (string)` base URL - default: `"/"`
-- `id (number)` Router instance ID - default: `1`
+- **routes** `TRoute[]` Routes list
+- **base** `string` Base URL - default: `"/"`
+- **id** `number | string` _(optional)_ Router instance ID - default: `1`
 
-### `<Link />`
+## <a name="Link"></a>Link
 
 Trig new route.
 
@@ -128,23 +128,24 @@ Trig new route.
 <Link to={} className={} />
 ```
 
-#### Props
+**Props:**
 
-- `to (string)` ex: "/foo"
-- `className (?string)` className added to component root DOM element
+- **to** `string` Path ex: "/foo". Can Be absolute `/path/foo` or relative `path/foo`
+- **className** `string` _(optional)_ Class name added to component root DOM element
 
-### `<Stack />`
+## <a name="Stack"></a>Stack
 
-Returns previous and current page.
+Render previous and current page component.
 
 ```jsx
 <Stack manageTransitions={} className={} />
 ```
 
-#### Props
+**Props:**
 
-- `manageTransitions ((T:TManageTransitions) => Promise<void>)`
+- **manageTransitions** `(T:TManageTransitions) => Promise<void>`
   This function allow to create the transition scenario.
+- **className** `string` _(optional)_ className added to component root DOM element
 
 ```ts
 type TManageTransitions = {
@@ -163,9 +164,7 @@ interface IRouteStack {
 }
 ```
 
-- `className (?string)` className added to component root DOM element
-
-### <a name="useRouter"></a>`useRouter()`
+## <a name="useRouter"></a>useRouter
 
 Get current router instance.
 
@@ -173,7 +172,7 @@ Get current router instance.
 const router = useRouter();
 ```
 
-### <a name="useLocation"></a>`useLocation()`
+## <a name="useLocation"></a>useLocation
 
 Allow the router to change location.
 
@@ -185,19 +184,21 @@ setLocation("/bar");
 setLocation({ name: "FooPage", param: { id: "2" } });
 ```
 
-#### Returns
+**Returns:**
 
-- `location (string)` Get current pathname location
-- `setLocation ((path:string | TOpenRoute)=> void)` Open new route
+An array with these properties:
+
+- **location** `string` Get current pathname location
+- **setLocation** `(path:string | TOpenRouteParams) => void` Open new route
 
 ```ts
-type TOpenRoute = {
+type TOpenRouteParams = {
   name: string;
   params?: { [x: string]: any };
 };
 ```
 
-### <a name="useRoute"></a>`useRoute()`
+## <a name="useRoute"></a>useRoute
 
 Get previous and current route properties (TRoute)
 
@@ -205,10 +206,12 @@ Get previous and current route properties (TRoute)
 const { currentRoute, previousRoute } = useRoute();
 ```
 
-#### Returns
+**Returns:**
 
-- `currentRoute (TRoute)` Current route object
-- `previousRoute (TRoute)` Previous route object
+An object with these properties:
+
+- **currentRoute** `(TRoute)` Current route object
+- **previousRoute** `(TRoute)` Previous route object
 
 ```ts
 type TRoute = {
@@ -217,11 +220,12 @@ type TRoute = {
   props?: { [x: string]: any };
   parser?: Path;
   children?: TRoute[];
-  url?: string;
+  matchUrl?: string;
+  fullUrl?: string;
 };
 ```
 
-### <a name="useStack"></a>`useStack()`
+## <a name="useStack"></a>useStack
 
 Prepare page component for Stack.
 
@@ -229,18 +233,58 @@ Prepare page component for Stack.
 useStack({ componentName, handleRef, rootRef, playIn, playOut, isReady });
 ```
 
-#### Parameters
+**Parameters:**
 
-- `componentName (string)` Name of current component
-- `handleRef (MutableRefObject<any>)` Ref handled by parent component
-- `rootRef (MutableRefObject<any>)` Ref on root component element
-- `playIn (?() => Promise<any>)` Play in transition - default: `new Promise.resolve()`
-- `playOut (?() => Promise<any>)` Play out transition - default: `new Promise.resolve()`
-- `isReady (?boolean)` Is ready state - default: `true`
+- **componentName** `string` Name of current component
+- **handleRef** `MutableRefObject<any>` Ref handled by parent component
+- **rootRef** `MutableRefObject<any>` Ref on root component element
+- **playIn** `() => Promise<any>` _(optional)_ Play in transition - default: `new Promise.resolve()`
+- **playOut** `() => Promise<any>` _(optional)_ Play out transition - default: `new Promise.resolve()`
+- **isReady** `boolean` _(optional)_ Is ready state - default: `true`
 
-#### Returns
+**Returns:**
 
 nothing
+
+## <a name="useRouteCounter"></a>useRouteCounter
+
+Returns route counter
+
+```js
+const { routeCounter, isFirstRoute, resetCounter } = useRouteCounter();
+```
+
+**Parameters:**
+
+nothing
+
+**Returns:**
+
+An object with these properties:
+
+- **routerCounter** `number` Current route number - default: `1`
+- **isFirstRoute** `boolean` Check if is first route - default: `true`
+- **resetCounter** `() => void` Reset routerCounter & isFirstRoute states
+
+## <a name="useHistory"></a>useHistory
+
+Allow to get the global router history and execute a callback each time history change.
+
+```js
+const history = useHistory((e) => {
+  // do something
+});
+```
+
+**Parameters:**
+
+- **callback** `(event) => void` Callback function to execute each time the history change
+
+**Returns:**
+
+- **history** `location[]` : Location array of history API
+
+---
 
 ## Example
 

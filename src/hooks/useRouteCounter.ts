@@ -3,34 +3,40 @@ import { useState } from "react";
 
 const componentName = "useLocation";
 const debug = require("debug")(`front:${componentName}`);
+
+// constants
+const initialCount = 1;
+const initialIsFirstRoute = true;
+let GLOBAL_ROUTE_COUNTER = initialCount;
+let GLOBAL_IS_FIRST_ROUTE = initialIsFirstRoute;
+
 /**
  * use Route Counter
  */
 export const useRouteCounter = (): {
-  count: number;
+  routeCounter: number;
   isFirstRoute: boolean;
   resetCounter: () => void;
 } => {
-  const initialCount = 1;
-  const initialIsFirstRoute = true;
-
   // get current route count
-  const [count, setCount] = useState<number>(initialCount);
-
+  const [routeCounter, setRouteCounter] = useState<number>(GLOBAL_ROUTE_COUNTER);
   // check if is first route
-  const [isFirstRoute, setIsFirstRoute] = useState<boolean>(initialIsFirstRoute);
+  const [isFirstRoute, setIsFirstRoute] = useState<boolean>(GLOBAL_IS_FIRST_ROUTE);
 
   // handle history
   useHistory(() => {
-    setCount(count + 1);
+    GLOBAL_ROUTE_COUNTER = routeCounter + 1;
+    setRouteCounter(routeCounter + 1);
+
+    GLOBAL_IS_FIRST_ROUTE = false;
     setIsFirstRoute(false);
-  }, [count, isFirstRoute]);
+  }, [routeCounter, isFirstRoute]);
 
   // allow to reset counter if needed (after first redirection for example)
   const resetCounter = () => {
-    setCount(initialCount);
+    setRouteCounter(initialCount);
     setIsFirstRoute(initialIsFirstRoute);
   };
 
-  return { count, isFirstRoute, resetCounter };
+  return { routeCounter, isFirstRoute, resetCounter };
 };
