@@ -9,7 +9,7 @@ React router API is inspired by [wouter](https://github.com/molefrog/wouter),
 Because manage routes transitions with React is always complicated, this router is build to allow transitions flexibility.
 It provides Stack component who render previous and current page component when route change.
 
-This router only loads [path-parser](https://github.com/troch/path-parser) and [debug](https://github.com/visionmedia/debug) as dependency.
+This router loads [history](https://github.com/ReactTraining/history), [path-parser](https://github.com/troch/path-parser) and [debug](https://github.com/visionmedia/debug) as dependencies.
 
 ## Components
 
