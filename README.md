@@ -104,7 +104,7 @@ TODO
 
 ## API
 
-### `<Router />`
+### Router
 
 Create a new router instance.
 
@@ -120,7 +120,7 @@ Create a new router instance.
 - base `(string)` base URL - default: `"/"`
 - id `(number|string)` Router instance ID - default: `1`
 
-### `<Link />`
+### Link
 
 Trig new route.
 
@@ -133,7 +133,7 @@ Trig new route.
 - to `(string)` ex: "/foo"
 - className `(?string)` className added to component root DOM element
 
-### `<Stack />`
+### Stack
 
 Returns previous and current page.
 
@@ -165,7 +165,7 @@ interface IRouteStack {
 
 - className `(?string)` className added to component root DOM element
 
-### <a name="useRouter"></a>`useRouter()`
+### <a name="useRouter"></a>useRouter()
 
 Get current router instance.
 
@@ -173,7 +173,7 @@ Get current router instance.
 const router = useRouter();
 ```
 
-### <a name="useLocation"></a>`useLocation()`
+### <a name="useLocation"></a>useLocation()
 
 Allow the router to change location.
 
@@ -197,7 +197,7 @@ type TOpenRouteParams = {
 };
 ```
 
-### <a name="useRoute"></a>`useRoute()`
+### <a name="useRoute"></a>useRoute()
 
 Get previous and current route properties (TRoute)
 
@@ -221,7 +221,7 @@ type TRoute = {
 };
 ```
 
-### <a name="useStack"></a>`useStack()`
+### <a name="useStack"></a>useStack()
 
 Prepare page component for Stack.
 
@@ -242,7 +242,7 @@ useStack({ componentName, handleRef, rootRef, playIn, playOut, isReady });
 
 nothing
 
-### <a name="useRouteCounter"></a>`useRouteCounter()`
+### <a name="useRouteCounter"></a>useRouteCounter()
 
 Returns route counter
 
