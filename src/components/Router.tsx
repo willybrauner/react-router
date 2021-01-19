@@ -1,4 +1,4 @@
-import { RouterManager, TRoute } from "./RouterManager";
+import { RouterManager, TRoute } from "..";
 import React, { createContext, memo, ReactElement, useEffect, useState } from "react";
 
 const componentName = "Router";
@@ -23,7 +23,8 @@ export const rootRouter = { root: undefined };
 
 /**
  * Router
- * will wrap Link and Stack components
+ * This component returns children wrapped by provider who contains router instance
+ * (will wrap Link and Stack components)
  */
 export const Router = memo((props: IProps) => {
   // keep routerManager instance

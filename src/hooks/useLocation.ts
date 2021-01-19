@@ -1,8 +1,10 @@
-import { history } from "./history";
-import { useRootRouter } from "./useRouter";
-import { getUrlByRouteName, TOpenRouteParams } from "./helpers";
 import { useEffect, useRef, useState } from "react";
-const debug = require("debug")("front:useLocation");
+import { useRootRouter } from "..";
+import { history } from "../api/history";
+import { getUrlByRouteName, TOpenRouteParams } from "../api/helpers";
+
+const componentName = "useLocation";
+const debug = require("debug")(`front:${componentName}`);
 
 /**
  * useLocation

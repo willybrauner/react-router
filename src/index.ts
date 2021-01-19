@@ -1,10 +1,10 @@
-export { RouterManager, TRoute, ERouterEvent } from "./RouterManager";
+export { RouterManager, TRoute, ERouterEvent } from "./api/RouterManager";
 
-export { Router } from "./Router";
-export { Link } from "./Link";
-export { Stack, TManageTransitions } from "./Stack";
+export { Router } from "./components/Router";
+export { Link } from "./components/Link";
+export { Stack, TManageTransitions } from "./components/Stack";
 
-export { useRootRouter, useRouter } from "./useRouter";
-export { useLocation } from "./useLocation";
-export { useRoute } from "./useRoute";
-export { useStack, IRouteStack } from "./useStack";
+export { useRootRouter, useRouter } from "./hooks/useRouter";
+export { useLocation } from "./hooks/useLocation";
+export { useRoute } from "./hooks/useRoute";
+export { useStack, IRouteStack } from "./hooks/useStack";

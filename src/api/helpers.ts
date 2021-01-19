@@ -18,8 +18,10 @@ export function buildUrl(path: string, params?: TParams): string {
 }
 
 /**
+ * Get URL by path
  *  if path "/foo" is a children of path "/bar", his full url is "/bar/foo"
  *  With "/foo" this function will return "/bar/foo"
+ * @returns string
  */
 export function getUrlByPath(
   routes: TRoute[],
@@ -54,8 +56,8 @@ export function getUrlByPath(
 }
 
 /**
- * Get route URL by his route name and params
- *
+ * Get URL by route name and params
+ * @returns string
  */
 export function getUrlByRouteName(pRoutes: TRoute[], pParams: TOpenRouteParams): string {
   // need to wrap the function to be able to access the preserved "pRoutes" param
