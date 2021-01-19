@@ -4,7 +4,6 @@ import { useStack } from "../../src";
 import { transitionsHelper } from "../helper/transitionsHelper";
 import { Link } from "../../src";
 import { Stack, TManageTransitions } from "../../src";
-import { useLocation } from "../../src";
 import { useRouter } from "../../src";
 import { routesList } from "../index";
 const componentName: string = "AboutPage";
@@ -52,7 +51,7 @@ const AboutPage = forwardRef((props: IProps, handleRef: MutableRefObject<any>) =
         debug("previousPage unmount");
       }
 
-      await currentPage.isReadyPromise?.();
+      await currentPage?.isReadyPromise?.();
 
       if ($current) $current.style.visibility = "visible";
 
@@ -71,7 +70,7 @@ const AboutPage = forwardRef((props: IProps, handleRef: MutableRefObject<any>) =
           <nav>
             <ul>
               <li>
-                <Link to={"/about/foo"}>Foo</Link>{" "}
+                <Link to={`/about/foo`}>Foo</Link>{" "}
               </li>
               <li>
                 <Link to={"/about/bar"}>Bar</Link>{" "}

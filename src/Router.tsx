@@ -7,6 +7,7 @@ const debug = require("debug")(`front:${componentName}`);
 interface IProps {
   base: string;
   routes: TRoute[];
+  middlewares?: (e: any) => void[];
   children: ReactElement;
   id?: number | string;
 }
@@ -17,19 +18,29 @@ interface IProps {
 export const RouterContext = createContext<RouterManager>(null);
 RouterContext.displayName = componentName;
 
+// keep root router instance needed for some cases
+export const rootRouter = { root: undefined };
+
 /**
  * Router
  * will wrap Link and Stack components
  */
 export const Router = memo((props: IProps) => {
-  const [routerManager] = useState<RouterManager>(
-    () =>
-      new RouterManager({
-        base: props.base,
-        routes: props.routes,
-        id: props.id,
-      })
-  );
+  // keep routerManager instance
+  const [routerManager] = useState<RouterManager>(() => {
+    const router = new RouterManager({
+      base: props.base,
+      routes: props.routes,
+      middlewares: props.middlewares,
+      id: props.id,
+    });
+
+    // keep root rooter instance reference in singleton
+    if (rootRouter.root === undefined) {
+      rootRouter.root = router;
+    }
+    return router;
+  });
 
   useEffect(() => {
     return () => routerManager.destroyEvents();

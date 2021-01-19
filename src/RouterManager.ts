@@ -12,9 +12,9 @@ export type TRoute = {
   props?: { [x: string]: any };
   children?: TRoute[];
   // URL re-build with params (needed by nested router)
-  buildUrl?: string;
+  matchUrl?: string;
   // real pathname who not depend of current instance
-  pathname?: string;
+  fullUrl?: string;
 };
 
 export enum ERouterEvent {
@@ -39,6 +39,9 @@ export class RouterManager {
   public base: string;
   // routes list
   public routes: TRoute[] = [];
+
+  public middlewares: (e: any) => void[];
+
   // create event emitter
   public events: EventEmitter = new EventEmitter();
 
@@ -55,15 +58,24 @@ export class RouterManager {
   constructor({
     base = "/",
     routes = null,
+    middlewares,
     id = 1,
   }: {
     base?: string;
     routes?: TRoute[];
+    middlewares?: (e: any) => void[];
     fakeMode?: boolean;
     id?: number | string;
   }) {
     this.base = base;
     this.id = id;
+    this.middlewares = middlewares;
+
+    // patch: create root path '/' if doesn't exist
+    const rootPathExist = routes.some((route) => route.path === "/");
+    if (!rootPathExist) {
+      routes.push({ path: "/", component: null });
+    }
 
     routes.forEach((el: TRoute) => this.addRoute(el));
     this.updateRoute();
@@ -113,13 +125,14 @@ export class RouterManager {
       return;
     }
 
-    if (this.currentRoute?.buildUrl === matchingRoute?.buildUrl) {
+    if (this.currentRoute?.matchUrl === matchingRoute?.matchUrl) {
       debug(this.id, "updateRoute > THIS IS THE SAME URL, RETURN.");
       return;
     }
 
     this.previousRoute = this.currentRoute;
     this.currentRoute = matchingRoute;
+
     this.events.emit(ERouterEvent.PREVIOUS_ROUTE_CHANGE, this.previousRoute);
     this.events.emit(ERouterEvent.CURRENT_ROUTE_CHANGE, this.currentRoute);
   }
@@ -149,6 +162,11 @@ export class RouterManager {
     // test each routes
     for (let i in pRoutes) {
       let currentRoute = pRoutes[i];
+
+      // TODO appeler tous les middlewares ici pour patcher les routes
+      // ex: language service devrait pouvoir patcher les routes une a une
+      // this.middlewares.foreach(middleware =>  middleware(currentRoute) ) ...
+
       // create parser & matcher
       const currentRoutePath = `${pBase}${currentRoute.path}`.replace("//", "/");
       // prepare parser
@@ -163,8 +181,8 @@ export class RouterManager {
         const route = pCurrentRoute || currentRoute;
         const params = pMatch || match;
         const routeObj = {
-          pathname: pUrl,
-          buildUrl: buildUrl(route.path, params),
+          fullUrl: pUrl,
+          matchUrl: buildUrl(route.path, params),
           path: route?.path,
           component: route?.component,
           children: route?.children,
@@ -183,7 +201,7 @@ export class RouterManager {
         const children = currentRoute?.children;
         // if there is no child, continue to next iteration
         if (!children) continue;
-        // else, call recursivly this same method with new params
+        // else, call recursively this same method with new params
         return this.getRouteFromUrl({
           pUrl: pUrl,
           pRoutes: children,
