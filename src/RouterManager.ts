@@ -1,6 +1,9 @@
 import { Path } from "path-parser";
 import React from "react";
 import { EventEmitter } from "events";
+import { buildUrl } from "./helpers";
+import { history } from "./history";
+
 const debug = require("debug")("front:RouterManager");
 
 export type TRoute = {
@@ -22,14 +25,6 @@ export enum ERouterEvent {
   CURRENT_ROUTE_CHANGE = "current-route-change",
   STACK_IS_ANIMATING = "stack-is-animating",
 }
-
-/**
- * Create history
- * doc: https://github.com/ReactTraining/history/blob/master/docs/getting-started.md
- */
-import { createBrowserHistory } from "history";
-import { buildUrl } from "./helpers";
-export const history = createBrowserHistory();
 
 /**
  * RouterManager

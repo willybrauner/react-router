@@ -1,4 +1,4 @@
-import { history } from "./RouterManager";
+import { history } from "./history";
 import { useRouter } from "./useRouter";
 import { getUrlByRouteName, TOpenRouteParams } from "./helpers";
 import { useEffect, useRef, useState } from "react";
