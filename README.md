@@ -22,7 +22,9 @@ This router loads [history](https://github.com/ReactTraining/history), [path-par
 - [`useRouter`](#useRouter) Get router instance from any component
 - [`useLocation`](#useLocation) Get current location and set new location
 - [`useRoute`](#useRoute) Get previous and current route
-- [`useStack`](#useStack) Register page component in stack
+- [`useStack`](#useStack) Register page component in sta
+- [`useRouteCounter`](#useRouteCounter) Get route counter + isFirstRoute state
+- [`useHistory`](#useHistory) Handle history changed and get global router history
 
 ## Installation
 

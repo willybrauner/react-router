@@ -1,22 +1,41 @@
-import { useEffect, useRef } from "react";
-import { history } from "../api/history";
+import { useEffect, useRef, useState } from "react";
+import { history as HISTORY_LIB } from "../api/history";
 
 const componentName = "useHistory";
 const debug = require("debug")(`front:${componentName}`);
 
+// keep global location history outside the scope
+let locationsHistory = [HISTORY_LIB.location];
 /**
- * Get dynamic current location
+ * Handle router history
  */
-
 export const useHistory = (
-  callback: (e: { location: any; action: any }) => void,
+  callback?: (e: { location: any; action: any }) => void,
   deps = []
 ) => {
-  const unlistenHistory = useRef(null);
+  const UNLISTEN_HISTORY = useRef(null);
+  const [history, setHistory] = useState<any[]>(locationsHistory);
+
   useEffect(() => {
-    unlistenHistory.current = history.listen(({ location, action }) => {
-      callback({ location, action });
-    });
-    return () => unlistenHistory.current();
-  }, deps);
+    // handle history change and keep reference
+    UNLISTEN_HISTORY.current = HISTORY_LIB.listen(
+      (event: { action: any; location: any }) => {
+        // prepare new history
+        const newHistory = [...history, event.location];
+        // set it in external singleton
+        // (because, we need to start history in new useHistory() with the current locationsHistory)
+        locationsHistory = newHistory;
+        // set in local start returned
+        setHistory(newHistory);
+        // execute callback if exist
+        callback?.(event);
+      }
+    );
+
+    // destroy
+    return () => UNLISTEN_HISTORY.current();
+  }, [history, ...(deps || [])]);
+
+  // return history array
+  return history;
 };

@@ -5,7 +5,7 @@ import {
   useLocation,
   useRouteCounter,
   useRouter,
-  Stack,
+  Stack, useHistory
 } from "../src";
 import { useRootRouter } from "../src";
 
@@ -21,10 +21,11 @@ export default function App() {
   const rootRouter = useRootRouter();
   const location = useLocation();
   const count = useRouteCounter();
+  const history = useHistory();
 
   useEffect(() => {
-    debug("count", count);
-  }, [count]);
+    debug("history", history);
+  }, [history]);
 
   return (
     <div className={componentName}>
