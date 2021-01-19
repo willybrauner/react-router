@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Link, TManageTransitions, useRouter } from "../src";
 import { Stack } from "../src";
-import { useRootRouter } from "../src/useRouter";
+import { useRootRouter } from "../src";
 
 const componentName = "App";
 const debug = require("debug")(`front:${componentName}`);
