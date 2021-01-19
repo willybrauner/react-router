@@ -22,7 +22,7 @@ This router loads [history](https://github.com/ReactTraining/history), [path-par
 - [`useRouter`](#useRouter) Get router instance from any component
 - [`useLocation`](#useLocation) Get current location and set new location
 - [`useRoute`](#useRoute) Get previous and current route
-- [`useStack`](#useStack) Register page component in sta
+- [`useStack`](#useStack) Register page component in stack
 - [`useRouteCounter`](#useRouteCounter) Get route counter + isFirstRoute state
 - [`useHistory`](#useHistory) Handle history changed and get global router history
 
@@ -116,9 +116,9 @@ Create a new router instance.
 
 #### Props
 
-- `routes (TRoute[])` Routes list
-- `base (string)` base URL - default: `"/"`
-- `id (number)` Router instance ID - default: `1`
+- routes `(TRoute[])` Routes list
+- base `(string)` base URL - default: `"/"`
+- id `(number|string)` Router instance ID - default: `1`
 
 ### `<Link />`
 
@@ -130,8 +130,8 @@ Trig new route.
 
 #### Props
 
-- `to (string)` ex: "/foo"
-- `className (?string)` className added to component root DOM element
+- to `(string)` ex: "/foo"
+- className `(?string)` className added to component root DOM element
 
 ### `<Stack />`
 
@@ -143,7 +143,7 @@ Returns previous and current page.
 
 #### Props
 
-- `manageTransitions ((T:TManageTransitions) => Promise<void>)`
+- manageTransitions `((T:TManageTransitions) => Promise<void>)`
   This function allow to create the transition scenario.
 
 ```ts
@@ -163,7 +163,7 @@ interface IRouteStack {
 }
 ```
 
-- `className (?string)` className added to component root DOM element
+- className `(?string)` className added to component root DOM element
 
 ### <a name="useRouter"></a>`useRouter()`
 
@@ -187,11 +187,11 @@ setLocation({ name: "FooPage", param: { id: "2" } });
 
 #### Returns
 
-- `location (string)` Get current pathname location
-- `setLocation ((path:string | TOpenRoute)=> void)` Open new route
+- location `(string)` Get current pathname location
+- setLocation `((path:string | TOpenRouteParams)=> void)` Open new route
 
 ```ts
-type TOpenRoute = {
+type TOpenRouteParams = {
   name: string;
   params?: { [x: string]: any };
 };
@@ -207,8 +207,8 @@ const { currentRoute, previousRoute } = useRoute();
 
 #### Returns
 
-- `currentRoute (TRoute)` Current route object
-- `previousRoute (TRoute)` Previous route object
+- currentRoute `(TRoute)` Current route object
+- previousRoute `(TRoute)` Previous route object
 
 ```ts
 type TRoute = {
@@ -231,16 +231,34 @@ useStack({ componentName, handleRef, rootRef, playIn, playOut, isReady });
 
 #### Parameters
 
-- `componentName (string)` Name of current component
-- `handleRef (MutableRefObject<any>)` Ref handled by parent component
-- `rootRef (MutableRefObject<any>)` Ref on root component element
-- `playIn (?() => Promise<any>)` Play in transition - default: `new Promise.resolve()`
-- `playOut (?() => Promise<any>)` Play out transition - default: `new Promise.resolve()`
-- `isReady (?boolean)` Is ready state - default: `true`
+- componentName `(string)` Name of current component
+- handleRef `(MutableRefObject<any>)` Ref handled by parent component
+- rootRef `(MutableRefObject<any>)` Ref on root component element
+- playIn `(?() => Promise<any>)` Play in transition - default: `new Promise.resolve()`
+- playOut `(?() => Promise<any>)` Play out transition - default: `new Promise.resolve()`
+- isReady `(?boolean)` Is ready state - default: `true`
 
 #### Returns
 
 nothing
+
+### <a name="useRouteCounter"></a>`useRouteCounter()`
+
+Returns route counter
+
+```js
+const { routeCounter, isFirstRoute, resetCounter } = useRouteCounter();
+```
+
+#### Parameters
+
+nothing
+
+#### Returns
+
+- routerCounter `number` Current route number - default: `1`
+- isFirstRoute `boolean` Check if is first route - default: `true`
+- resetCounter `() => void` reset routerCounter & isFirstRoute states
 
 ## Example
 

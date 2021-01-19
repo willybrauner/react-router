@@ -20,12 +20,17 @@ export default function App() {
   const { currentRoute } = useRouter();
   const rootRouter = useRootRouter();
   const location = useLocation();
-  const count = useRouteCounter();
   const history = useHistory();
 
   useEffect(() => {
     debug("history", history);
   }, [history]);
+
+
+  const count = useRouteCounter();
+  useEffect(() => {
+    debug("count", count);
+  }, [count]);
 
   return (
     <div className={componentName}>
