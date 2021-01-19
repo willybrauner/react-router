@@ -1,4 +1,4 @@
-# 🚃 react router _(WIP)_
+# 🚃 react router
 
 React router API is inspired by [wouter](https://github.com/molefrog/wouter),
 [solidify router](https://github.com/solid-js/solidify/blob/master/navigation/Router.ts) and
