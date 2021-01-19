@@ -35,17 +35,19 @@ export function getUrlByPath(
   for (let i in routes) {
     const route = routes[i];
 
-    // if path match on first level, return it
+    // if path match on first level
     if (route.path === path) {
+      // keep path in local array
       localPath.push(route.path);
-      debug("getUrlByPath > path match, return it", path, formatPath(localPath));
+      // return it
       return formatPath(localPath);
     }
 
     // if not matching but as children, return it
     else if (route?.children?.length > 0) {
+      // keep path in local array
       localPath.push(route.path);
-      debug("getUrlByPath > no match, recall recursively getUrlByPath()", localPath);
+      // no match, recall recursively on children
       return getUrlByPath(route.children, path, formatPath(localPath));
     }
   }
