@@ -34,7 +34,6 @@ export function getUrlByPath(
 
   for (let i in routes) {
     const route = routes[i];
-    debug('route', route)
 
     // if path match on first level, return it
     if (route.path === path) {
@@ -54,36 +53,40 @@ export function getUrlByPath(
 
 /**
  * Get route URL by his route name and params
+ *
  */
-export function getUrlByRouteName(routes: TRoute[], params: TOpenRouteParams): string {
+export function getUrlByRouteName(pRoutes: TRoute[], pParams: TOpenRouteParams): string {
+  // need to wrap the function to be able to access the preserved "pRoutes" param
+  // in local scope after recursion
+  const recursiveFn = (routes: TRoute[], params: TOpenRouteParams): string => {
+    for (let i in routes) {
+      const route = routes[i];
 
-  // get route by name property (by default) or by component displayName
-  const targetRoute = (pRoutes) =>
-    pRoutes.find((el: TRoute) => {
-      const match = el?.name === params.name || el.component?.displayName === params.name;
+      const match =
+        route?.name === params.name || route.component?.displayName === params.name;
 
       if (match) {
-        debug("getUrlByRouteName > has match", match, el);
-        return match;
+        if (!route?.path) {
+          debug(
+            "getUrlByRouteName > There is no route with this name, exit",
+            params.name
+          );
+          return;
+        }
 
-        //
-      } else if (el.children?.length > 0) {
-        debug("getUrlByRouteName > no match, recall recursively on children", el);
-        return targetRoute(el.children);
+        // get full URL
+        const urlByPath = getUrlByPath(pRoutes, route.path);
+        // build URL with param and return
+        return buildUrl(urlByPath, params.params);
       }
-    });
 
-  const route = targetRoute(routes);
-  debug("route", route);
+      // if route has children
+      else if (route.children?.length > 0) {
+        // getUrlByRouteName > no match, recall recursively on children
+        return recursiveFn(route.children, params);
+      }
+    }
+  };
 
-  if (!route?.path) {
-    debug("There is no route with this name, exit", params.name);
-    return;
-  }
-
-  // build URL
-  const url = buildUrl(route.path, params.params);
-
-  // return it
-  return url || null;
+  return recursiveFn(pRoutes, pParams);
 }
