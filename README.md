@@ -116,9 +116,9 @@ Router component create a new router instance.
 
 **Props:**
 
-- routes `TRoute[]` Routes list
-- base `string` Base URL - default: `"/"`
-- id `number | string` *(optional)* Router instance ID - default: `1`
+- **routes** `TRoute[]` Routes list
+- **base** `string` Base URL - default: `"/"`
+- **id** `number | string` _(optional)_ Router instance ID - default: `1`
 
 ## <a name="Link"></a>Link
 
@@ -130,8 +130,8 @@ Trig new route.
 
 **Props:**
 
-- to `string` Path ex: "/foo". Can Be absolute `/path/foo` or relative `path/foo`
-- className `string` *(optional)* Class name added to component root DOM element
+- **to** `string` Path ex: "/foo". Can Be absolute `/path/foo` or relative `path/foo`
+- **className** `string` _(optional)_ Class name added to component root DOM element
 
 ## <a name="Stack"></a>Stack
 
@@ -143,8 +143,9 @@ Render previous and current page component.
 
 **Props:**
 
-- manageTransitions `(T:TManageTransitions) => Promise<void>`
+- **manageTransitions** `(T:TManageTransitions) => Promise<void>`
   This function allow to create the transition scenario.
+- **className** `string` _(optional)_ className added to component root DOM element
 
 ```ts
 type TManageTransitions = {
@@ -162,8 +163,6 @@ interface IRouteStack {
   isReadyPromise: () => Promise<void>;
 }
 ```
-
-- className `string` *(optional)* className added to component root DOM element
 
 ## <a name="useRouter"></a>useRouter
 
@@ -187,8 +186,10 @@ setLocation({ name: "FooPage", param: { id: "2" } });
 
 **Returns:**
 
-- location `string` Get current pathname location
-- setLocation `(path:string | TOpenRouteParams) => void` Open new route
+An array with these properties:
+
+- **location** `string` Get current pathname location
+- **setLocation** `(path:string | TOpenRouteParams) => void` Open new route
 
 ```ts
 type TOpenRouteParams = {
@@ -207,8 +208,10 @@ const { currentRoute, previousRoute } = useRoute();
 
 **Returns:**
 
-- currentRoute `(TRoute)` Current route object
-- previousRoute `(TRoute)` Previous route object
+An object with these properties:
+
+- **currentRoute** `(TRoute)` Current route object
+- **previousRoute** `(TRoute)` Previous route object
 
 ```ts
 type TRoute = {
@@ -232,15 +235,15 @@ useStack({ componentName, handleRef, rootRef, playIn, playOut, isReady });
 
 **Parameters:**
 
-- componentName `string` Name of current component
-- handleRef `MutableRefObject<any>` Ref handled by parent component
-- rootRef `MutableRefObject<any>` Ref on root component element
-- playIn `() => Promise<any>` *(optional)* Play in transition - default: `new Promise.resolve()`
-- playOut `() => Promise<any>` *(optional)* Play out transition - default: `new Promise.resolve()`
-- isReady `boolean` *(optional)* Is ready state - default: `true`
+- **componentName** `string` Name of current component
+- **handleRef** `MutableRefObject<any>` Ref handled by parent component
+- **rootRef** `MutableRefObject<any>` Ref on root component element
+- **playIn** `() => Promise<any>` _(optional)_ Play in transition - default: `new Promise.resolve()`
+- **playOut** `() => Promise<any>` _(optional)_ Play out transition - default: `new Promise.resolve()`
+- **isReady** `boolean` _(optional)_ Is ready state - default: `true`
 
 **Returns:**
- 
+
 nothing
 
 ## <a name="useRouteCounter"></a>useRouteCounter
@@ -257,9 +260,11 @@ nothing
 
 **Returns:**
 
-- routerCounter `number` Current route number - default: `1`
-- isFirstRoute `boolean` Check if is first route - default: `true`
-- resetCounter `() => void` Reset routerCounter & isFirstRoute states
+An object with these properties:
+
+- **routerCounter** `number` Current route number - default: `1`
+- **isFirstRoute** `boolean` Check if is first route - default: `true`
+- **resetCounter** `() => void` Reset routerCounter & isFirstRoute states
 
 ## <a name="useHistory"></a>useHistory
 
@@ -273,14 +278,13 @@ const history = useHistory((e) => {
 
 **Parameters:**
 
-- callback `(event) => void` Callback function to execute each time the history change
+- **callback** `(event) => void` Callback function to execute each time the history change
 
 **Returns:**
 
-- history `location[]` : Location array of history API
+- **history** `location[]` : Location array of history API
 
-
---- 
+---
 
 ## Example
 
