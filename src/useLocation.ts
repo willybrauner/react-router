@@ -1,5 +1,5 @@
-import { history } from "./RouterManager";
-import { useRouter } from "./useRouter";
+import { history } from "./history";
+import { useRootRouter } from "./useRouter";
 import { getUrlByRouteName, TOpenRouteParams } from "./helpers";
 import { useEffect, useRef, useState } from "react";
 const debug = require("debug")("front:useLocation");
@@ -8,7 +8,7 @@ const debug = require("debug")("front:useLocation");
  * useLocation
  */
 export const useLocation = (): [string, (param: string | TOpenRouteParams) => void] => {
-  const router = useRouter();
+  const rootRouter = useRootRouter();
 
   /**
    * Get dynamic current location
@@ -34,7 +34,7 @@ export const useLocation = (): [string, (param: string | TOpenRouteParams) => vo
     }
     // case this is TOpenRouteParams
     if (typeof args === "object" && args.name) {
-      history.push(getUrlByRouteName(router.routes, args));
+      history.push(getUrlByRouteName(rootRouter.routes, args));
     }
   }
 

@@ -18,29 +18,77 @@ export function buildUrl(path: string, params?: TParams): string {
 }
 
 /**
- * Get route URL by his route name and params
- * TODO improve to call nested routes (need to build URL with is base)
+ *  if path "/foo" is a children of path "/bar", his full url is "/bar/foo"
+ *  With "/foo" this function will return "/bar/foo"
  */
-export function getUrlByRouteName(routes: TRoute[], params: TOpenRouteParams): string {
-  // get route by name property (by default) or by component displayName
-  const targetRoute = (pRoutes) =>
-    pRoutes.find((el: TRoute) => {
-      const match = el?.name === params.name || el.component?.displayName === params.name;
-      if (match) {
-        return match;
-      } else if (el.children?.length > 0) {
-        targetRoute(el.children);
-      }
-    });
+export function getUrlByPath(
+  routes: TRoute[],
+  path: string,
+  basePath: string = null
+): string {
+  // prepare local path
+  let localPath: string[] = [basePath];
 
-  const route = targetRoute(routes);
+  // join and format paths string array
+  const formatPath = (paths: string[]): string => paths?.join("").replace("//", "/");
 
-  if (!route?.path) {
-    debug("There is no route with this name, exit", params.name);
-    return;
+  for (let i in routes) {
+    const route = routes[i];
+
+    // if path match on first level
+    if (route.path === path) {
+      // keep path in local array
+      localPath.push(route.path);
+      // return it
+      return formatPath(localPath);
+    }
+
+    // if not matching but as children, return it
+    else if (route?.children?.length > 0) {
+      // keep path in local array
+      localPath.push(route.path);
+      // no match, recall recursively on children
+      return getUrlByPath(route.children, path, formatPath(localPath));
+    }
   }
+}
 
-  const url = buildUrl(route.path, params.params);
-  // build URL
-  return url || null;
+/**
+ * Get route URL by his route name and params
+ *
+ */
+export function getUrlByRouteName(pRoutes: TRoute[], pParams: TOpenRouteParams): string {
+  // need to wrap the function to be able to access the preserved "pRoutes" param
+  // in local scope after recursion
+  const recursiveFn = (routes: TRoute[], params: TOpenRouteParams): string => {
+    for (let i in routes) {
+      const route = routes[i];
+
+      const match =
+        route?.name === params.name || route.component?.displayName === params.name;
+
+      if (match) {
+        if (!route?.path) {
+          debug(
+            "getUrlByRouteName > There is no route with this name, exit",
+            params.name
+          );
+          return;
+        }
+
+        // get full URL
+        const urlByPath = getUrlByPath(pRoutes, route.path);
+        // build URL with param and return
+        return buildUrl(urlByPath, params.params);
+      }
+
+      // if route has children
+      else if (route.children?.length > 0) {
+        // getUrlByRouteName > no match, recall recursively on children
+        return recursiveFn(route.children, params);
+      }
+    }
+  };
+
+  return recursiveFn(pRoutes, pParams);
 }

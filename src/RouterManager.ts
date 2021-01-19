@@ -1,6 +1,9 @@
 import { Path } from "path-parser";
 import React from "react";
 import { EventEmitter } from "events";
+import { buildUrl } from "./helpers";
+import { history } from "./history";
+
 const debug = require("debug")("front:RouterManager");
 
 export type TRoute = {
@@ -22,14 +25,6 @@ export enum ERouterEvent {
   CURRENT_ROUTE_CHANGE = "current-route-change",
   STACK_IS_ANIMATING = "stack-is-animating",
 }
-
-/**
- * Create history
- * doc: https://github.com/ReactTraining/history/blob/master/docs/getting-started.md
- */
-import { createBrowserHistory } from "history";
-import { buildUrl } from "./helpers";
-export const history = createBrowserHistory();
 
 /**
  * RouterManager
@@ -77,7 +72,10 @@ export class RouterManager {
       routes.push({ path: "/", component: null });
     }
 
+    // format routes
     routes.forEach((el: TRoute) => this.addRoute(el));
+
+    // start
     this.updateRoute();
     this.initEvents();
   }
@@ -87,20 +85,24 @@ export class RouterManager {
    */
   public initEvents() {
     this.unlistenHistory = history.listen(({ location, action }) => {
-      debug(this.id, " initEvents > history", action, location.pathname, location.state);
+      debug(this.id, " initEvents > history", { location, action });
       this.handleHistory(location.pathname);
     });
   }
 
-  public destroyEvents() {
+  /**
+   * Destroy events
+   */
+  public destroyEvents(): void {
     // To stop listening, call the function returned from listen().
     this.unlistenHistory();
   }
 
   /**
-   * Handlers
+   * Handle history
+   * Call each time new event is fired by history
    */
-  protected handleHistory = (param: string) => {
+  protected handleHistory = (param: string): void => {
     this.updateRoute(param);
   };
 
