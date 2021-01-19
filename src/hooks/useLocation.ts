@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { useRootRouter } from "..";
+import { useState } from "react";
+import { useHistory, useRootRouter } from "..";
 import { history } from "../api/history";
 import { getUrlByRouteName, TOpenRouteParams } from "../api/helpers";
 
@@ -16,14 +16,9 @@ export const useLocation = (): [string, (param: string | TOpenRouteParams) => vo
    * Get dynamic current location
    */
   const [location, setLoc] = useState(window.location.pathname);
-  const unlistenHistory = useRef(null);
 
-  useEffect(() => {
-    unlistenHistory.current = history.listen(({ location, action }) => {
-      debug("history", action, location.pathname, location.state);
-      setLoc(location.pathname);
-    });
-    return () => unlistenHistory.current();
+  useHistory((event) => {
+    setLoc(event.location.pathname);
   }, []);
 
   /**

@@ -1,6 +1,12 @@
 import React, { useEffect } from "react";
-import { Link, TManageTransitions, useRouter } from "../src";
-import { Stack } from "../src";
+import {
+  Link,
+  TManageTransitions,
+  useLocation,
+  useRouteCounter,
+  useRouter,
+  Stack,
+} from "../src";
 import { useRootRouter } from "../src";
 
 const componentName = "App";
@@ -13,10 +19,12 @@ export default function App() {
   const router = useRouter();
   const { currentRoute } = useRouter();
   const rootRouter = useRootRouter();
+  const location = useLocation();
+  const count = useRouteCounter();
 
-  useEffect(()=> {
-
-  }, [])
+  useEffect(() => {
+    debug("count", count);
+  }, [count]);
 
   return (
     <div className={componentName}>
