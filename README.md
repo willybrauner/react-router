@@ -104,9 +104,9 @@ TODO
 - isReadyPromise example
 - crossed transition example
 
-## <a name="Router"></a>`<Router />`
+## <a name="Router"></a>Router
 
-Create a new router instance.
+Router component create a new router instance.
 
 ```jsx
 <Router routes={} base={} id={}>
@@ -114,13 +114,13 @@ Create a new router instance.
 </Router>
 ```
 
-#### Props
+**Props:**
 
-- routes `(TRoute[])` Routes list
-- base `(string)` base URL - default: `"/"`
-- id `(number|string)` Router instance ID - default: `1`
+- routes `TRoute[]` Routes list
+- base `string` Base URL - default: `"/"`
+- id `number | string` *(optional)* Router instance ID - default: `1`
 
-## <a name="Link"></a>`<Link />`
+## <a name="Link"></a>Link
 
 Trig new route.
 
@@ -128,22 +128,22 @@ Trig new route.
 <Link to={} className={} />
 ```
 
-#### Props
+**Props:**
 
-- to `(string)` ex: "/foo"
-- className `(?string)` className added to component root DOM element
+- to `string` Path ex: "/foo". Can Be absolute `/path/foo` or relative `path/foo`
+- className `string` *(optional)* Class name added to component root DOM element
 
-## <a name="Stack"></a>`<Stack />`
+## <a name="Stack"></a>Stack
 
-Returns previous and current page.
+Render previous and current page component.
 
 ```jsx
 <Stack manageTransitions={} className={} />
 ```
 
-#### Props
+**Props:**
 
-- manageTransitions `((T:TManageTransitions) => Promise<void>)`
+- manageTransitions `(T:TManageTransitions) => Promise<void>`
   This function allow to create the transition scenario.
 
 ```ts
@@ -163,9 +163,9 @@ interface IRouteStack {
 }
 ```
 
-- className `(?string)` className added to component root DOM element
+- className `string` *(optional)* className added to component root DOM element
 
-## <a name="useRouter"></a>useRouter()
+## <a name="useRouter"></a>useRouter
 
 Get current router instance.
 
@@ -173,7 +173,7 @@ Get current router instance.
 const router = useRouter();
 ```
 
-## <a name="useLocation"></a>useLocation()
+## <a name="useLocation"></a>useLocation
 
 Allow the router to change location.
 
@@ -185,10 +185,10 @@ setLocation("/bar");
 setLocation({ name: "FooPage", param: { id: "2" } });
 ```
 
-#### Returns
+**Returns:**
 
-- location `(string)` Get current pathname location
-- setLocation `((path:string | TOpenRouteParams)=> void)` Open new route
+- location `string` Get current pathname location
+- setLocation `(path:string | TOpenRouteParams) => void` Open new route
 
 ```ts
 type TOpenRouteParams = {
@@ -197,7 +197,7 @@ type TOpenRouteParams = {
 };
 ```
 
-## <a name="useRoute"></a>useRoute()
+## <a name="useRoute"></a>useRoute
 
 Get previous and current route properties (TRoute)
 
@@ -205,7 +205,7 @@ Get previous and current route properties (TRoute)
 const { currentRoute, previousRoute } = useRoute();
 ```
 
-#### Returns
+**Returns:**
 
 - currentRoute `(TRoute)` Current route object
 - previousRoute `(TRoute)` Previous route object
@@ -222,7 +222,7 @@ type TRoute = {
 };
 ```
 
-## <a name="useStack"></a>useStack()
+## <a name="useStack"></a>useStack
 
 Prepare page component for Stack.
 
@@ -230,20 +230,20 @@ Prepare page component for Stack.
 useStack({ componentName, handleRef, rootRef, playIn, playOut, isReady });
 ```
 
-#### Parameters
+**Parameters:**
 
-- componentName `(string)` Name of current component
-- handleRef `(MutableRefObject<any>)` Ref handled by parent component
-- rootRef `(MutableRefObject<any>)` Ref on root component element
-- playIn `(?() => Promise<any>)` Play in transition - default: `new Promise.resolve()`
-- playOut `(?() => Promise<any>)` Play out transition - default: `new Promise.resolve()`
-- isReady `(?boolean)` Is ready state - default: `true`
+- componentName `string` Name of current component
+- handleRef `MutableRefObject<any>` Ref handled by parent component
+- rootRef `MutableRefObject<any>` Ref on root component element
+- playIn `() => Promise<any>` *(optional)* Play in transition - default: `new Promise.resolve()`
+- playOut `() => Promise<any>` *(optional)* Play out transition - default: `new Promise.resolve()`
+- isReady `boolean` *(optional)* Is ready state - default: `true`
 
-#### Returns
-
+**Returns:**
+ 
 nothing
 
-## <a name="useRouteCounter"></a>useRouteCounter()
+## <a name="useRouteCounter"></a>useRouteCounter
 
 Returns route counter
 
@@ -251,17 +251,17 @@ Returns route counter
 const { routeCounter, isFirstRoute, resetCounter } = useRouteCounter();
 ```
 
-#### Parameters
+**Parameters:**
 
 nothing
 
-#### Returns
+**Returns:**
 
 - routerCounter `number` Current route number - default: `1`
 - isFirstRoute `boolean` Check if is first route - default: `true`
-- resetCounter `() => void` reset routerCounter & isFirstRoute states
+- resetCounter `() => void` Reset routerCounter & isFirstRoute states
 
-## <a name="useHistory"></a>useHistory()
+## <a name="useHistory"></a>useHistory
 
 Allow to get the global router history and execute a callback each time history change.
 
@@ -271,13 +271,16 @@ const history = useHistory((e) => {
 });
 ```
 
-#### Parameters
+**Parameters:**
 
-nothing
+- callback `(event) => void` Callback function to execute each time the history change
 
-#### Returns
+**Returns:**
 
-- history `location[]` Location array of history API
+- history `location[]` : Location array of history API
+
+
+--- 
 
 ## Example
 
