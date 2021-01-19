@@ -13,13 +13,13 @@ This router loads [history](https://github.com/ReactTraining/history), [path-par
 
 ## API
 
-Components: 
+Components:
 
 - [`<Router />`](#Router) Wrap Link and stack component
 - [`<Link />`](#Link) Trig current stack
 - [`<Stack />`](#Stack) Wrap previous and current page
 
-Hooks: 
+Hooks:
 
 - [`useRouter`](#useRouter) Get router instance from any component
 - [`useLocation`](#useLocation) Get current location and set new location
@@ -217,7 +217,8 @@ type TRoute = {
   props?: { [x: string]: any };
   parser?: Path;
   children?: TRoute[];
-  url?: string;
+  matchUrl?: string;
+  fullUrl?: string;
 };
 ```
 
@@ -242,7 +243,7 @@ useStack({ componentName, handleRef, rootRef, playIn, playOut, isReady });
 
 nothing
 
-### <a name="useRouteCounter"></a>useRouteCounter()
+## <a name="useRouteCounter"></a>useRouteCounter()
 
 Returns route counter
 
@@ -259,6 +260,24 @@ nothing
 - routerCounter `number` Current route number - default: `1`
 - isFirstRoute `boolean` Check if is first route - default: `true`
 - resetCounter `() => void` reset routerCounter & isFirstRoute states
+
+## <a name="useHistory"></a>useHistory()
+
+Allow to get the global router history and execute a callback each time history change.
+
+```js
+const history = useHistory((e) => {
+  // do something
+});
+```
+
+#### Parameters
+
+nothing
+
+#### Returns
+
+- history `location[]` Location array of history API
 
 ## Example
 
