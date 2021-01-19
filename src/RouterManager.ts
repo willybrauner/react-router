@@ -72,7 +72,10 @@ export class RouterManager {
       routes.push({ path: "/", component: null });
     }
 
+    // format routes
     routes.forEach((el: TRoute) => this.addRoute(el));
+
+    // start
     this.updateRoute();
     this.initEvents();
   }
@@ -82,20 +85,24 @@ export class RouterManager {
    */
   public initEvents() {
     this.unlistenHistory = history.listen(({ location, action }) => {
-      debug(this.id, " initEvents > history", action, location.pathname, location.state);
+      debug(this.id, " initEvents > history", { location, action });
       this.handleHistory(location.pathname);
     });
   }
 
-  public destroyEvents() {
+  /**
+   * Destroy events
+   */
+  public destroyEvents(): void {
     // To stop listening, call the function returned from listen().
     this.unlistenHistory();
   }
 
   /**
-   * Handlers
+   * Handle history
+   * Call each time new event is fired by history
    */
-  protected handleHistory = (param: string) => {
+  protected handleHistory = (param: string): void => {
     this.updateRoute(param);
   };
 

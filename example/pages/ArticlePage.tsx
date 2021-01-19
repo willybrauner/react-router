@@ -47,6 +47,13 @@ export const ArticlePage = forwardRef(
         >
           navigate to ArticlePage with param "hello"
         </button>
+        <button
+          onClick={() => {
+            setLocation({ name: "BarPage" });
+          }}
+        >
+          navigate BarPage
+        </button>
       </div>
     );
   }
