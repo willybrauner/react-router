@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom";
 import * as React from "react";
-import { Router, TRoute } from "../src";
+import { languageMiddleware, Router, TRoute } from "../src";
 
 import App from "./App";
 import HomePage from "./pages/HomePage";
@@ -14,7 +14,7 @@ import { forwardRef } from "react";
 const debug = require("debug")(`front:index`);
 
 /**
- * Define routes list
+ * Prepare routes list
  */
 export const routesList: TRoute[] = [
   {
@@ -51,12 +51,21 @@ export const routesList: TRoute[] = [
 ];
 
 /**
- * Init Application
- * // path : chemin du sous router pour identifier les routes dans le tableau de route
+ * Prepare middleware
  */
+const language = languageMiddleware({
+  languages: [
+    { key: "fr", code: "fr-FR", default: true },
+    { key: "en", code: "en-US" },
+  ],
+  showDefault: true,
+});
 
+/**
+ * Init Application
+ */
 ReactDOM.render(
-  <Router routes={routesList} base={"/"}>
+  <Router routes={routesList} base={"/"} middlewares={[language]}>
     <App />
   </Router>,
   document.getElementById("root")

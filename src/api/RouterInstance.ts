@@ -20,6 +20,8 @@ export type TRoute = {
   fullUrl?: string;
 };
 
+export type TMiddleWare = any;
+
 export enum ERouterEvent {
   PREVIOUS_ROUTE_CHANGE = "previous-route-change",
   CURRENT_ROUTE_CHANGE = "current-route-change",
@@ -35,7 +37,8 @@ export class RouterInstance {
   // routes list
   public routes: TRoute[] = [];
 
-  public middlewares: (e: any) => void[];
+  // list of middlewares
+  public middlewares: TMiddleWare;
 
   // create event emitter
   public events: EventEmitter = new EventEmitter();
@@ -58,7 +61,7 @@ export class RouterInstance {
   }: {
     base?: string;
     routes?: TRoute[];
-    middlewares?: (e: any) => void[];
+    middlewares?: TMiddleWare;
     fakeMode?: boolean;
     id?: number | string;
   }) {
