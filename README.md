@@ -1,6 +1,6 @@
 # 🚃 react router
 
-## IMPORTANT: This project as been copied and continues on [fly-router repository](https://github.com/cher-ami/fly-router)
+## IMPORTANT: This project as been copied and continues on [cher-ami/router repository](https://github.com/cher-ami/router)
 
 ----
 
