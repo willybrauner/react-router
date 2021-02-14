@@ -1,4 +1,4 @@
-export { RouterInstance, TRoute, ERouterEvent } from "./api/RouterInstance";
+export { RouterInstance, TRoute, ERouterEvent, TMiddleWare } from "./api/RouterInstance";
 
 export { Router } from "./components/Router";
 export { Link } from "./components/Link";
@@ -10,3 +10,5 @@ export { useRoute } from "./hooks/useRoute";
 export { useHistory } from "./hooks/useHistory";
 export { useRouteCounter } from "./hooks/useRouteCounter";
 export { useStack, IRouteStack } from "./hooks/useStack";
+
+export { languageMiddleware } from "./middlewares/languageMiddleware";

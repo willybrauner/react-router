@@ -1,4 +1,4 @@
-import { RouterInstance, TRoute } from "..";
+import { RouterInstance, TRoute, TMiddleWare } from "..";
 import React, { createContext, memo, ReactElement, useEffect, useState } from "react";
 
 const componentName = "Router";
@@ -7,7 +7,7 @@ const debug = require("debug")(`front:${componentName}`);
 interface IProps {
   base: string;
   routes: TRoute[];
-  middlewares?: (e: any) => void[];
+  middlewares?: TMiddleWare;
   children: ReactElement;
   id?: number | string;
 }
@@ -29,6 +29,9 @@ export const rootRouter = { root: undefined };
 export const Router = memo((props: IProps) => {
   // keep routerManager instance
   const [routerManager] = useState<RouterInstance>(() => {
+
+
+    debug('props.middlewares',props.middlewares)
     const router = new RouterInstance({
       base: props.base,
       routes: props.routes,
